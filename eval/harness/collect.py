@@ -66,7 +66,7 @@ def _post(payload, retries=5):
                 raise RuntimeError("graphql: " + msg)
             return body["data"]
         except urllib.error.HTTPError as e:
-            if e.code in (403, 429, 502, 503):
+            if e.code in (403, 429, 500, 502, 503, 504):
                 log("[api] http %d, sleeping %.0fs" % (e.code, delay))
                 time.sleep(delay)
                 delay *= 2
