@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       stage:
-        description: "census | dataset | baselines | all"
+        description: "census | refresh | baselines"
         type: choice
-        options: [census, dataset, baselines, all]
+        options: [census, refresh, baselines]
         default: census
       size:
         description: "repo size tier"
@@ -22,9 +22,10 @@ on:
         options: [train, holdout, all]
         default: train
       limit:
-        description: "max queries per repo (0 = no cap)"
+        description: "refresh only: max queries per repo (0 = no cap). Scoring always
+          uses the whole frozen dataset."
         type: string
-        default: "25"
+        default: "0"
       baselines:
         description: "comma separated: grep,bm25,vector"
         type: string
@@ -67,7 +68,7 @@ jobs:
 
   census:
     # 先数再抓：一个仓库到底有多少条满足过滤条件的 PR。规格站不住就别往下走。
-    if: ${{ (inputs.stage || 'census') == 'census' || (inputs.stage || 'census') == 'all' }}
+    if: ${{ (inputs.stage || 'census') == 'census' }}
     needs: matrix
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -89,8 +90,11 @@ jobs:
           name: census
           path: eval/results/census.json
 
-  dataset:
-    if: ${{ contains(fromJSON('["dataset","baselines","all"]'), inputs.stage || 'census') }}
+  # Regenerating the test set is an explicit act, never a step on the way to a
+  # score. This job proposes a dataset and shows how it differs from the frozen
+  # one; a human commits it and runs `freeze` with a written reason.
+  refresh:
+    if: ${{ (inputs.stage || 'census') == 'refresh' }}
     needs: matrix
     runs-on: ubuntu-latest
     timeout-minutes: 330
@@ -117,23 +121,35 @@ jobs:
           path: eval/.cache/tags/${{ matrix.target.slug }}
           key: tags-${{ matrix.target.slug }}-${{ github.run_id }}
           restore-keys: tags-${{ matrix.target.slug }}-
-      - name: collect + build
+      - name: collect + build (proposal only)
         working-directory: eval
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          LIMIT="${{ inputs.limit || '25' }}"
+          LIMIT="${{ inputs.limit || '0' }}"
           ARGS=""; [ "$LIMIT" != "0" ] && ARGS="--limit $LIMIT"
           python3 -m harness.run collect --repo "${{ matrix.target.repo }}"
           python3 -m harness.run build   --repo "${{ matrix.target.repo }}" $ARGS
+      - name: diff against the frozen manifest
+        working-directory: eval
+        run: |
+          {
+            echo "### ${{ matrix.target.repo }}"
+            echo '```'
+            git diff --stat -- datasets/ || true
+            python3 -m harness.run verify --repo "${{ matrix.target.repo }}" || true
+            echo '```'
+            echo "提案而已。要它生效：提交 datasets/ 并跑 \`freeze --reason ...\`。"
+          } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
-          name: dataset-${{ matrix.target.slug }}
+          name: proposed-dataset-${{ matrix.target.slug }}
           path: eval/datasets/${{ matrix.target.slug }}.jsonl
 
   baselines:
-    if: ${{ contains(fromJSON('["baselines","all"]'), inputs.stage || 'census') }}
-    needs: [matrix, dataset]
+    # Scores come from the committed, frozen datasets/ — never from a fresh crawl.
+    if: ${{ (inputs.stage || 'census') == 'baselines' }}
+    needs: [matrix]
     runs-on: ubuntu-latest
     timeout-minutes: 350
     strategy:
@@ -147,10 +163,6 @@ jobs:
         with: { python-version: "3.12" }
       - name: tools
         run: sudo apt-get update -qq && sudo apt-get install -y -qq universal-ctags ripgrep
-      - uses: actions/download-artifact@v4
-        with:
-          name: dataset-${{ matrix.target.slug }}
-          path: eval/datasets
       - name: cache git mirror
         uses: actions/cache@v4
         with:
@@ -185,18 +197,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EVAL_VECTOR_MODE: ${{ matrix.target.size == 'huge' && 'pool' || 'full' }}
         run: |
-          LIMIT="${{ inputs.limit || '25' }}"
-          ARGS=""; [ "$LIMIT" != "0" ] && ARGS="--limit $LIMIT"
           python3 -m harness.run run \
             --repo "${{ matrix.target.repo }}" \
-            --baselines "${{ inputs.baselines || 'grep,bm25' }}" $ARGS
+            --baselines "${{ inputs.baselines || 'grep,bm25' }}"
       - uses: actions/upload-artifact@v4
         with:
           name: results-${{ matrix.target.slug }}
           path: eval/results/${{ matrix.target.slug }}.json
 
   report:
-    if: ${{ always() && contains(fromJSON('["baselines","all"]'), inputs.stage || 'census') }}
+    if: ${{ always() && (inputs.stage || 'census') == 'baselines' }}
     needs: [matrix, baselines]
     runs-on: ubuntu-latest
     steps:
@@ -204,15 +214,12 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - uses: actions/download-artifact@v4
-        with: { pattern: dataset-*, path: eval/dl-datasets, merge-multiple: true }
-      - uses: actions/download-artifact@v4
         with: { pattern: results-*, path: eval/dl-results, merge-multiple: true }
       - name: merge + report
         working-directory: eval
         run: |
-          mkdir -p datasets results
-          cp -f dl-datasets/*.jsonl datasets/ 2>/dev/null || true
-          cp -f dl-results/*.json  results/  2>/dev/null || true
+          mkdir -p results
+          cp -f dl-results/*.json results/ 2>/dev/null || true
           python3 -m harness.run report \
             --size "${{ inputs.size || 'all' }}" \
             --split "${{ inputs.split || 'all' }}" | tee report.md

@@ -5,7 +5,8 @@ import json
 import os
 import sys
 
-from . import baselines, build as buildmod, collect as collectmod, score as scoremod
+from . import (baselines, build as buildmod, collect as collectmod,
+               manifest as manifestmod, score as scoremod)
 from .common import (DATASETS, RESULTS, ROOT, log, parse_repos, read_jsonl,
                      repo_meta, sh, slug, write_jsonl)
 from .snapshot import Snapshot
@@ -68,6 +69,21 @@ def cmd_build(args):
         path = buildmod.save(repo, rows)
         log("[build] %s -> %d queries (%s)" % (repo, len(rows), path))
         log("[build] dropped: " + json.dumps(stats, sort_keys=True))
+        entry = manifestmod.load()["frozen"].get(repo)
+        if entry and manifestmod.file_hash(path) != entry["sha256"]:
+            log("[build] %s now differs from the frozen manifest. Scoring will "
+                "refuse it until you re-freeze with a reason." % repo)
+    log("build only proposes. `freeze` is what makes a test set real.")
+    return 0
+
+
+def cmd_freeze(args):
+    """冻结：把当前 datasets/ 记进 MANIFEST.json。改一次记一次。"""
+    if not args.reason:
+        raise SystemExit("--reason is required: an unexplained test-set change is "
+                         "indistinguishable from moving the goalposts")
+    for r in _repos(args):
+        manifestmod.freeze(r["repo"], args.reason)
     return 0
 
 
@@ -102,6 +118,31 @@ def _run_query(snap, row, which):
     return out
 
 
+def cmd_verify(args):
+    """报告冻结状态，不改任何东西。CI 的 refresh 阶段用它出提案摘要。"""
+    man = manifestmod.load()
+    bad = 0
+    for r in _repos(args):
+        repo = r["repo"]
+        path = manifestmod.dataset_file(repo)
+        entry = man["frozen"].get(repo)
+        if not os.path.exists(path):
+            print("%-28s MISSING" % repo)
+            bad += 1
+        elif entry is None:
+            print("%-28s UNFROZEN  %s" % (repo, manifestmod.file_hash(path)[:12]))
+            bad += 1
+        else:
+            actual = manifestmod.file_hash(path)
+            state = "OK" if actual == entry["sha256"] else "DRIFTED"
+            print("%-28s %-8s frozen=%s actual=%s queries=%d"
+                  % (repo, state, entry["sha256"][:12], actual[:12], entry["queries"]))
+            bad += (state != "OK")
+    print("\ndataset_version = %s" % manifestmod.dataset_version(
+        [r["repo"] for r in _repos(args)]))
+    return 1 if bad else 0
+
+
 def cmd_run(args):
     which = [w.strip() for w in args.baselines.split(",") if w.strip()]
     for r in _repos(args):
@@ -112,6 +153,10 @@ def cmd_run(args):
             continue
         if args.limit:
             rows = rows[:args.limit]
+        frozen = manifestmod.verify(repo, allow_drift=args.allow_drift)
+        if frozen:
+            log("[run] %s frozen at %s (%d queries)"
+                % (repo, frozen["sha256"][:12], frozen["queries"]))
         per_query = {w: [] for w in which}
         ceilings = []
         for i, row in enumerate(rows, 1):
@@ -175,7 +220,12 @@ def cmd_report(args):
                 acc[k] = num / den
         merged[name] = acc
 
+    scored = [p["repo"] for p in rows]
     meta = {
+        "dataset_version": manifestmod.dataset_version(scored),
+        "unfrozen_repos": ", ".join(
+            r for r in scored if r not in manifestmod.load()["frozen"]) or "none",
+        "tools": json.dumps(manifestmod.tool_versions(), ensure_ascii=False),
         "dataset_commit": _git_commit(os.path.dirname(ROOT)),
         "code_commit": _git_commit(os.path.dirname(ROOT)),
         "repos": "%d (%s)" % (len(rows), ", ".join(p["repo"] for p in rows)),
@@ -217,10 +267,21 @@ def main(argv=None):
     p.add_argument("--limit", type=int, default=None)
     p.set_defaults(fn=cmd_build)
 
+    p = sub.add_parser("verify", help="报告冻结状态")
+    common(p)
+    p.set_defaults(fn=cmd_verify)
+
+    p = sub.add_parser("freeze", help="冻结数据集进 MANIFEST.json")
+    common(p)
+    p.add_argument("--reason", required=True, help="为什么改，会写进 history")
+    p.set_defaults(fn=cmd_freeze)
+
     p = sub.add_parser("run", help="跑基线")
     common(p)
     p.add_argument("--baselines", default="grep,bm25")
     p.add_argument("--limit", type=int, default=None)
+    p.add_argument("--allow-drift", action="store_true",
+                   help="对未冻结或已漂移的数据集打分。只用于本地探索，出来的数不许报")
     p.set_defaults(fn=cmd_run)
 
     p = sub.add_parser("report", help="合并 results/ 出报分表")

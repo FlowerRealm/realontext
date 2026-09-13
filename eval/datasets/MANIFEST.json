@@ -1,0 +1,26 @@
+{
+  "frozen": {
+    "tokio-rs/tokio": {
+      "frozen_at": "2026-09-13T00:59:18Z",
+      "queries": 5,
+      "reason": "阶段 0 首次冻结：tokio 前 5 条，用于验证装置",
+      "sha256": "f2c79657fff3560e1b7bc0e2c2825988e1f7d3e76beba5c12261c0a46135334a",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    }
+  },
+  "history": [
+    {
+      "at": "2026-09-13T00:59:18Z",
+      "queries": 5,
+      "reason": "阶段 0 首次冻结：tokio 前 5 条，用于验证装置",
+      "replaces": null,
+      "repo": "tokio-rs/tokio",
+      "sha256": "f2c79657fff3560e1b7bc0e2c2825988e1f7d3e76beba5c12261c0a46135334a"
+    }
+  ],
+  "version": 1
+}

@@ -38,9 +38,33 @@ python3 -m harness.run collect --repo prometheus/prometheus
 # 3. 过滤 + 算 ground truth，冻结进 datasets/
 python3 -m harness.run build --repo prometheus/prometheus --limit 100
 
-# 4. 跑基线，出报分表
+# 4. 冻结（没有这一步，第 5 步会直接拒绝）
+python3 -m harness.run freeze --repo prometheus/prometheus --reason "阶段 0 首次冻结"
+
+# 5. 跑基线，出报分表
 python3 -m harness.run run    --repo prometheus/prometheus --baselines grep,bm25
 python3 -m harness.run report --split train
+```
+
+## 什么是固定的，什么会变
+
+固定的部分靠装置强制，不靠自觉：
+
+| | 怎么保证 |
+|---|---|
+| 语料 | `base_sha` 写死在数据集行里，那个 commit 的树不可变 |
+| ground truth | 给定 `(base_sha, merge_sha)`，diff ∩ ctags 边界是确定性的 |
+| 测试集组成 | `datasets/*.jsonl` 进 git，内容哈希钉在 `datasets/MANIFEST.json` |
+| 评分与基线参数 | 常量写死在代码里 |
+
+**`run` 会校验哈希，对不上就拒绝打分**，只有 `--allow-drift` 能绕过，绕过来的数不许报。
+`build` 只是提案，`freeze` 才让它生效，而 `freeze` 强制要求 `--reason`——改一次记一次。
+
+会变而且必须记录的：`collect` 抓到哪些 PR 取决于抓取时刻，ctags / ripgrep 版本随环境变。
+所以每次报分都带 `dataset_version` 和三个工具的版本号。
+
+```bash
+python3 -m harness.run verify --split all     # 谁冻了、谁漂了、dataset_version 是多少
 ```
 
 `--size medium|huge|all`、`--split train|holdout|all` 在每个子命令上都能用。
@@ -81,11 +105,15 @@ tree-sitter，ctags 满足这一条，而且比 LSP 更满足：两者连解析�
 
 | 输入 | 说明 |
 |---|---|
-| `stage` | `census` / `dataset` / `baselines` / `all` |
+| `stage` | `census` / `refresh` / `baselines` |
 | `size` | `medium` / `huge` / `all`——两个规模档分开跑 |
 | `split` | `train` / `holdout` / `all` |
 | `limit` | 每仓库 query 上限，`0` 为不限 |
 | `baselines` | `grep,bm25` 或加上 `vector` |
+
+**`refresh` 只出提案，不喂分数。** 它重新抓取并生成数据集、打印与冻结版的差异，然后
+停在那里——人来提交 `datasets/` 并跑 `freeze --reason`。`baselines` 阶段只读已提交的
+冻结数据集，绝不现抓。两个阶段不相连，是刻意的：现抓即打分等于每次换一套卷子。
 
 每个仓库一个 job（`fail-fast: false`），一个仓库炸不影响其他仓库。git 镜像、符号索引、
 本地嵌入三份缓存按仓库分开。超大档会先清掉 runner 上的 Android SDK 和 .NET 腾磁盘。
@@ -110,10 +138,11 @@ harness/
   tokenize.py     两条基线的冻结分词（不与 lexical/ 共享）
   baselines.py    grep 基线、BM25 基线
   vector.py       本地 Jina 向量基线（无 API）
+  manifest.py     冻结、校验、dataset_version
   score.py        Recall@k / Acc@k / MRR / NDCG，macro 平均，报分表
   run.py          CLI
 
-datasets/   冻结的测试集，进 git
+datasets/   冻结的测试集 + MANIFEST.json，进 git
 raw/        抓取缓存，不进 git
 results/    分数，不进 git
 .cache/     镜像、语料、符号索引、嵌入，不进 git

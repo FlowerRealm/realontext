@@ -47,8 +47,9 @@ def build(repo, raw_rows, dry_run=False, limit=None):
     for r in raw_rows:
         r["_repo"] = repo
 
-    # newest-first from the API; merge order decides which PR owns an issue
-    rows = sorted(raw_rows, key=lambda r: (r.get("merged_at") or ""))
+    # merge order decides which PR owns an issue; pr number breaks ties so the
+    # same raw/ always yields the same dataset, --limit included
+    rows = sorted(raw_rows, key=lambda r: (r.get("merged_at") or "", r["pr"]))
     seen_issue = {}
     staged = []
 

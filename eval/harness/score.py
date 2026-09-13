@@ -103,7 +103,8 @@ def markdown_report(meta, stats, systems):
     lines.append("")
     lines.append("| 字段 | 值 |")
     lines.append("|---|---|")
-    for k in ("dataset_commit", "code_commit", "repos", "split", "generated_at"):
+    for k in ("dataset_version", "unfrozen_repos", "dataset_commit", "code_commit",
+              "repos", "split", "generated_at", "tools"):
         if meta.get(k) is not None:
             lines.append("| %s | %s |" % (k, meta[k]))
     for k, v in stats.items():
