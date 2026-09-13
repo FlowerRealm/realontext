@@ -36,6 +36,12 @@ on:
 permissions:
   contents: read
 
+# One evaluation at a time per stage: two overlapping runs would fight over the
+# same caches and produce two half-warm sets of numbers.
+concurrency:
+  group: eval-${{ inputs.stage || 'census' }}-${{ inputs.size || 'all' }}
+  cancel-in-progress: false
+
 env:
   PYTHONUNBUFFERED: "1"
   EVAL_CACHE: ${{ github.workspace }}/eval/.cache
