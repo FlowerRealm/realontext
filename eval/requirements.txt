@@ -1,0 +1,6 @@
+# Stage 0 needs nothing but the standard library, git, ripgrep and universal-ctags.
+# These are only for the local (no-API) vector baseline.
+torch==2.5.1
+transformers==4.46.3
+sentence-transformers==3.3.1
+einops==0.8.0

@@ -1,0 +1,62 @@
+# realontext 评测仓库名单
+#
+# 这个文件是冻结的测试集定义。改一次记一次，写明理由，随 git 提交。
+# 未冻结的测试集等于没有测试集。见 ../docs/benchmark.md「防自欺的硬规则」。
+#
+# 选取规格：每种语言两个仓库，一个超大一个中等。
+# 超大 = 百万行量级，中等 = 十万行量级。两档对照才能看出规模对检索质量的影响。
+#
+# 硬性准入条件（缺一不可）：
+#   1. GitHub 原生工作流：PR 在 GitHub 上合并，issue 在 GitHub 上开
+#   2. PR 与 issue 有关联（Fixes #N / Closes #N 或 GitHub 的 linked issue）
+#   3. issue 正文是人写的自然语言，不是纯模板
+#
+# 被这三条排除的知名项目（记下来防止有人再提）：
+#   git          只读镜像，开发在邮件列表，GitHub 上没有 merged PR
+#   linux        同上
+#   postgres     同上
+#   ffmpeg       同上
+#   django       issue 在 Trac 上，PR 关联的是 Trac ticket 不是 GitHub issue
+#   kafka        issue 在 JIRA 上
+#   curl         见下方变更记录：PR 靠 cherry-pick 落地，GitHub 上显示为 closed 不是 merged
+#   openssl      同上，149 merged vs 18,429 closed
+#
+# 变更记录（改一次记一次）
+#
+# 2026-09-12  curl/curl -> redis/redis（C 中等档）
+#   理由：curl 只有 212 个 merged PR，对应 15,923 个 closed PR。维护者用 cherry-pick
+#   落补丁，PR 在 GitHub 上被关掉而不是合并，因此违反准入条件 1「GitHub 原生工作流」。
+#   阶段 0 的 census 实测：curl 全部历史只筛出 11 条可用 query，撑不起一个规模档。
+#   替换为 redis/redis：4,789 merged PR，census 实测 257 条关联 issue 的 PR 里 180 条
+#   可用，与 prometheus（178 条）同一量级。
+#   同批排除 openssl（149 merged / 18,429 closed，同样的 cherry-pick 工作流）。
+#
+# split 字段：
+#   train    调参、选型、改切块只许在这些仓库上做
+#   holdout  调参期间不许看，只在阶段验收时跑一次
+#
+# holdout 占 4/14（29%），覆盖 4 种语言、两个规模档都有，
+# 这样 holdout 上的分差能区分「过拟合」和「某语言/某规模不行」。
+#
+# 字段：repo  language  size  split
+
+ClickHouse/ClickHouse        cpp         huge     train
+duckdb/duckdb                cpp         medium   holdout
+
+kubernetes/kubernetes        go          huge     train
+prometheus/prometheus        go          medium   train
+
+rust-lang/rust               rust        huge     holdout
+tokio-rs/tokio               rust        medium   train
+
+microsoft/vscode             typescript  huge     train
+vuejs/core                   typescript  medium   holdout
+
+systemd/systemd              c           huge     train
+redis/redis                  c           medium   train
+
+apache/airflow               python      huge     holdout
+pandas-dev/pandas            python      medium   train
+
+elastic/elasticsearch        java        huge     train
+netty/netty                  java        medium   train
