@@ -37,10 +37,15 @@ def tool_versions():
 
 
 def load():
+    """`schema` is the file format; `version` is the content hash of the test set."""
     if not os.path.exists(PATH):
-        return {"version": 1, "frozen": {}, "history": []}
+        return {"schema": 1, "frozen": {}, "history": []}
     with open(PATH, encoding="utf-8") as f:
-        return json.load(f)
+        man = json.load(f)
+    if isinstance(man.get("version"), int):        # pre-hash manifests
+        man["schema"] = man.pop("version")
+    man.setdefault("schema", 1)
+    return man
 
 
 def save(man):
@@ -55,25 +60,47 @@ def dataset_file(repo):
 
 def freeze(repo, reason):
     """Record the current datasets/<repo>.jsonl as *the* test set for that repo."""
+    from . import curate                                   # provenance of the picks
     path = dataset_file(repo)
     if not os.path.exists(path):
         raise SystemExit("no dataset for %s — run build first" % repo)
     man = load()
     digest = file_hash(path)
+    sel = curate.selection_hash(repo)
     rows = sum(1 for line in open(path, encoding="utf-8") if line.strip())
     prev = man["frozen"].get(repo)
-    if prev and prev["sha256"] == digest:
-        log("[freeze] %s unchanged (%s)" % (repo, digest[:12]))
+    if prev and prev["sha256"] == digest and prev.get("selection_sha256") == sel:
+        man["version"] = _version(man)             # keep the stamp current
+        save(man)
+        log("[freeze] %s unchanged (%s) version=%s"
+            % (repo, digest[:12], man["version"]))
         return man
     man["frozen"][repo] = {"sha256": digest, "queries": rows,
+                           "selection_sha256": sel,
                            "frozen_at": _now(), "reason": reason,
                            "tools": tool_versions()}
     man["history"].append({"repo": repo, "at": _now(), "queries": rows,
-                           "sha256": digest, "reason": reason,
+                           "sha256": digest, "selection_sha256": sel,
+                           "reason": reason,
                            "replaces": prev["sha256"] if prev else None})
+    man["version"] = _version(man)
     save(man)
-    log("[freeze] %s -> %s (%d queries)" % (repo, digest[:12], rows))
+    log("[freeze] %s -> %s (%d queries) version=%s"
+        % (repo, digest[:12], rows, man["version"]))
     return man
+
+
+def _version(man):
+    """One string that identifies the whole frozen test set.
+
+    Covers the dataset content and the selection that produced it, so a report
+    citing this version is citing both what was asked and how it was chosen.
+    """
+    parts = []
+    for repo in sorted(man["frozen"]):
+        e = man["frozen"][repo]
+        parts.append("%s:%s:%s" % (repo, e["sha256"], e.get("selection_sha256") or "-"))
+    return "v1-" + hashlib.sha256("|".join(parts).encode()).hexdigest()[:16]
 
 
 def verify(repo, allow_drift=False):
@@ -101,13 +128,16 @@ def verify(repo, allow_drift=False):
 
 
 def dataset_version(repos):
-    """One short hash standing for the exact set of frozen datasets scored."""
+    """Version of the subset actually scored — the full-set version when all of it."""
     man = load()
+    if set(repos) == set(man["frozen"]):
+        return man.get("version") or _version(man)
     parts = []
     for r in sorted(repos):
         e = man["frozen"].get(r)
-        parts.append("%s:%s" % (r, e["sha256"] if e else "UNFROZEN"))
-    return hashlib.sha256("|".join(parts).encode()).hexdigest()[:12]
+        parts.append("%s:%s:%s" % (r, e["sha256"] if e else "UNFROZEN",
+                                   (e or {}).get("selection_sha256") or "-"))
+    return "v1-part-" + hashlib.sha256("|".join(parts).encode()).hexdigest()[:16]
 
 
 def _now():

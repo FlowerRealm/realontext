@@ -6,7 +6,7 @@ import os
 import sys
 
 from . import (baselines, build as buildmod, collect as collectmod,
-               manifest as manifestmod, score as scoremod)
+               curate as curatemod, manifest as manifestmod, score as scoremod)
 from .common import (DATASETS, RESULTS, ROOT, log, parse_repos, read_jsonl,
                      repo_meta, sh, slug, write_jsonl)
 from .snapshot import Snapshot
@@ -97,6 +97,20 @@ def cmd_collect(args):
     return 0
 
 
+def cmd_candidates(args):
+    """给挑题的人（或子代理）备料：只有 issue 正文，不含答案。"""
+    for r in _repos(args):
+        repo = r["repo"]
+        raw = read_jsonl(os.path.join(ROOT, "raw", slug(repo) + ".jsonl"))
+        if not raw:
+            log("[candidates] %s has no raw/, run collect first" % repo)
+            continue
+        staged, _ = buildmod.build(repo, raw, dry_run=True)
+        path, n = curatemod.write_candidates(repo, staged, cap=args.cap)
+        log("[candidates] %-28s %d 条候选 -> %s" % (repo, n, path))
+    return 0
+
+
 def cmd_build(args):
     for r in _repos(args):
         repo = r["repo"]
@@ -104,7 +118,20 @@ def cmd_build(args):
         if not raw:
             log("[build] %s has no raw/, run collect first" % repo)
             continue
-        rows, stats = buildmod.build(repo, raw, limit=args.limit)
+        only = None
+        if args.select:
+            sel = curatemod.load_selection(repo)
+            if sel is None:
+                log("[build] %s has no selection file, skipping "
+                    "(drop --select to build everything)" % repo)
+                continue
+            staged, _ = buildmod.build(repo, raw, dry_run=True)
+            only, problems = curatemod.validate(repo, sel, staged)
+            for p_ in problems:
+                log("[build] %s selection problem: %s" % (repo, p_))
+            log("[build] %s selection %s -> %d PRs"
+                % (repo, (curatemod.selection_hash(repo) or "")[:12], len(only)))
+        rows, stats = buildmod.build(repo, raw, limit=args.limit, only_prs=only)
         path = buildmod.save(repo, rows)
         log("[build] %s -> %d queries (%s)" % (repo, len(rows), path))
         log("[build] dropped: " + json.dumps(stats, sort_keys=True))
@@ -301,9 +328,16 @@ def main(argv=None):
     p.add_argument("--want", type=int, default=400)
     p.set_defaults(fn=cmd_collect)
 
+    p = sub.add_parser("candidates", help="导出候选题（只含 issue 正文）")
+    common(p)
+    p.add_argument("--cap", type=int, default=150)
+    p.set_defaults(fn=cmd_candidates)
+
     p = sub.add_parser("build", help="过滤 + 生成 ground truth，冻结进 datasets/")
     common(p)
     p.add_argument("--limit", type=int, default=None)
+    p.add_argument("--select", action="store_true",
+                   help="只构建 selections/<repo>.json 里挑中的题")
     p.set_defaults(fn=cmd_build)
 
     p = sub.add_parser("census-report", help="合并 census 分片")

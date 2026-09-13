@@ -22,5 +22,6 @@
       "sha256": "f2c79657fff3560e1b7bc0e2c2825988e1f7d3e76beba5c12261c0a46135334a"
     }
   ],
-  "version": 1
+  "schema": 1,
+  "version": "v1-a830aed1bb5e3f48"
 }

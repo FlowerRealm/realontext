@@ -38,7 +38,7 @@ def _pick_issue(row):
     return min(pool, key=lambda i: i["number"]) if pool else None
 
 
-def build(repo, raw_rows, dry_run=False, limit=None):
+def build(repo, raw_rows, dry_run=False, limit=None, only_prs=None):
     stats = {k: 0 for k in (
         "no_issue", "cross_repo", "bot_issue", "short_body", "gap_too_small",
         "too_many_files", "no_code_files", "docs_or_tests_only", "vendored",
@@ -95,6 +95,12 @@ def build(repo, raw_rows, dry_run=False, limit=None):
 
     if dry_run:
         return staged, stats
+
+    if only_prs is not None:
+        want = set(only_prs)
+        order = {pr: i for i, pr in enumerate(only_prs)}
+        staged = sorted((t for t in staged if t[0]["pr"] in want),
+                        key=lambda t: order[t[0]["pr"]])
 
     ensure_mirror(repo)
     kept = []

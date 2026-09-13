@@ -3,3 +3,4 @@ raw/
 results/
 __pycache__/
 *.pyc
+candidates/
