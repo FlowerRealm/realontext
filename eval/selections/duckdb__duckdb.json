@@ -1,0 +1,256 @@
+{
+  "repo": "duckdb/duckdb",
+  "criteria_version": 1,
+  "selected": [
+    {
+      "pr": 24752,
+      "score": 5,
+      "reason": "Exemplary defect report with bisection analysis and minimal reproducer demonstrating an optimizer crash during hash join statistics propagation."
+    },
+    {
+      "pr": 22134,
+      "score": 5,
+      "reason": "Complete, standalone C program proving data corruption during nested list appender writes when exceeding standard vector boundaries."
+    },
+    {
+      "pr": 22538,
+      "score": 5,
+      "reason": "Detailed report with Python reproducer demonstrating silent string truncation to eight bytes during parquet min and max aggregations."
+    },
+    {
+      "pr": 23389,
+      "score": 5,
+      "reason": "Exceptionally structured report with multiple control queries showing string-to-list casts failing when quoted fields contain closing braces."
+    },
+    {
+      "pr": 23422,
+      "score": 5,
+      "reason": "Comprehensive test cases proving regexp_replace silently returns corrupted strings instead of errors on malformed replacement patterns."
+    },
+    {
+      "pr": 25101,
+      "score": 5,
+      "reason": "Detailed report with query plan comparisons and standalone SQL reproducing a native JVM crash in the JDBC driver after repeated executions."
+    },
+    {
+      "pr": 22177,
+      "score": 5,
+      "reason": "Self-contained Python reproducer demonstrating a parquet union-by-name regression on optional nested struct fields."
+    },
+    {
+      "pr": 23569,
+      "score": 5,
+      "reason": "Well-structured SQL reproducer showing a parser regression where inheriting from an earlier named window in the same clause fails."
+    },
+    {
+      "pr": 21943,
+      "score": 5,
+      "reason": "Highly actionable report demonstrating a regression where regex-guarded CASE expressions with TRY(strptime) return uninitialized memory."
+    },
+    {
+      "pr": 23413,
+      "score": 5,
+      "reason": "Elegant SQL reproducer demonstrating that common subexpression elimination erroneously deduplicates separate calls to volatile functions."
+    },
+    {
+      "pr": 20042,
+      "score": 5,
+      "reason": "Well-documented CLI issue with debugger backtrace showing an indefinite startup hang due to blocking terminal background color detection."
+    },
+    {
+      "pr": 24332,
+      "score": 5,
+      "reason": "Concise four-line SQL reproducer and AddressSanitizer trace for a fatal segfault when decoding malformed percent-encoded strings."
+    },
+    {
+      "pr": 20038,
+      "score": 5,
+      "reason": "Minimal SQL reproducer and stack trace showing a query decorrelation internal error triggered by an unused CTE."
+    },
+    {
+      "pr": 20097,
+      "score": 5,
+      "reason": "Clear explanation of a CTE type inference regression that causes premature type binding and comparison errors with timestamps."
+    },
+    {
+      "pr": 16111,
+      "score": 5,
+      "reason": "Concise reproducer demonstrating optimizer filter reordering that prematurely executes an error-throwing function before its guard condition."
+    },
+    {
+      "pr": 16686,
+      "score": 5,
+      "reason": "Minimal SQL reproducer showing filter pushdown incorrectly eliminating rows when filtering dynamically on JSON keys."
+    },
+    {
+      "pr": 16880,
+      "score": 5,
+      "reason": "Compact SQL reproducer demonstrating an incorrect query result where a RIGHT JOIN with a subquery returns rows violating the WHERE clause."
+    },
+    {
+      "pr": 17425,
+      "score": 5,
+      "reason": "Minimal SQL reproducer demonstrating an incorrect inner join result caused by evaluating NULL >= NULL as true."
+    },
+    {
+      "pr": 19891,
+      "score": 5,
+      "reason": "Clear reproducer demonstrating an internal vector type error and database invalidation when calling APPROX_QUANTILE on TIME values."
+    },
+    {
+      "pr": 21522,
+      "score": 5,
+      "reason": "Self-contained shell reproducer demonstrating a binder failure when streaming JSON from stdin to stdout with COPY TO."
+    },
+    {
+      "pr": 21901,
+      "score": 5,
+      "reason": "Minimal SQL reproducer demonstrating that TRY_CAST raises a conversion error rather than returning NULL as documented."
+    },
+    {
+      "pr": 22073,
+      "score": 5,
+      "reason": "Concrete demonstration of a CLI regression where boolean values in JSON output mode are improperly emitted as strings."
+    },
+    {
+      "pr": 22183,
+      "score": 5,
+      "reason": "Self-contained SQL example demonstrating that copying a table to Parquet fails to preserve NOT NULL column constraints in the schema."
+    },
+    {
+      "pr": 22208,
+      "score": 5,
+      "reason": "Reproducible SQL test showing that RESET memory_limit fails to restore default memory limits, triggering spurious out-of-memory errors."
+    },
+    {
+      "pr": 22259,
+      "score": 5,
+      "reason": "Clear SQL examples demonstrating that casting from TIME to TIMETZ ignores session timezone offset and incorrectly hardcodes UTC."
+    },
+    {
+      "pr": 22646,
+      "score": 5,
+      "reason": "Step-by-step SQL test demonstrating that truncating log files deletes the CSV header and prevents subsequent log reading."
+    },
+    {
+      "pr": 22753,
+      "score": 5,
+      "reason": "Well-argued defect report with SQL examples showing that power with negative exponents returns infinity rather than a domain error."
+    },
+    {
+      "pr": 22783,
+      "score": 5,
+      "reason": "Self-contained SQL reproducer and error log demonstrating a column reference type mismatch internal error in LATERAL queries."
+    },
+    {
+      "pr": 22825,
+      "score": 5,
+      "reason": "Minimal SQL reproducer demonstrating a regression where case-insensitive column matching in INSERT on conflict fails NOT NULL checks."
+    },
+    {
+      "pr": 22839,
+      "score": 5,
+      "reason": "Clear SQL reproducer showing that MERGE unexpectedly reorders WHEN MATCHED clauses, incorrectly deleting updated rows."
+    },
+    {
+      "pr": 22870,
+      "score": 5,
+      "reason": "Clear SQL reproducer and stack trace for an internal crash when passing NULL to boolean COPY options."
+    },
+    {
+      "pr": 22874,
+      "score": 5,
+      "reason": "Precision-focused defect report demonstrating discrepancies between literal and cast floating-point parsing at binade boundaries."
+    },
+    {
+      "pr": 22900,
+      "score": 5,
+      "reason": "Concrete SQL reproducer demonstrating that query optimization causes a premature parser error on valid JSON expressions."
+    },
+    {
+      "pr": 22963,
+      "score": 5,
+      "reason": "Thorough report with Python reproducer demonstrating that a boolean INNER JOIN over a CTE incorrectly returns empty results."
+    },
+    {
+      "pr": 23105,
+      "score": 5,
+      "reason": "Clear SQL reproducer showing ORDER BY true/false erroneously bypassing literal validation and triggering unnecessary sort pipelines."
+    },
+    {
+      "pr": 23206,
+      "score": 5,
+      "reason": "Precise SQL demonstration showing that json_tree and json_each improperly escape keys with dots, breaking subsequent json_extract calls."
+    },
+    {
+      "pr": 23491,
+      "score": 5,
+      "reason": "Compact SQL reproducer demonstrating that LIST DISTINCT with ORDER BY returns reversed results when evaluated as a window aggregate."
+    },
+    {
+      "pr": 23637,
+      "score": 5,
+      "reason": "Compact SQL test case demonstrating a regression where COUNT over an inverted ROWS frame returns a negative count instead of zero."
+    },
+    {
+      "pr": 23667,
+      "score": 5,
+      "reason": "Self-contained SQL reproducer demonstrating that ROW_NUMBER over read_duckdb incorrectly emits zero-based internal row identifiers."
+    },
+    {
+      "pr": 23773,
+      "score": 5,
+      "reason": "Detailed SQL reproducer showing that scientific-notation strings with negative exponents erroneously round up when cast to decimal."
+    },
+    {
+      "pr": 17716,
+      "score": 5,
+      "reason": "Self-contained SQL reproducer and stack trace for an unexpected physical operator internal error during multi-join query execution."
+    },
+    {
+      "pr": 18749,
+      "score": 5,
+      "reason": "Clear Python reproduction script demonstrating an internal error when combining execute and lazy Polars evaluation."
+    },
+    {
+      "pr": 21686,
+      "score": 5,
+      "reason": "Clear SQL reproducer demonstrating an internal error where the binder fails to find a CTE definition in a macro with QUALIFY."
+    },
+    {
+      "pr": 24348,
+      "score": 5,
+      "reason": "Self-contained SQL proof-of-concept and debugger trace demonstrating a fatal crash on crafted CUME_DIST window frames."
+    },
+    {
+      "pr": 25267,
+      "score": 5,
+      "reason": "Self-contained SQL test case and stack trace demonstrating an internal column reference binding error on nested QUALIFY queries."
+    },
+    {
+      "pr": 20983,
+      "score": 4,
+      "reason": "Clear reproduction on Windows showing IO Error when accessing parquet files on paths exceeding standard length limits."
+    },
+    {
+      "pr": 22922,
+      "score": 4,
+      "reason": "Clear SQL examples demonstrating inconsistent ISO-8601 timestamp parsing when trailing timezone Z is supplied without seconds."
+    },
+    {
+      "pr": 22923,
+      "score": 4,
+      "reason": "Concise SQL comparison showing that BIT comparison of unequal lengths truncates the operand and yields incorrect boolean results."
+    },
+    {
+      "pr": 23280,
+      "score": 4,
+      "reason": "Two-line SQL reproducer triggering an internal VectorBuffer assertion failure when inserting into a nested struct with a variant field."
+    },
+    {
+      "pr": 23329,
+      "score": 4,
+      "reason": "Clear SQL test case demonstrating that the dateformat parameter in JSON export formats top-level fields but ignores nested dates."
+    }
+  ]
+}

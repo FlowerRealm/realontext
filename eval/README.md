@@ -24,7 +24,7 @@ sudo apt-get install -y universal-ctags ripgrep
 
 需要 `GITHUB_TOKEN`（只读 public repo 即可）：`export GITHUB_TOKEN=$(gh auth token)`
 
-## 四步
+## 标准流程
 
 ```bash
 cd eval
@@ -35,13 +35,16 @@ python3 -m harness.run census --size medium
 # 2. 抓 merged PR 与其关联 issue（写 raw/，可重跑）
 python3 -m harness.run collect --repo prometheus/prometheus
 
-# 3. 过滤 + 算 ground truth，冻结进 datasets/
-python3 -m harness.run build --repo prometheus/prometheus --limit 100
+# 3. 导出盲审候选，供子代理或人工独立挑选（输出 selections/<repo>.json）
+python3 -m harness.run candidates --repo prometheus/prometheus
 
-# 4. 冻结（没有这一步，第 5 步会直接拒绝）
-python3 -m harness.run freeze --repo prometheus/prometheus --reason "阶段 0 首次冻结"
+# 4. 过滤 + 算 ground truth（通过 --select 仅对选中的题目构建），写入 datasets/
+python3 -m harness.run build --repo prometheus/prometheus --select
 
-# 5. 跑基线，出报分表
+# 5. 冻结（计算内容与挑选哈希，没有这一步后续打分会直接拒绝）
+python3 -m harness.run freeze --repo prometheus/prometheus --reason "v1 基准冻结"
+
+# 6. 跑基线，出报分表
 python3 -m harness.run run    --repo prometheus/prometheus --baselines grep,bm25
 python3 -m harness.run report --split train
 ```
@@ -142,8 +145,11 @@ harness/
   score.py        Recall@k / Acc@k / MRR / NDCG，macro 平均，报分表
   run.py          CLI
 
-datasets/   冻结的测试集 + MANIFEST.json，进 git
-raw/        抓取缓存，不进 git
-results/    分数，不进 git
-.cache/     镜像、语料、符号索引、嵌入，不进 git
+datasets/         冻结的测试集 + MANIFEST.json，进 git
+selections/       各仓库精选的 50 道高质量 Bug 题目定义及评审理由，进 git
+curation-brief.md 题目双盲挑选的 6 大质量准则
+candidates/       导出的候选 issue（不含答案，供子代理挑选），不进 git
+raw/              抓取缓存，不进 git
+results/          分数，不进 git
+.cache/           镜像、语料、符号索引、嵌入，不进 git
 ```

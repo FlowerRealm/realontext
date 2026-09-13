@@ -483,11 +483,13 @@ curl 那一条是阶段 0 的 census 查出来的，不是事先想到的：它�
 
 装置在 [`../eval/`](../eval/README.md)，CI 在 [`.github/workflows/eval.yml`](../.github/workflows/eval.yml)。中等档与超大档分开跑，每个仓库一个 job。实现与本文档的三处偏离（ctags、本地 v2-base-code、`git archive` 铺语料）记在 `eval/README.md`，不藏在代码里。
 
-### 阶段 0 的两个前置
+### 阶段 0 的落地基准
 
-**一、先数，再抓。** 「每仓库 100–200 个 query」是估的。`curl` / `systemd` / `vscode` 有大量不关联 issue 的 PR，过滤规则又砍掉十类。第一件事是对 14 个仓库各出一个「满足全部过滤条件的 PR 数」，纯 API 调用，几分钟。某个语言只剩二十条，「七种语言权重相同」这个前提就不成立，规格要先改。
+- **仓库与题目规格**：经过全量普查（census）与独立子代理盲审（6 大缺陷报告质量准则），最终锁定为 **14 个仓库 × 50 道题 = 700 道题目**。
+- **题目性质**：全部为真实的 **Bug 缺陷定位题**（排除了 feature request、功能提议和 RFC），严防题目泄露函数答案或模板噪音。
+- **精选溯源**：题目明细及打分入选理由存放在 [`../eval/selections/`](../eval/selections/)，由内容哈希钉死在 `MANIFEST.json` 中统一锁定版本。
 
-**二、评测需要 commit 级可见集，现在没有这个装置。** 铁律二要求每条 query 在它自己的 base commit 快照上检索，而 `vector/` 的过滤装置是按 **Branch** 建 roaring bitmap，Branch 的定义是分支当前 tip，没有 commit 级可见集。评测期把每个 base commit 注册成一个伪 Branch（`eval/<repo>/pr-<n>`）即可复用现成装置：bitmap 数量等于 query 数（≤ 2,800），稀疏，代价可忽略。这条要写进 [`modules/vector.md`](modules/vector.md) 和阶段 3，否则阶段 3 跑不了 L1。
+### 阶段 0 的前置事项
 
 ---
 

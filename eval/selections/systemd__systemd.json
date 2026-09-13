@@ -1,0 +1,256 @@
+{
+  "repo": "systemd/systemd",
+  "criteria_version": 1,
+  "selected": [
+    {
+      "pr": 41015,
+      "score": 5,
+      "reason": "Provides clear networkd configurations and a detailed backtrace demonstrating a crash when DHCPv4 Option 82 is enabled."
+    },
+    {
+      "pr": 42335,
+      "score": 5,
+      "reason": "Actionable report with an exact command line reproducer and assertion failure trace during importctl signature verification."
+    },
+    {
+      "pr": 40316,
+      "score": 5,
+      "reason": "Contains a complete step-by-step shell workflow and gdb stack trace demonstrating an unprivileged segmentation fault in systemd-cryptenroll."
+    },
+    {
+      "pr": 41402,
+      "score": 5,
+      "reason": "Includes full coredumpctl backtraces and daemon debug logs detailing a reproducible networkd crash during WWAN interface setup."
+    },
+    {
+      "pr": 41655,
+      "score": 5,
+      "reason": "Clearly documents an unreachable code assertion crash in sysupdated triggered by running updatectl, supported by full coredump logs."
+    },
+    {
+      "pr": 35776,
+      "score": 5,
+      "reason": "Actionable defect report with exact homectl command and authentication failure logs showing login failure with 4096-byte LUKS sectors."
+    },
+    {
+      "pr": 37754,
+      "score": 5,
+      "reason": "Thoroughly details mDNS cache pollution in systemd-resolved caused by accepting responses from non-5353 ports, citing the relevant RFC standard."
+    },
+    {
+      "pr": 38681,
+      "score": 5,
+      "reason": "Concise reproducer comparing absolute and relative paths to show that journalctl follow mode fails when given a relative path."
+    },
+    {
+      "pr": 38868,
+      "score": 5,
+      "reason": "Provides complete unit definitions and a timestamped log timeline showing that restarting a timer prematurely triggers its target service."
+    },
+    {
+      "pr": 39335,
+      "score": 5,
+      "reason": "Exemplary regression report featuring a minimal service unit, PAM debug output, and strace traces showing unexpected TTY assignment."
+    },
+    {
+      "pr": 39396,
+      "score": 5,
+      "reason": "Provides minimal configuration and journal logs showing an assertion failure in logind when pressing the power button configured for factory-reset."
+    },
+    {
+      "pr": 39729,
+      "score": 5,
+      "reason": "Offers a self-contained nspawn shell reproducer and journal logs showing tmpfiles setup failing with an EOVERFLOW error on journal directories."
+    },
+    {
+      "pr": 39813,
+      "score": 5,
+      "reason": "Shows exact varlinkctl command and lsblk outputs proving systemd-repart incorrectly returns DiskTooSmall instead of InsufficientFreeSpace."
+    },
+    {
+      "pr": 39832,
+      "score": 5,
+      "reason": "Demonstrates with a clear shell pipeline reproducer that piping run0 output leaks terminal escape responses into subsequent prompts."
+    },
+    {
+      "pr": 40043,
+      "score": 5,
+      "reason": "Features a minimal service reproducer demonstrating that systemctl start silently omits startup error messages for Type=notify services."
+    },
+    {
+      "pr": 40049,
+      "score": 5,
+      "reason": "Provides comprehensive network configurations and step-by-step reproduction showing NFTSet prefix delegation failing without Assign=yes."
+    },
+    {
+      "pr": 40259,
+      "score": 5,
+      "reason": "Actionable reproducer unit showing that configuring DynamicUser=true with an existing group name unexpectedly breaks udev device GROUP rules."
+    },
+    {
+      "pr": 40266,
+      "score": 5,
+      "reason": "Clear defect report using systemd-analyze calendar outputs to demonstrate that calendar repetition intervals skip January 1st."
+    },
+    {
+      "pr": 40314,
+      "score": 5,
+      "reason": "Contains an elegant two-loop shell reproducer demonstrating a race condition between daemon-reload and udevadm trigger that hangs device jobs."
+    },
+    {
+      "pr": 40364,
+      "score": 5,
+      "reason": "Concrete reproduction using blktests and journal logs showing udevadm settle failing with a varlink Ping timeout under hotplug stress."
+    },
+    {
+      "pr": 40399,
+      "score": 5,
+      "reason": "Actionable defect report with exact reproduction steps and journalctl logs showing systemd-bless-boot.service enters a failed state after soft-reboot."
+    },
+    {
+      "pr": 40413,
+      "score": 5,
+      "reason": "Demonstrates with exact commands and container configuration that bootctl update --variables=yes fails inside a container."
+    },
+    {
+      "pr": 40426,
+      "score": 5,
+      "reason": "Comprehensive setup commands and dissect outputs demonstrating that whole-disk identification fails on nested device mapper volumes."
+    },
+    {
+      "pr": 40519,
+      "score": 5,
+      "reason": "Provides exact command line output and man page citations showing systemd-run erroneously rejects colon-separated ExecSearchPath values."
+    },
+    {
+      "pr": 40528,
+      "score": 5,
+      "reason": "Concise and actionable reproducer showing systemd-run fails with an unknown property error when attempting to set StandardInputText."
+    },
+    {
+      "pr": 40557,
+      "score": 5,
+      "reason": "Clear regression report with generator debug logs demonstrating that systemd-ssh-generator incorrectly ignores Hyper-V vsock CID 1."
+    },
+    {
+      "pr": 40756,
+      "score": 5,
+      "reason": "Detailed partition definitions and sector size math showing systemd-repart calculates verity hash partition size using 4K instead of 512B."
+    },
+    {
+      "pr": 41010,
+      "score": 5,
+      "reason": "Provides exact command lines and generated automount units proving systemd-mount ignores --timeout-idle-sec and hardcodes a 1-second timeout."
+    },
+    {
+      "pr": 41031,
+      "score": 5,
+      "reason": "Well-documented regression report with bootctl status dumps and configuration details showing systemd-boot 260-rc1 skipping the boot menu."
+    },
+    {
+      "pr": 41089,
+      "score": 5,
+      "reason": "Includes resolved configuration and a precise dig timeline demonstrating that DNS records are prematurely evicted when DNSOverTLS is enabled."
+    },
+    {
+      "pr": 41090,
+      "score": 5,
+      "reason": "Actionable reproducer commands and terminal error output showing importctl export-tar fails when encountering UNIX domain sockets."
+    },
+    {
+      "pr": 41228,
+      "score": 5,
+      "reason": "Includes a minimal python socket reproducer and dmesg traces showing early module loading of vmw_vsock_virtio_transport breaks AF_VSOCK loopback."
+    },
+    {
+      "pr": 41345,
+      "score": 5,
+      "reason": "Actionable report detailing journald and resolved crashing with status=243 on supported Linux 5.10 kernels due to unhandled missing syscalls."
+    },
+    {
+      "pr": 41775,
+      "score": 5,
+      "reason": "Clear step-by-step reproduction showing cancelling an in-progress update with Ctrl+C leaves updatectl in an unrecoverable state."
+    },
+    {
+      "pr": 41899,
+      "score": 5,
+      "reason": "Detailed sysupdate configuration and filename hashes showing MatchPattern incorrectly matches filenames with trailing extensions."
+    },
+    {
+      "pr": 41931,
+      "score": 5,
+      "reason": "Actionable report with partition tables, luksDump output, and dissect commands showing a LUKS v1 partition blocks mounting of LUKS v2 partitions."
+    },
+    {
+      "pr": 42102,
+      "score": 5,
+      "reason": "Demonstrates an off-by-one loop bug with an exact command line and terminal output showing cryptsetup prompts N-1 times for tries=N."
+    },
+    {
+      "pr": 42179,
+      "score": 5,
+      "reason": "Step-by-step shell commands demonstrating that the presence of an empty sysupdate.d directory causes updatectl to abort with errors."
+    },
+    {
+      "pr": 42316,
+      "score": 5,
+      "reason": "Detailed dmesg, udevadm dumps, and hex string analysis showing property_is_valid causes ENODEV for USB HID devices with non-UTF8 serials."
+    },
+    {
+      "pr": 42451,
+      "score": 5,
+      "reason": "Clean configuration and journal logs showing keyfile-erase fails to delete auto-discovered key files from /etc/cryptsetup-keys.d."
+    },
+    {
+      "pr": 42463,
+      "score": 4,
+      "reason": "Detailed defect report with memory maps showing systemd-boot fails 64KB kernel alignment on ARM64 platforms."
+    },
+    {
+      "pr": 42500,
+      "score": 4,
+      "reason": "Provides crypttab and fstab configurations with journal logs showing soft-reboot fails when encrypted swap is enabled."
+    },
+    {
+      "pr": 42505,
+      "score": 4,
+      "reason": "Contains exact command lines and error output demonstrating that bootctl update ignores --variables=no and attempts EFI writes."
+    },
+    {
+      "pr": 42578,
+      "score": 4,
+      "reason": "Includes sysupdate component definitions and command outputs showing version comparisons are evaluated against incorrect targets."
+    },
+    {
+      "pr": 42596,
+      "score": 4,
+      "reason": "Clear regression report with unit definitions and losetup traces showing MountImages unnecessarily creates loop devices for btrfs subvolumes."
+    },
+    {
+      "pr": 42723,
+      "score": 4,
+      "reason": "Clean test script using script and cat -v demonstrating run0 omits the OSC 3008 elevation sequence unless -u root is explicitly passed."
+    },
+    {
+      "pr": 42743,
+      "score": 4,
+      "reason": "Three-step reproduction explaining a false-positive security audit in systemd-analyze claiming user services run as root."
+    },
+    {
+      "pr": 42826,
+      "score": 4,
+      "reason": "Detailed calendar schedule analysis and unit configuration demonstrating unexpected multi-hour delays with RandomizedOffsetSec and Persistent=true."
+    },
+    {
+      "pr": 40831,
+      "score": 4,
+      "reason": "Provides a reliable one-line service restart command and gdb stack trace reproducing an assertion crash in systemd-networkd."
+    },
+    {
+      "pr": 41044,
+      "score": 4,
+      "reason": "Features a concise one-line python script that reliably reproduces an alloca assertion crash in PID 1 via D-Bus."
+    }
+  ]
+}

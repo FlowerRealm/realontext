@@ -108,8 +108,8 @@ def lang_of(path):
 # ---------------------------------------------------------------- path filters
 
 VENDOR_RE = re.compile(
-    r"(^|/)(vendor|third_party|thirdparty|node_modules|deps|external|contrib|"
-    r"generated|gen|dist|build|target|\.git)(/|$)")
+    r"(^|/)(vendor|third_party|thirdparty|node_modules|deps|external|"
+    r"generated|gen|dist|build|target|\.git)(/|$)|^contrib(/|$)")
 GENERATED_RE = re.compile(r"(\.pb\.go|_pb2\.py|\.generated\.[a-z]+|\.min\.js|"
                           r"\.g\.dart|_generated\.[a-z]+)$")
 TEST_RE = re.compile(

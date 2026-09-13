@@ -1,0 +1,256 @@
+{
+  "repo": "apache/airflow",
+  "criteria_version": 1,
+  "selected": [
+    {
+      "pr": 68023,
+      "score": 5,
+      "reason": "Minimal reproducer demonstrating a scheduler crashloop caused by an unhandled exception when emitting metrics for non-ASCII TaskGroup identifiers."
+    },
+    {
+      "pr": 68578,
+      "score": 5,
+      "reason": "Clear defect report showing an uncapped FastAPI dependency breaking API server startup due to an empty-path health route registration."
+    },
+    {
+      "pr": 71018,
+      "score": 5,
+      "reason": "Detailed report with reproducible HTTP requests showing non-string values silently corrupting data on POST and causing masked 500 errors on PATCH."
+    },
+    {
+      "pr": 67900,
+      "score": 5,
+      "reason": "Comprehensive reproduction environment including Dockerfile and API requests demonstrating an internal server error when creating backfills on SQLite."
+    },
+    {
+      "pr": 67636,
+      "score": 5,
+      "reason": "Concise defect report showing UI time pickers omitting seconds and failing backend jsonschema validation on DAG parameter inputs."
+    },
+    {
+      "pr": 67642,
+      "score": 5,
+      "reason": "Self-contained CLI defect report showing next-execution with table output raising an unhandled attribute error when no future scheduled run exists."
+    },
+    {
+      "pr": 68869,
+      "score": 5,
+      "reason": "Detailed report proving cursor pagination silently omits database rows across null boundaries when sorting by nullable columns."
+    },
+    {
+      "pr": 72774,
+      "score": 5,
+      "reason": "Minimal Python reproducer showing td_format incorrectly formatting negative timedelta values into multi-day positive duration strings."
+    },
+    {
+      "pr": 68342,
+      "score": 5,
+      "reason": "Detailed report with custom timetable reproducer showing silent DAG scheduling stalls when DagRunInfo omits partitioning attributes."
+    },
+    {
+      "pr": 67720,
+      "score": 5,
+      "reason": "Well-structured report with sample DAG demonstrating Graph View rendering corruption when internal TaskGroup tasks wire to external downstream tasks."
+    },
+    {
+      "pr": 68491,
+      "score": 5,
+      "reason": "Actionable report demonstrating that LlamaIndexEmbeddingOperator returns None for embedding vectors across all document chunks."
+    },
+    {
+      "pr": 68902,
+      "score": 5,
+      "reason": "Clear defect report with DAG reproducer showing the Task SDK supervisor emitting an invalid API request and raising a 404 during failed task finalization."
+    },
+    {
+      "pr": 69523,
+      "score": 5,
+      "reason": "Thorough production analysis identifying a race condition in process termination that crashes the DAG processor with a closed file descriptor error."
+    },
+    {
+      "pr": 67881,
+      "score": 5,
+      "reason": "Exemplary production report detailing an unbounded join deadlock that silently wedges the scheduler following worker communication pipe breaks."
+    },
+    {
+      "pr": 66296,
+      "score": 5,
+      "reason": "In-depth database defect report documenting an indefinite metadata lock deadlock during table cleanup on MySQL backends."
+    },
+    {
+      "pr": 71926,
+      "score": 5,
+      "reason": "Clear database migration defect report with SQL reproducer showing regex sanitization corrupting nested JSON XCom values during schema upgrade."
+    },
+    {
+      "pr": 72543,
+      "score": 5,
+      "reason": "Self-contained reproducer demonstrating inverted query operands in GoogleDriveHook that cause false negatives in file existence checks."
+    },
+    {
+      "pr": 72855,
+      "score": 5,
+      "reason": "Thorough defect report demonstrating hyphenated connection types causing lookup failures when resolving secrets from external backends."
+    },
+    {
+      "pr": 70719,
+      "score": 5,
+      "reason": "Minimal reproducer DAG demonstrating that TriggerDagRunOperator silently drops configured retries and skips failure callbacks on 404 errors."
+    },
+    {
+      "pr": 69748,
+      "score": 5,
+      "reason": "Clear defect report showing deferrable HttpOperator re-executing non-idempotent HTTP requests upon triggerer process restarts."
+    },
+    {
+      "pr": 68800,
+      "score": 5,
+      "reason": "Detailed resource leak report showing orphaned multiprocessing Manager processes accumulating when viewing active task logs via the API server."
+    },
+    {
+      "pr": 67497,
+      "score": 5,
+      "reason": "Actionable frontend report detailing inconsistent timezone conversions where the Calendar view ignores the user-selected UI timezone."
+    },
+    {
+      "pr": 67550,
+      "score": 5,
+      "reason": "Concrete report demonstrating inflated import error counts in the UI caused by multi-DAG file mappings in API queries."
+    },
+    {
+      "pr": 67859,
+      "score": 5,
+      "reason": "Clear UI layout bug report showing long parameter names overflowing modal container boundaries in the Trigger DAG dialog."
+    },
+    {
+      "pr": 68253,
+      "score": 5,
+      "reason": "Actionable defect report with traceback showing scheduler crashloops when constructing DagRunContext from historical task instances with null version IDs."
+    },
+    {
+      "pr": 68338,
+      "score": 5,
+      "reason": "Clear API failure report showing Pydantic validation errors when serializing audit event logs containing null timestamp fields."
+    },
+    {
+      "pr": 72374,
+      "score": 5,
+      "reason": "Well-documented defect report showing initial frontend API requests bypassing configured path prefixes and failing under reverse proxies."
+    },
+    {
+      "pr": 72578,
+      "score": 5,
+      "reason": "Comprehensive defect report documenting unclosed PostgreSQL transactions leading to connection pool exhaustion on user list queries."
+    },
+    {
+      "pr": 65738,
+      "score": 5,
+      "reason": "Exhaustive defect report detailing orphaned task subprocesses and supervisor epoll crashes when task instances encounter heartbeat conflicts."
+    },
+    {
+      "pr": 69916,
+      "score": 5,
+      "reason": "Actionable CLI defect report showing migration logger output polluting stdout and corrupting machine-readable JSON output."
+    },
+    {
+      "pr": 69933,
+      "score": 5,
+      "reason": "Clear reproducer DAG demonstrating that the Grid view fails to respect topological dependency ordering across task groups."
+    },
+    {
+      "pr": 69977,
+      "score": 5,
+      "reason": "Detailed database concurrency report documenting transaction deadlocks and missing retry logic during multi-consumer asset event queuing on MySQL."
+    },
+    {
+      "pr": 68558,
+      "score": 5,
+      "reason": "Reproducible defect report demonstrating the scheduler marking newly deployed tasks as removed due to stale serialized DAG cache entries."
+    },
+    {
+      "pr": 69075,
+      "score": 5,
+      "reason": "Minimal reproducer DAG demonstrating inconsistent output typing when dynamic task groups map over single-element inputs."
+    },
+    {
+      "pr": 68624,
+      "score": 5,
+      "reason": "Clear defect report showing sensitive credentials exposed in rendered template displays when field truncation is applied."
+    },
+    {
+      "pr": 69402,
+      "score": 4,
+      "reason": "Concrete traceback report showing string formatting failures within warning handlers causing immediate scheduler process crashes."
+    },
+    {
+      "pr": 70581,
+      "score": 4,
+      "reason": "In-depth investigation documenting cross-thread event loop runtime errors during secret masking in deferred trigger operators."
+    },
+    {
+      "pr": 66205,
+      "score": 4,
+      "reason": "Minimal reproducible script showing dag.test execution failing when invoking TriggerDagRunOperator in local testing environments."
+    },
+    {
+      "pr": 65390,
+      "score": 4,
+      "reason": "Actionable defect report with paired DAGs demonstrating retry suppression when child tasks time out under Kubernetes Executor."
+    },
+    {
+      "pr": 63829,
+      "score": 4,
+      "reason": "Concrete provider defect report showing PowerBIDatasetRefreshOperator failing when configured for asynchronous execution."
+    },
+    {
+      "pr": 63986,
+      "score": 4,
+      "reason": "Detailed traceback report showing TypeError crashes when loading user and role list views in the Flask AppBuilder interface."
+    },
+    {
+      "pr": 65161,
+      "score": 4,
+      "reason": "Reproducible defect report showing Task SDK suppressing unhandled exceptions and preventing error delivery to Sentry."
+    },
+    {
+      "pr": 71555,
+      "score": 4,
+      "reason": "Clear reproduction DAG demonstrating that dynamic AssetAliases produced by tasks are omitted from the UI Assets tab."
+    },
+    {
+      "pr": 72394,
+      "score": 4,
+      "reason": "Actionable report with stack trace showing a KeyError crash when marking historical DAG runs failed after removing tasks."
+    },
+    {
+      "pr": 67965,
+      "score": 4,
+      "reason": "Clear authentication report detailing deep link query parameters being discarded during initial auto-login redirects."
+    },
+    {
+      "pr": 72275,
+      "score": 4,
+      "reason": "Actionable defect report showing non-idempotent delete operations failing retried GCS move tasks when source files are already deleted."
+    },
+    {
+      "pr": 68514,
+      "score": 4,
+      "reason": "Clear regression report documenting dropped Edge Worker metrics due to missing Stats initialization in the API server."
+    },
+    {
+      "pr": 68026,
+      "score": 4,
+      "reason": "Concise defect report demonstrating syntax highlighter corruption in the DAG code viewer when parsing multiline f-strings."
+    },
+    {
+      "pr": 68749,
+      "score": 4,
+      "reason": "Concrete defect report showing newly created dataset-triggered DAGs processing historical events that occurred prior to DAG registration."
+    },
+    {
+      "pr": 68924,
+      "score": 4,
+      "reason": "Clear defect report with sample DAG demonstrating upstream dependency bypassing in Databricks workflow task groups."
+    }
+  ]
+}

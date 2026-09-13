@@ -1,0 +1,256 @@
+{
+  "repo": "redis/redis",
+  "criteria_version": 1,
+  "selected": [
+    {
+      "pr": 12301,
+      "score": 5,
+      "reason": "Provides clean, standalone Python reproducer scripts demonstrating a 100% CPU stream consumer deadlock regression in Redis 7.2."
+    },
+    {
+      "pr": 8504,
+      "score": 5,
+      "reason": "Clearly identifies a RESP3 protocol bug where SRANDMEMBER with negative count returns a Set instead of an Array, with simple CLI reproduction."
+    },
+    {
+      "pr": 8566,
+      "score": 5,
+      "reason": "Concise defect report showing redis-cli --scan truncates binary keys and fails pattern matching on binary data, with clear reproduction."
+    },
+    {
+      "pr": 8719,
+      "score": 5,
+      "reason": "Directly demonstrates that CONFIG REWRITE fails to persist disabled snapshotting (save \"\"), causing unintended persistence after restart."
+    },
+    {
+      "pr": 9271,
+      "score": 5,
+      "reason": "Succinctly reproduces GEOSEARCHSTORE returning an empty array instead of integer zero and failing to clear the destination key when source is empty."
+    },
+    {
+      "pr": 9692,
+      "score": 5,
+      "reason": "Reports with clear CLI commands that LPOP with count 0 returns nil instead of an empty list and bypasses key type validation."
+    },
+    {
+      "pr": 9733,
+      "score": 5,
+      "reason": "Demonstrates with a minimal CLI command that COMMAND GETKEYS EVAL with zero keys erroneously produces a syntax error instead of an empty array."
+    },
+    {
+      "pr": 10068,
+      "score": 5,
+      "reason": "Provides a comprehensive CLI session proving XTRIM MINID erroneously deletes all stream messages when mixed with auto-generated IDs."
+    },
+    {
+      "pr": 10105,
+      "score": 5,
+      "reason": "Shows with clear redis-cli outputs that ACL denials on subcommands omit the parent command context from error messages and logs."
+    },
+    {
+      "pr": 10683,
+      "score": 5,
+      "reason": "Clearly reports that CLUSTER SHARDS returns slot ranges as strings rather than integers, with verifiable CLI output."
+    },
+    {
+      "pr": 10764,
+      "score": 5,
+      "reason": "Thoroughly demonstrates that BZMPOP treats non-key arguments as keys and blocks on them, providing a multi-client reproduction and security rationale."
+    },
+    {
+      "pr": 11032,
+      "score": 5,
+      "reason": "Demonstrates an immediate server panic crash caused by evaluating EVAL 'return _G' 0 with a single redis-cli command."
+    },
+    {
+      "pr": 11099,
+      "score": 5,
+      "reason": "Clearly demonstrates via CLI steps that XREADGROUP returning an empty result fails to reset the consumer idle timer in XINFO CONSUMERS."
+    },
+    {
+      "pr": 11279,
+      "score": 5,
+      "reason": "Demonstrates via ACL LIST output that ACL SETUSER reset unexpectedly adds sanitize-payload instead of reverting to pristine default state."
+    },
+    {
+      "pr": 11734,
+      "score": 5,
+      "reason": "Concise report demonstrating that BITCOUNT silently returns 0 for non-existent keys with missing syntax parameters instead of raising a syntax error."
+    },
+    {
+      "pr": 11875,
+      "score": 5,
+      "reason": "Demonstrates via telnet sessions that CLIENT REPLY OFF and SKIP incorrectly suppress push notifications in addition to command replies."
+    },
+    {
+      "pr": 12171,
+      "score": 5,
+      "reason": "Provides clear steps showing ACL LOAD abruptly disconnects active clients with ECONNRESET even when user rules were unaffected."
+    },
+    {
+      "pr": 12272,
+      "score": 5,
+      "reason": "Minimal three-line reproduction demonstrating SUBSTR returns the first character instead of an empty string when start is 0 and end is negative."
+    },
+    {
+      "pr": 12751,
+      "score": 5,
+      "reason": "Clearly reports a regression in redis-cli 7.0.12 where connection URLs with implicit empty usernames fail authentication instead of defaulting to 'default'."
+    },
+    {
+      "pr": 12961,
+      "score": 5,
+      "reason": "Demonstrates with step-by-step commands that commands inside MULTI fail with OOM under noeviction mode while the identical commands succeed standalone."
+    },
+    {
+      "pr": 13004,
+      "score": 5,
+      "reason": "Provides a multi-client timeline proving that signaling one consumer resets the block timeout of other consumers in XREADGROUP."
+    },
+    {
+      "pr": 13632,
+      "score": 5,
+      "reason": "Crisp CLI reproduction showing XREAD STREAMS stream + returns nil after deleting the latest entry despite older entries still being present."
+    },
+    {
+      "pr": 14192,
+      "score": 5,
+      "reason": "Clearly shows with CLI output that redis-cli help returns null documentation strings for built-in vector set and search commands."
+    },
+    {
+      "pr": 14224,
+      "score": 5,
+      "reason": "Provides master and replica CLI outputs demonstrating that HINCRBYFLOAT strips field-level expiration on replicas while master preserves it."
+    },
+    {
+      "pr": 14259,
+      "score": 5,
+      "reason": "Demonstrates via CLI commands that setting ENTRIESREAD higher than entries_added produces an impossible negative lag in XINFO GROUPS."
+    },
+    {
+      "pr": 14659,
+      "score": 5,
+      "reason": "Clear reproduction demonstrating that COMMAND GETKEYS on MSETEX erroneously omits keys from its output."
+    },
+    {
+      "pr": 15695,
+      "score": 5,
+      "reason": "Demonstrates via EVAL and redis-cli replica output that redis.set_repl(REPL_NONE) fails to suppress secondary commands queued by SPOP."
+    },
+    {
+      "pr": 8865,
+      "score": 5,
+      "reason": "Demonstrates with exact CLI commands that GEOSEARCHSTORE with documented options like WITHCOORD triggers an erroneous GEORADIUS syntax error."
+    },
+    {
+      "pr": 9244,
+      "score": 5,
+      "reason": "Walks through a two-client WATCH/MULTI scenario proving SMOVE signals destination keys as modified even when no elements are added."
+    },
+    {
+      "pr": 10095,
+      "score": 5,
+      "reason": "Demonstrates with raw protocol outputs that LPOP with count returns bulk null instead of array null when key does not exist."
+    },
+    {
+      "pr": 10931,
+      "score": 5,
+      "reason": "Exemplary defect report detailing how missing bidirectional TLS shutdown breaks OpenSSL 3 clients on idle timeout, with complete Dockerfile reproduction."
+    },
+    {
+      "pr": 11581,
+      "score": 5,
+      "reason": "Minimal three-command CLI reproduction triggering an unknown set encoding assertion crash during set operations."
+    },
+    {
+      "pr": 11674,
+      "score": 5,
+      "reason": "Concise two-command CLI reproduction demonstrating a server assertion crash using HRANDFIELD with large negative counts."
+    },
+    {
+      "pr": 11376,
+      "score": 4,
+      "reason": "Detailed investigation combining server logs, packet captures, and client exceptions showing failure to cleanly disconnect idle clients during BGSAVE."
+    },
+    {
+      "pr": 14111,
+      "score": 4,
+      "reason": "Clearly explains why generate-commands-json.py fails in 8.0, contrasting COMMAND DOCS output between core commands and vector set module commands."
+    },
+    {
+      "pr": 12276,
+      "score": 4,
+      "reason": "Detailed real-world production report of Redis hanging during Lua SRANDMEMBER calls during background save, with full config and GDB backtraces."
+    },
+    {
+      "pr": 15095,
+      "score": 4,
+      "reason": "Provides a complete standalone Python 3 PoC script reproducing a double free vulnerability in stream consumer PEL loading."
+    },
+    {
+      "pr": 10393,
+      "score": 4,
+      "reason": "Clearly shows redis-benchmark --cluster failing to parse IPv6 addresses due to incorrect string splitting on colons."
+    },
+    {
+      "pr": 10706,
+      "score": 4,
+      "reason": "Demonstrates with CLI commands that attempting to reload an existing library fails with an error but incorrectly increments libraries_count."
+    },
+    {
+      "pr": 11038,
+      "score": 4,
+      "reason": "Clearly articulates a RESP3 protocol violation where key invalidation push messages become embedded inside multibulk replies, supported by reproduction code."
+    },
+    {
+      "pr": 11591,
+      "score": 4,
+      "reason": "Clear CLI error report showing starting redis-sentinel with the --sentinel flag fails with an unrecognized configuration statement in 7.0.5."
+    },
+    {
+      "pr": 11631,
+      "score": 4,
+      "reason": "Reports distance value corruption in GEORADIUS returning mangled byte sequences that cause client parsing failures, with stack trace."
+    },
+    {
+      "pr": 11664,
+      "score": 4,
+      "reason": "Demonstrates that protected mode rejects connections to loopback IP 127.0.1.8 due to overly narrow loopback range checking."
+    },
+    {
+      "pr": 12958,
+      "score": 4,
+      "reason": "Demonstrates version incompatibility where redis-check-aof 7.2 fails with a fatal manifest format error on valid 6.2 AOF files."
+    },
+    {
+      "pr": 13984,
+      "score": 4,
+      "reason": "Documents an integer underflow defect in memory accounting causing used_memory_dataset to report astronomical values in INFO output."
+    },
+    {
+      "pr": 14848,
+      "score": 3,
+      "reason": "Actionable replica crash in prefetchCommands during full sync flushing old data, though exact search traffic load threshold is unknown."
+    },
+    {
+      "pr": 15409,
+      "score": 3,
+      "reason": "Reports a fatal SIGSEGV crash when modifying TLS settings via CONFIG SET on non-TLS builds, accompanied by extensive internal C call chain analysis."
+    },
+    {
+      "pr": 11296,
+      "score": 3,
+      "reason": "Identifies an unexpected trailing newline after EOF during diskless replication, supported by network trace and replication cron analysis."
+    },
+    {
+      "pr": 11343,
+      "score": 3,
+      "reason": "Detailed performance analysis of high CPU and memory consumption in clusterWriteHandler during pubsub bursts, supported by code tracing."
+    },
+    {
+      "pr": 11799,
+      "score": 3,
+      "reason": "Highlights contradictory error messages in XREADGROUP regarding stream ID options, despite leaving template description placeholders."
+    }
+  ]
+}

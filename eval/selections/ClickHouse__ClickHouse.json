@@ -1,0 +1,256 @@
+{
+  "repo": "ClickHouse/ClickHouse",
+  "criteria_version": 1,
+  "selected": [
+    {
+      "pr": 117451,
+      "score": 5,
+      "reason": "Detailed bug report with clean SQL showing time filter preimage optimization causes silent calculation errors at date boundary values."
+    },
+    {
+      "pr": 118689,
+      "score": 5,
+      "reason": "Extensively documented report with clean reproduction queries showing date-family literal conversions cause silent empty results in key-value engines."
+    },
+    {
+      "pr": 118825,
+      "score": 5,
+      "reason": "Thorough report demonstrating that SELECT APPLY lambda parameters collide with JOIN USING columns and silently swap query result values."
+    },
+    {
+      "pr": 114530,
+      "score": 5,
+      "reason": "High-quality report with a deterministic single-bit-flip reproducer showing a corrupt Parquet offset index crashes the server with a logical error."
+    },
+    {
+      "pr": 116695,
+      "score": 5,
+      "reason": "Clear defect report reproducing a server segmentation fault when reading restored or attached lightweight-update patch parts."
+    },
+    {
+      "pr": 118229,
+      "score": 5,
+      "reason": "Thorough defect report demonstrating trailing backslashes in regular expressions cause regex match functions to silently fall back to substring searches."
+    },
+    {
+      "pr": 111467,
+      "score": 5,
+      "reason": "Well-isolated bug report with minimal SQL demonstrating an out-of-bounds vector read during lazy materialization with multiple text indexes."
+    },
+    {
+      "pr": 117735,
+      "score": 5,
+      "reason": "Clear symptom report with minimal SQL reproducing silent lookup failures on Redis dictionaries using Int256 primary keys."
+    },
+    {
+      "pr": 117899,
+      "score": 5,
+      "reason": "Well-explained report showing bloom filter indexes on Nullable arrays pass DDL but fail all subsequent data inserts and mutations."
+    },
+    {
+      "pr": 117277,
+      "score": 5,
+      "reason": "Detailed defect report with minimal SQL reproducing a missing column error on text index reads when concurrent ALTER DELETE mutations exist."
+    },
+    {
+      "pr": 116057,
+      "score": 5,
+      "reason": "Self-contained reproduction script demonstrating an illegal non-constant column error when evaluating empty IN sets alongside ARRAY JOIN."
+    },
+    {
+      "pr": 117979,
+      "score": 5,
+      "reason": "Actionable report demonstrating that EXPLAIN QUERY TREE bypasses table permission checks and leaks schema metadata to unauthorized users."
+    },
+    {
+      "pr": 108470,
+      "score": 5,
+      "reason": "Actionable defect report with minimal SQL demonstrating legacy AWS storage setting secrets leak unredacted into system query logs."
+    },
+    {
+      "pr": 115740,
+      "score": 5,
+      "reason": "Well-documented reproducer demonstrating a race-condition logical error when reading from materialized CTEs across distributed shards."
+    },
+    {
+      "pr": 118956,
+      "score": 5,
+      "reason": "Well-documented report with self-contained SQL demonstrating type conversions in bloom filter skip indexes cause silent granule drops."
+    },
+    {
+      "pr": 110703,
+      "score": 5,
+      "reason": "Self-contained report demonstrating an unexpected return type logical error when combining group_by_use_nulls with GROUPING SETS comparisons."
+    },
+    {
+      "pr": 118420,
+      "score": 5,
+      "reason": "Clear report with minimal SQL reproducing corrupted data exceptions when combining inverse dictionary optimization with FINAL merging."
+    },
+    {
+      "pr": 110229,
+      "score": 5,
+      "reason": "Clear report with a minimal test case reproducing an AST formatting inconsistency logical error on nested aliased IN queries."
+    },
+    {
+      "pr": 110921,
+      "score": 5,
+      "reason": "Excellently documented report with a minimal self-contained SQL reproducer and failure isolation for a bad column cast logical error."
+    },
+    {
+      "pr": 118964,
+      "score": 5,
+      "reason": "Clear operational defect report showing tightening remote host allowlists prevents server startup when HDFS database definitions exist."
+    },
+    {
+      "pr": 109741,
+      "score": 5,
+      "reason": "Detailed report with clean SQL reproducing flattened Tuple subcolumn reads unexpectedly returning default values under Arrow streaming."
+    },
+    {
+      "pr": 118412,
+      "score": 5,
+      "reason": "Well-isolated report showing inverse dictionary lookup rewrites break subquery decorrelation within correlated EXISTS expressions."
+    },
+    {
+      "pr": 115147,
+      "score": 5,
+      "reason": "Self-contained reproduction queries demonstrating an unused aggregate projection corrupting column resolution during distinct ordering."
+    },
+    {
+      "pr": 118441,
+      "score": 5,
+      "reason": "Actionable report with self-contained DDL reproducing argument validation errors when querying ClickHouseDictionarySource tables."
+    },
+    {
+      "pr": 113964,
+      "score": 5,
+      "reason": "Detailed defect report with exact reproduction steps showing Iceberg compaction incorrectly failing on overwrite snapshots with position deletes."
+    },
+    {
+      "pr": 115959,
+      "score": 5,
+      "reason": "Clear report with a self-contained test case showing an invalid join error when combining parallel replicas with custom key sampling."
+    },
+    {
+      "pr": 117211,
+      "score": 5,
+      "reason": "Clear report with minimal queries showing syntax optimization throwing invalid argument errors on valid mixed quantile levels."
+    },
+    {
+      "pr": 118228,
+      "score": 5,
+      "reason": "Concise report with minimal SQL showing column name collisions between array sizes and user columns lead to unreadable tables."
+    },
+    {
+      "pr": 117967,
+      "score": 5,
+      "reason": "Clear report with self-contained privilege test cases showing CREATE OR REPLACE incorrectly requires permissions on internal temporary tables."
+    },
+    {
+      "pr": 118639,
+      "score": 5,
+      "reason": "Clear defect report with a minimal test case showing IN expressions containing UNION subqueries fail under global distributed product mode."
+    },
+    {
+      "pr": 112664,
+      "score": 5,
+      "reason": "Concise report with a self-contained SQL reproducer showing a missing column exception during partition-key join range optimization."
+    },
+    {
+      "pr": 114182,
+      "score": 5,
+      "reason": "Minimal, table-free SQL reproducer demonstrating an unexpected comparison error on zero-sized tuples during top-K dynamic filtering."
+    },
+    {
+      "pr": 118292,
+      "score": 5,
+      "reason": "Clean, self-contained SQL reproducer demonstrating repeated identical aliased IN expressions trigger unexpected duplicate alias errors under rewrite optimization."
+    },
+    {
+      "pr": 118568,
+      "score": 5,
+      "reason": "Concise report with an isolated docker command demonstrating supplied query parameters are erroneously reported as unset within INTERPOLATE expressions."
+    },
+    {
+      "pr": 115493,
+      "score": 5,
+      "reason": "Clear report demonstrating correlated EXISTS subqueries decorrelate into catastrophic memory-consuming cross joins when column nullabilities differ."
+    },
+    {
+      "pr": 118496,
+      "score": 5,
+      "reason": "Thorough report with self-contained SQL reproducing unknown identifier errors when querying full-text search indexes on materialized columns after lightweight updates."
+    },
+    {
+      "pr": 105982,
+      "score": 5,
+      "reason": "Clear bug report with minimal SQL queries showing schema inference failure when duplicate column names appear in INSERT SELECT."
+    },
+    {
+      "pr": 97504,
+      "score": 5,
+      "reason": "Self-contained reproducer demonstrating an incorrect exception when passing a constant grouped key to the GROUPING function."
+    },
+    {
+      "pr": 119489,
+      "score": 4,
+      "reason": "Detailed report with reproducible queries showing lightweight mutations containing materialized CTEs fail with logical synchronization errors."
+    },
+    {
+      "pr": 114578,
+      "score": 4,
+      "reason": "Detailed defect report with self-contained SQL reproducing a missing column exception when PREWHERE evaluation is deferred after FINAL."
+    },
+    {
+      "pr": 118797,
+      "score": 4,
+      "reason": "Detailed bug report with self-contained SQL reproducing a plan reference logical error when scalar subqueries combine with join-to-in conversion."
+    },
+    {
+      "pr": 117267,
+      "score": 4,
+      "reason": "Self-contained DDL and INSERT reproducer demonstrating out-of-bounds reads when CHECK constraints incorporate arrayJoin."
+    },
+    {
+      "pr": 116363,
+      "score": 4,
+      "reason": "Well-isolated bug report demonstrating a query builder logical error when text search functions are split across PREWHERE and WHERE clauses."
+    },
+    {
+      "pr": 113594,
+      "score": 4,
+      "reason": "Well-isolated defect report with minimal reproduction queries showing invalid dropped ORDER BY clauses when querying merge tables over distributed shards."
+    },
+    {
+      "pr": 115541,
+      "score": 4,
+      "reason": "Clear report showing loss of database context and resolution failures when executing distributed queries using the dictGet function."
+    },
+    {
+      "pr": 114022,
+      "score": 4,
+      "reason": "Self-contained report demonstrating a logical error when running plan-based parallel replicas on non-replicated MergeTree tables."
+    },
+    {
+      "pr": 115645,
+      "score": 4,
+      "reason": "Comprehensive defect report with clear reproduction queries showing view definitions become corrupted when restoring databases under new names."
+    },
+    {
+      "pr": 117037,
+      "score": 4,
+      "reason": "Thorough step-by-step reproducer demonstrating an S3 404 error when Iceberg metadata resides deeper than the base table path."
+    },
+    {
+      "pr": 108959,
+      "score": 4,
+      "reason": "Clean user report with self-contained SQL demonstrating CSVWithNames export unwraps tuple values without expanding corresponding header column names."
+    },
+    {
+      "pr": 109252,
+      "score": 3,
+      "reason": "Clear report with minimal SQL demonstrating JSONExtract silently returns default timestamps when parsing DateTime64 with best-effort mode enabled."
+    }
+  ]
+}

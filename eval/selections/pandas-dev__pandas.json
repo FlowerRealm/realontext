@@ -1,0 +1,256 @@
+{
+  "repo": "pandas-dev/pandas",
+  "criteria_version": 1,
+  "selected": [
+    {
+      "pr": 66101,
+      "score": 5,
+      "reason": "Self-contained and minimal reproduction of an incorrect ValueError when assigning values to a negative slice on a Series."
+    },
+    {
+      "pr": 65806,
+      "score": 5,
+      "reason": "Precise and clean defect report demonstrating that DataFrame.to_dict with orient='index' fails to apply custom mapping types to nested records."
+    },
+    {
+      "pr": 65820,
+      "score": 5,
+      "reason": "High-quality testing defect report with a minimal example showing assert_series_equal failing unexpectedly on ndarray subclasses when check_series_type=False."
+    },
+    {
+      "pr": 65836,
+      "score": 5,
+      "reason": "Concise and self-contained report of a silent bug where sort_values fails to reset index with ignore_index=True on already sorted data."
+    },
+    {
+      "pr": 66515,
+      "score": 5,
+      "reason": "Flawless defect report showing an interpreter crash with a minimal three-line parquet example and comparative subprocess test matrix."
+    },
+    {
+      "pr": 66642,
+      "score": 5,
+      "reason": "Self-contained reproduction of a severe C-engine segfault when calling next() on chunked read_csv after catching a previous chunk's parsing error."
+    },
+    {
+      "pr": 66680,
+      "score": 5,
+      "reason": "Critical data corruption report with a self-contained reproduction demonstrating that unstack with sort=False reorders column labels without their corresponding values."
+    },
+    {
+      "pr": 66600,
+      "score": 5,
+      "reason": "Minimal and clean two-line reproduction of an unexpected RecursionError when calling shift() on a bytes-dtype Series."
+    },
+    {
+      "pr": 63961,
+      "score": 5,
+      "reason": "Detailed, human-written defect report demonstrating incorrect group assignment during groupby with observed=False on categorical columns containing NaN keys."
+    },
+    {
+      "pr": 65526,
+      "score": 5,
+      "reason": "Concrete defect report with clean reproducible code showing DataFrame.max raising TypeError when comparing across multiple timezones containing NaT values."
+    },
+    {
+      "pr": 64339,
+      "score": 5,
+      "reason": "Clear and actionable defect report demonstrating a PyArrow exception when assigning pd.NA to a StringDtype column following a concat operation."
+    },
+    {
+      "pr": 65902,
+      "score": 5,
+      "reason": "Self-contained demonstration of index alignment loss when invoking the isocalendar datetime accessor on PyArrow date Series."
+    },
+    {
+      "pr": 65473,
+      "score": 5,
+      "reason": "Focused and minimal reproduction of an ArrowTypeError when performing DateOffset arithmetic on date32 PyArrow series."
+    },
+    {
+      "pr": 62242,
+      "score": 5,
+      "reason": "Self-contained reproduction using StringIO demonstrating that read_csv with engine='pyarrow' erroneously strips leading zeros from string columns."
+    },
+    {
+      "pr": 63470,
+      "score": 5,
+      "reason": "Clearly articulated behavioral inconsistency in the .dt.seconds accessor between NumPy and PyArrow timedelta representations."
+    },
+    {
+      "pr": 63613,
+      "score": 5,
+      "reason": "Concise comparative example showing regular expression lookahead and lookbehind assertions failing specifically on PyArrow string columns."
+    },
+    {
+      "pr": 63720,
+      "score": 5,
+      "reason": "Practical round-trip serialization bug report demonstrating inconsistent microsecond formatting in to_csv for timezone-aware datetimes."
+    },
+    {
+      "pr": 63887,
+      "score": 5,
+      "reason": "Clean, copy-pastable example showing that pd.array ignores masked values during conversion from NumPy masked arrays."
+    },
+    {
+      "pr": 63908,
+      "score": 5,
+      "reason": "Self-contained report demonstrating mutable shared state where mutations on a DataFrame derived from Index unexpectedly alter the original Index."
+    },
+    {
+      "pr": 63925,
+      "score": 5,
+      "reason": "Well-written report detailing data loss caused by unwanted coercion of nullable integer Series into float types."
+    },
+    {
+      "pr": 64235,
+      "score": 5,
+      "reason": "Actionable regression report with a minimal example showing TypeError on missing values in pd.json_normalize."
+    },
+    {
+      "pr": 64332,
+      "score": 5,
+      "reason": "Concise regression report with a minimal code example showing ValueError during Series interpolation with limit constraints."
+    },
+    {
+      "pr": 64870,
+      "score": 5,
+      "reason": "Concrete defect report with clean assertions demonstrating that string slicing on TimeDeltaIndex includes incorrect boundary data."
+    },
+    {
+      "pr": 65032,
+      "score": 5,
+      "reason": "Clear and focused report demonstrating unexpected dtype coercion where the Index constructor ignores the underlying NumPy array type."
+    },
+    {
+      "pr": 65102,
+      "score": 5,
+      "reason": "Actionable defect report demonstrating merge failure when performing an outer join on datetime columns having different unit resolutions."
+    },
+    {
+      "pr": 65113,
+      "score": 5,
+      "reason": "Actionable regression report describing the failure of string indexer accessors on ArrowExtensionArray instances."
+    },
+    {
+      "pr": 65389,
+      "score": 5,
+      "reason": "Precise defect report showing numerical truncation and zero return values from Timedelta.total_seconds for nanosecond intervals."
+    },
+    {
+      "pr": 65396,
+      "score": 5,
+      "reason": "Self-contained regression report demonstrating assignment ValueError when assigning an array into an object-dtype cell using loc."
+    },
+    {
+      "pr": 65495,
+      "score": 5,
+      "reason": "Meticulously documented defect report showing inconsistent return types from Series.values depending on pre-sorted status during groupby iteration."
+    },
+    {
+      "pr": 65656,
+      "score": 5,
+      "reason": "Self-contained report highlighting behavioral divergence between DataFrame.eval and pd.eval when dealing with duplicated column names."
+    },
+    {
+      "pr": 65686,
+      "score": 5,
+      "reason": "Minimal, three-line regression report demonstrating TypeError in Index.where when passed another Index instance as replacement."
+    },
+    {
+      "pr": 65790,
+      "score": 5,
+      "reason": "Clean, reproducible HDFStore query report showing syntax errors when using modulo arithmetic operators inside select where clauses."
+    },
+    {
+      "pr": 65791,
+      "score": 5,
+      "reason": "Self-contained HDFStore defect report demonstrating ValueError caused by expression parsing size limits on long where conditions."
+    },
+    {
+      "pr": 65841,
+      "score": 5,
+      "reason": "Minimal example illustrating an unhandled NotImplementedError when mapping categorical Series values to tuple targets."
+    },
+    {
+      "pr": 65937,
+      "score": 5,
+      "reason": "Clear defect report demonstrating that grouping operations on DataFrames backed by PyArrow dtypes drop resulting column names."
+    },
+    {
+      "pr": 66001,
+      "score": 5,
+      "reason": "Concrete defect report highlighting behavioral inconsistency between loc assignment and direct item assignment with 2D arrays."
+    },
+    {
+      "pr": 66063,
+      "score": 5,
+      "reason": "Self-contained defect report showing that a global dtype parameter in read_csv fails to apply to index columns."
+    },
+    {
+      "pr": 66136,
+      "score": 5,
+      "reason": "Actionable defect report showing InvalidIndexError when computing the union of MultiIndexes containing identical date and Timestamp values."
+    },
+    {
+      "pr": 66174,
+      "score": 5,
+      "reason": "Self-contained report illustrating unexpected frequency collision errors between mathematically equivalent quarter-start frequencies."
+    },
+    {
+      "pr": 66200,
+      "score": 5,
+      "reason": "Concise defect report showing formatting error where empty frozenset objects in an object Series render as frozenset({}) instead of frozenset()."
+    },
+    {
+      "pr": 66201,
+      "score": 5,
+      "reason": "Well-structured defect report detailing inconsistent numeric coercion of string inputs with leading zeros across varied column contexts."
+    },
+    {
+      "pr": 66227,
+      "score": 5,
+      "reason": "Self-contained report demonstrating inconsistent overflow handling across arithmetic and aggregation methods on Timedelta Series."
+    },
+    {
+      "pr": 66553,
+      "score": 5,
+      "reason": "Clear and focused defect report demonstrating an assertion failure when constructing PeriodIndex with non-standard QuarterEnd frequencies."
+    },
+    {
+      "pr": 66676,
+      "score": 5,
+      "reason": "Self-contained reproduction showing ValueError when assigning string values to a single-column string DataFrame using loc."
+    },
+    {
+      "pr": 59142,
+      "score": 5,
+      "reason": "Comprehensive defect report demonstrating mathematical errors and frequency sensitivity in time-weighted EWMA calculations."
+    },
+    {
+      "pr": 64153,
+      "score": 5,
+      "reason": "Self-contained defect report showing lower-casing corruption of custom string literal tokens in Excel number formatting."
+    },
+    {
+      "pr": 64318,
+      "score": 4,
+      "reason": "Clear regression report of empty HDFStore query results on microsecond datetime indices, with slight internal PyTables diagnosis."
+    },
+    {
+      "pr": 66234,
+      "score": 4,
+      "reason": "Reproducible KeyError defect on pivot_table with margins, downweighted slightly for focusing on internal source diagnosis."
+    },
+    {
+      "pr": 65946,
+      "score": 4,
+      "reason": "Reproducible defect report demonstrating replacement failure with Ellipsis objects, though formulated primarily as a discussion question."
+    },
+    {
+      "pr": 66120,
+      "score": 4,
+      "reason": "Actionable defect report demonstrating type selection failure on PyArrow timestamps, slightly downweighted as the reporter proposed a patch."
+    }
+  ]
+}
