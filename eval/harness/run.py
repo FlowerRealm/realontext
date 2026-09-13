@@ -34,20 +34,59 @@ def _git_commit(path):
 
 # ---------------------------------------------------------------- commands
 
+CENSUS_DIR = os.path.join(RESULTS, "census")
+
+
+def _census_table(rows):
+    out = ["| 仓库 | 语言 | 规模 | split | 关联 issue 的 PR | 过滤后可用 |",
+           "|---|---|---|---|---|---|"]
+    for r in sorted(rows, key=lambda r: (repo_meta(r["repo"])["size"],
+                                         repo_meta(r["repo"])["language"])):
+        m = repo_meta(r["repo"])
+        out.append("| %s | %s | %s | %s | %d | %d |"
+                   % (r["repo"], m["language"], m["size"], m["split"],
+                      r["linked_prs"], r["kept"]))
+    out.append("")
+    out.append("合计可用 query：%d" % sum(r["kept"] for r in rows))
+    out.append("")
+    out.append("> 这里的「可用」只跑了文本与元数据过滤。`build` 之后还会掉一些"
+               "（ground truth 算不出来的、base commit 取不到的）。")
+    return "\n".join(out)
+
+
 def cmd_census(args):
     """先数再抓：每仓库到底有多少条能用的 PR。规格站不站得住，先看这张表。"""
-    rows = collectmod.census([r["repo"] for r in _repos(args)], want=args.want)
-    out = os.path.join(RESULTS, "census.json")
-    scoremod.save(out, rows)
-    print("\n| 仓库 | 语言 | 规模 | split | 关联 issue 的 PR | 过滤后可用 |")
-    print("|---|---|---|---|---|---|")
-    for r in rows:
-        m = repo_meta(r["repo"])
-        print("| %s | %s | %s | %s | %d | %d |"
-              % (r["repo"], m["language"], m["size"], m["split"],
-                 r["linked_prs"], r["kept"]))
-    total = sum(r["kept"] for r in rows)
-    print("\n合计可用 query：%d（写入 %s）" % (total, out))
+    os.makedirs(CENSUS_DIR, exist_ok=True)
+    rows = []
+    for r in _repos(args):
+        row = collectmod.census([r["repo"]], want=args.want)[0]
+        scoremod.save(os.path.join(CENSUS_DIR, slug(r["repo"]) + ".json"), row)
+        rows.append(row)
+    print()
+    print(_census_table(rows))
+    return 0
+
+
+def cmd_census_report(args):
+    """合并各仓库的 census 分片。一个仓库抓崩了不影响其余的数字。"""
+    if not os.path.isdir(CENSUS_DIR):
+        raise SystemExit("no results/census/ — run census first")
+    known = {r["repo"] for r in _repos(args)}
+    rows = []
+    for name in sorted(os.listdir(CENSUS_DIR)):
+        if not name.endswith(".json"):
+            continue
+        with open(os.path.join(CENSUS_DIR, name), encoding="utf-8") as f:
+            row = json.load(f)
+        if row["repo"] in known:
+            rows.append(row)
+    if not rows:
+        raise SystemExit("no census shards for the requested repos")
+    missing = sorted(known - {r["repo"] for r in rows})
+    print(_census_table(rows))
+    if missing:
+        print()
+        print("**没有数据的仓库**（抓取失败，需要重跑）：" + "、".join(missing))
     return 0
 
 
@@ -266,6 +305,10 @@ def main(argv=None):
     common(p)
     p.add_argument("--limit", type=int, default=None)
     p.set_defaults(fn=cmd_build)
+
+    p = sub.add_parser("census-report", help="合并 census 分片")
+    common(p)
+    p.set_defaults(fn=cmd_census_report)
 
     p = sub.add_parser("verify", help="报告冻结状态")
     common(p)

@@ -80,10 +80,17 @@ jobs:
 
   census:
     # 先数再抓：一个仓库到底有多少条满足过滤条件的 PR。规格站不住就别往下走。
+    # 一个仓库一个 job：超大仓库要翻上百页，串在一起跑会撞上 job 超时，而且
+    # 一个仓库抓崩就带走全部十四个的数字。
     if: ${{ (inputs.stage || 'census') == 'census' }}
     needs: matrix
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        target: ${{ fromJSON(needs.matrix.outputs.repos) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -92,15 +99,33 @@ jobs:
         working-directory: eval
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 -m harness.run census --repo "${{ matrix.target.repo }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: census-${{ matrix.target.slug }}
+          path: eval/results/census/${{ matrix.target.slug }}.json
+
+  census-report:
+    if: ${{ always() && (inputs.stage || 'census') == 'census' }}
+    needs: [matrix, census]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/download-artifact@v4
+        with: { pattern: census-*, path: eval/results/census, merge-multiple: true }
+      - name: merge
+        working-directory: eval
         run: |
-          python3 -m harness.run census \
+          { echo "### 可用 query 普查"; echo; } >> "$GITHUB_STEP_SUMMARY"
+          python3 -m harness.run census-report \
             --size "${{ inputs.size || 'all' }}" \
-            --split "${{ inputs.split || 'all' }}" | tee census.md
-          { echo "### 可用 query 普查"; echo; cat census.md; } >> "$GITHUB_STEP_SUMMARY"
+            --split "${{ inputs.split || 'all' }}" | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
           name: census
-          path: eval/results/census.json
+          path: eval/results/census
 
   # Regenerating the test set is an explicit act, never a step on the way to a
   # score. This job proposes a dataset and shows how it differs from the frozen
