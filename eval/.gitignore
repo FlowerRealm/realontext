@@ -1,3 +1,5 @@
 .cache/
 raw/
 results/
+__pycache__/
+*.pyc
