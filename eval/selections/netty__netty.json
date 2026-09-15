@@ -1,256 +1,306 @@
 {
+  "criteria_version": 2,
   "repo": "netty/netty",
-  "criteria_version": 1,
   "selected": [
     {
-      "pr": 16949,
-      "score": 5,
-      "reason": "Outstanding regression report with an EmbeddedChannel test case showing FlowControlHandler ignoring auto-read deactivation during queue draining."
-    },
-    {
       "pr": 17087,
-      "score": 5,
-      "reason": "Exemplary report with containerized reproducer comparing io_uring against epoll under identical keep-alive traffic to prove dropped responses."
-    },
-    {
-      "pr": 11706,
-      "score": 5,
-      "reason": "Self-contained symptom report with a complete Gradle project and test asserting byte ordering discrepancies in ByteBuf.order()."
-    },
-    {
-      "pr": 11987,
-      "score": 5,
-      "reason": "Self-contained JUnit test reproducer demonstrating an AssertionError when resizing zero-length pooled byte buffers."
-    },
-    {
-      "pr": 12114,
-      "score": 5,
-      "reason": "Precise report with a standalone Java reproducer showing HttpUtil.getContentLength throws NumberFormatException despite a default value."
-    },
-    {
-      "pr": 12650,
-      "score": 5,
-      "reason": "Exceptional report featuring a complete standalone JUnit test proving reference count resets during MixedFileUpload memory-to-disk migration."
+      "reason": "Exemplary report with containerized reproducer comparing io_uring against epoll under identical keep-alive traffic to prove dropped responses.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 13066,
-      "score": 5,
-      "reason": "Thorough report with a complete runnable reproducer verifying OpenSSL bitmask option flags when running on JDKs without TLS 1.3 support."
-    },
-    {
-      "pr": 13227,
-      "score": 5,
-      "reason": "Clear defect report with a standalone runnable Java reproducer proving that MixedFileUpload ignores custom base directories during constructor initialization."
-    },
-    {
-      "pr": 13420,
-      "score": 5,
-      "reason": "Precise report with a self-contained SOCKS5 reproducer demonstrating an ArrayIndexOutOfBoundsException in NetUtil IPv6 address formatting."
-    },
-    {
-      "pr": 13614,
-      "score": 5,
-      "reason": "Detailed environment-specific defect report showing Unix DNS resolver initialization failure on scoped IPv6 addresses in resolv.conf."
-    },
-    {
-      "pr": 13818,
-      "score": 5,
-      "reason": "High-quality report providing an EmbeddedChannel test proving that prematurely closed chunked HTTP/1.1 responses are incorrectly treated as successful."
-    },
-    {
-      "pr": 13842,
-      "score": 5,
-      "reason": "Clear, reproducible defect report showing incompatibility between Netty's trust manager wrapper and OpenJDK FIPS mode, complete with reproducer code."
-    },
-    {
-      "pr": 13866,
-      "score": 5,
-      "reason": "Detailed report contrasting JDK and OpenSSL TLS 1.3 cipher negotiation behavior, complete with runnable server code and sslscan results."
-    },
-    {
-      "pr": 14083,
-      "score": 5,
-      "reason": "Concise defect report with a clean JUnit reproducer proving that HashedWheelTimer.stop() fails to mark unexecuted tasks as cancelled."
-    },
-    {
-      "pr": 14084,
-      "score": 5,
-      "reason": "Outstanding defect report contrasting Zstandard and GZIP compression bomb handling with exact command-line steps, memory graphs, and crash logs."
-    },
-    {
-      "pr": 14480,
-      "score": 5,
-      "reason": "Detailed regression report showing BoundedInputStream throwing an IOException on small files during platform initialization, with stack trace and commit context."
+      "reason": "Thorough report with a complete runnable reproducer verifying OpenSSL bitmask option flags when running on JDKs without TLS 1.3 support.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 14486,
-      "score": 5,
-      "reason": "Excellent report with a complete runnable Java reproducer proving that AdaptiveByteBufAllocator.usedHeapMemory() incorrectly returns zero on custom threads."
+      "reason": "Excellent report with a complete runnable Java reproducer proving that AdaptiveByteBufAllocator.usedHeapMemory() incorrectly returns zero on custom threads.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 14584,
-      "score": 5,
-      "reason": "Crisp report with a minimal one-line reproducer demonstrating that AdaptivePoolingAllocator crashes on systems reporting fewer than two CPU cores."
-    },
-    {
-      "pr": 15150,
-      "score": 5,
-      "reason": "High-quality report providing a complete reproducer test showing KQueue registration collision exceptions during connection retry attempts."
-    },
-    {
-      "pr": 15514,
-      "score": 5,
-      "reason": "Precise contract violation report with a clean Java reproducer comparing ByteBufOutputStream character truncation directly against JDK DataOutputStream."
-    },
-    {
-      "pr": 16810,
-      "score": 5,
-      "reason": "Clean report with a standalone unit test reproducer demonstrating URI parsing failures in HttpConversionUtil for RFC3986-compliant query characters."
+      "reason": "Crisp report with a minimal one-line reproducer demonstrating that AdaptivePoolingAllocator crashes on systems reporting fewer than two CPU cores.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 16833,
-      "score": 5,
-      "reason": "Specification compliance report with an EmbeddedChannel reproducer proving MqttEncoder rejects valid MQTT 5 password-only authentication."
-    },
-    {
-      "pr": 16971,
-      "score": 5,
-      "reason": "Exceptional security defect report with both netcat and EmbeddedChannel reproducers demonstrating silent acceptance of control characters in HTTP version tokens."
+      "reason": "Specification compliance report with an EmbeddedChannel reproducer proving MqttEncoder rejects valid MQTT 5 password-only authentication.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 11966,
-      "score": 5,
-      "reason": "Outstanding report providing a complete client-server JUnit test demonstrating frame loss when autoRead is disabled on WebSocket channels."
-    },
-    {
-      "pr": 13017,
-      "score": 5,
-      "reason": "High-quality report with test assertions proving that EpollDatagramChannel crashes and shuts down on unresolved addresses whereas NioDatagramChannel stays open."
-    },
-    {
-      "pr": 15861,
-      "score": 5,
-      "reason": "Excellent defect report with a standalone HTTP server reproducer proving ZstdEncoder fails on payloads exceeding 31MB where other codecs succeed."
-    },
-    {
-      "pr": 11970,
-      "score": 5,
-      "reason": "Concise, self-contained report with a runnable code snippet proving ByteBufUtil.indexOf returns an incorrect index when haystack reader index is advanced."
+      "reason": "Outstanding report providing a complete client-server JUnit test demonstrating frame loss when autoRead is disabled on WebSocket channels.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 13546,
-      "score": 5,
-      "reason": "Detailed report with a standalone reproducer demonstrating synthesized NUL control characters in HTTP/2 headers decoded with HPACK Huffman encoding."
-    },
-    {
-      "pr": 10775,
-      "score": 5,
-      "reason": "Detailed report showing how header decoding errors trigger GOAWAY frames with incorrect Last-Stream-Id, with stack trace and reproduction conditions."
-    },
-    {
-      "pr": 12033,
-      "score": 5,
-      "reason": "Complete runnable client-server reproducer demonstrating unexpected SSLHandshakeException when removing SslHandler after successful handshake."
-    },
-    {
-      "pr": 11670,
-      "score": 4,
-      "reason": "Clear description of an off-by-one ErrorDataDecoderException caused by multipart CRLF delimiters splitting across chunks."
+      "reason": "Detailed report with a standalone reproducer demonstrating synthesized NUL control characters in HTTP/2 headers decoded with HPACK Huffman encoding.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 11722,
-      "score": 4,
-      "reason": "Clearly explains JVM segfaults on musl-based Linux distributions where glibc is absent and provides reproducible Docker invocation commands."
-    },
-    {
-      "pr": 11931,
-      "score": 4,
-      "reason": "Concise report with a minimal 3-line reproducer and full stack trace demonstrating class initialization failure with a no-op logger."
-    },
-    {
-      "pr": 12138,
-      "score": 4,
-      "reason": "Describes a concrete channelInactive omission and 100% CPU lockup when EPOLLRDHUP occurs during splice operations, including code and fix context."
+      "reason": "Clearly explains JVM segfaults on musl-based Linux distributions where glibc is absent and provides reproducible Docker invocation commands.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 12913,
-      "score": 4,
-      "reason": "Concrete report detailing a BlockHound blocking call violation during MacOSDnsServerAddressStreamProvider class loading with full stack trace."
-    },
-    {
-      "pr": 13274,
-      "score": 4,
-      "reason": "Identifies a parsing regression where HTTP chunked size decoding throws NumberFormatException on valid whitespace extensions, complete with reproducer code."
-    },
-    {
-      "pr": 13807,
-      "score": 4,
-      "reason": "Explains how exhausted HTTP/2 stream IDs cause lastStreamCreated to wrap to zero and fail subsequent data writes, with a targeted unit test."
-    },
-    {
-      "pr": 13882,
-      "score": 4,
-      "reason": "Concrete report with runnable code demonstrating that AdaptiveRecvByteBufAllocator allocates buffer capacities exceeding configured maximum limits."
-    },
-    {
-      "pr": 14093,
-      "score": 4,
-      "reason": "Clear and concise report with a short code snippet showing that duplicating a sliced ByteBuf loses slice boundary constraints."
+      "reason": "Concrete report detailing a BlockHound blocking call violation during MacOSDnsServerAddressStreamProvider class loading with full stack trace.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 14564,
-      "score": 4,
-      "reason": "Clear defect report with a full BlockHound stack trace identifying unexpected blocking calls inside AdaptiveByteBufAllocator.newDirectBuffer."
-    },
-    {
-      "pr": 14618,
-      "score": 4,
-      "reason": "Concrete report detailing a ClassNotFoundException in FIPS-compliant environments caused by hardcoded non-FIPS BouncyCastle class names in PEM reading."
-    },
-    {
-      "pr": 16702,
-      "score": 4,
-      "reason": "Pinpoints a regression in JdkSslClientContext where null trust managers cause a NullPointerException, complete with version diffs and environment details."
-    },
-    {
-      "pr": 16950,
-      "score": 4,
-      "reason": "Detailed defect report showing how exhausted DNS query ID spaces cause failed queries to still be transmitted over the wire and trip assertion errors."
-    },
-    {
-      "pr": 11604,
-      "score": 4,
-      "reason": "Thorough platform-specific defect report with full stack trace and SSL builder configuration detailing TLS 1.3 incompatibilities on IBM WebSphere."
+      "reason": "Clear defect report with a full BlockHound stack trace identifying unexpected blocking calls inside AdaptiveByteBufAllocator.newDirectBuffer.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 12345,
-      "score": 4,
-      "reason": "Documents a critical native transport failure on Ubuntu 22.04 where epoll_wait fails with Function not implemented under glibc 2.35."
+      "reason": "Documents a critical native transport failure on Ubuntu 22.04 where epoll_wait fails with Function not implemented under glibc 2.35.",
+      "round": 1,
+      "score": 4
     },
     {
-      "pr": 13879,
-      "score": 4,
-      "reason": "Comprehensive thread dump analysis documenting a classloader and library-loading deadlock between LinuxSocket initialization and InetAddress."
+      "pr": 12414,
+      "reason": "Provides code snippet and BlockHound detection trace for blocking calls during reactive HTTP client requests.",
+      "round": 2,
+      "score": 5
     },
     {
-      "pr": 13982,
-      "score": 4,
-      "reason": "Clear defect report showing that ZstdConstants throws ExceptionInInitializerError on read-only filesystems during pipeline construction even when unused."
+      "pr": 12924,
+      "reason": "Contains a self-contained Java reproducer demonstrating corrupted decompression output in BrotliDecoder.",
+      "round": 2,
+      "score": 5
     },
     {
-      "pr": 14647,
-      "score": 4,
-      "reason": "In-depth report documenting memory leaks and incomplete promises in SslHandler when wrap operations throw unexpected exceptions."
+      "pr": 13695,
+      "reason": "Reports Android-specific SSL certificate parsing failure when upgrading beyond Netty 4.1.78.",
+      "round": 2,
+      "score": 5
     },
     {
-      "pr": 14658,
-      "score": 4,
-      "reason": "Actionable report showing that inline comments in resolv.conf nameserver entries cause static initialization failure and NoClassDefFoundError."
+      "pr": 15519,
+      "reason": "Supplies a minimal Java reproducer showing CompositeByteBuf component retrieval returns duplicate buffers without adjusted reader and writer indexes.",
+      "round": 2,
+      "score": 5
     },
     {
-      "pr": 15501,
-      "score": 4,
-      "reason": "Thorough report with an automated concurrency test reproducing NullPointerExceptions in scheduled future execution under high task volume."
+      "pr": 13485,
+      "reason": "Describes protocol violation where exceeding HTTP/2 max concurrent streams triggers a connection protocol error instead of a stream reset.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 16762,
+      "reason": "Documents HTTP/2 compliance failure where non-ASCII header names are improperly accepted instead of rejected.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 12145,
+      "reason": "Provides CPU utilization metrics demonstrating Epoll transport consuming significantly more CPU than NIO under identical load.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14280,
+      "reason": "Shows exact HTTP request inputs where invalid characters in HTTP methods are erroneously accepted.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 15859,
+      "reason": "Provides a minimal Java reproducer showing ZstdEncoder fails to compress and emit data when the source buffer is smaller than the block size.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 15215,
+      "reason": "Provides a simple code snippet showing OpenSsl.availableJavaCipherSuites contains null elements.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14187,
+      "reason": "Demonstrates with concrete HTTP payloads that malformed HTTP version strings fail to be rejected as required by RFC 7230.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14178,
+      "reason": "Provides exact HTTP test vectors showing Netty improperly strips trailing carriage return and vertical tab bytes from header values.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 13998,
+      "reason": "Contains a self-contained Java reproducer demonstrating that JSON in POST requests is erroneously treated as a form body attribute.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14179,
+      "reason": "Supplies exact raw HTTP request frames reproducing invalid whitespace stripping from the initial header name.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14086,
+      "reason": "Describes SslHandler failure when input ByteBuf instances are accessed across multiple threads.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 13789,
+      "reason": "Supplies a clear reproducer demonstrating that DefaultHttp2FrameReader fails to reset its internal state after encountering a malformed frame.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 16758,
+      "reason": "Describes dropped CONNECTION_CLOSE QUIC frames when connection termination cancels pending zero-copy writes on io_uring.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 13095,
+      "reason": "Provides concrete handshake failure logs showing OpenSslEngine fails TLS 1.3 handshakes in specific configurations.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14141,
+      "reason": "Reports malformed IPv6 address formatting when routing connections through an HTTP proxy.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 13262,
+      "reason": "Provides clear reproduction details where HTTP/2 ALPN negotiation fails when using the Bouncy Castle FIPS TLS provider.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 15766,
+      "reason": "Describes auto-scaling failure where AutoScalingEventExecutorChooserFactory fails to scale when threads are unstarted.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14586,
+      "reason": "Documents an out-of-memory regression following a patch upgrade with heap dump analysis and memory allocation patterns.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14122,
+      "reason": "Describes unexpected CorruptedWebSocketFrameException when Utf8FrameValidator improperly validates control frames.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 13951,
+      "reason": "Provides reproduction steps showing DefaultDnsServerAddressStreamProvider crashes with NoClassDefFoundError on z/OS when resolv.conf is missing.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 12610,
+      "reason": "Detailed defect report describing unexpected behavior and failure symptoms for SingleThreadedEventLoop: add read-only iterat.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14171,
+      "reason": "Describes DNS resolution failure where DNS caching fails to cache negative responses in specific query scenarios.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 13021,
+      "reason": "Documents an unexpected regression in task scheduling behavior in HashedWheelTimer with reproduction steps.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 13472,
+      "reason": "Reports excessive object allocation overhead during SslHandler flush invocations with profiling data.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14248,
+      "reason": "Describes defect where ChunkedWriteHandler silently discards writes to closed channels without failing the write promise.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14180,
+      "reason": "Contains exact raw HTTP input reproducing acceptance of invalid requests with NUL bytes between carriage return and linefeed.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 11601,
+      "reason": "Reports failure during client-side SSL renegotiation with BoringSSL on TLS 1.2 with detailed environment context.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 12019,
+      "reason": "Documents platform-specific IPv6 UDP 'No Route to Host' failure on macOS with reproducible networking test.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 13451,
+      "reason": "Reports high CPU usage in NioEventLoop thread with thread dump signatures under high concurrency.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 12682,
+      "reason": "Provides a reproducible test scenario where ByteToMessageDecoder attempts allocation from an already closed allocator.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 16543,
+      "reason": "Provides clear reproduction steps where StompSubframeDecoder throws an exception when receiving empty heart-beat ping frames.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 16723,
+      "reason": "Provides a standalone client reproducer showing Netty silently strips NUL bytes from HTTP method names.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14562,
+      "reason": "Reports missing frame length context in TooLongFrameException messages during frame decoding.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 13452,
+      "reason": "Reports issue where SelectedSelectionKeySet contains method always returns false, causing failures on non-Linux platforms.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 13298,
+      "reason": "Describes an unexpected handshake failure and channel leak in Socks5ProxyHandler with reproduction scenario.",
+      "round": 2,
+      "score": 5
     }
   ]
 }

@@ -1,256 +1,306 @@
 {
+  "criteria_version": 2,
   "repo": "vuejs/core",
-  "criteria_version": 1,
   "selected": [
     {
       "pr": 11818,
-      "score": 5,
-      "reason": "Provides a clear reproduction scenario and exact runtime DOM exception when rapidly switching components within Transition and Suspense."
+      "reason": "Provides a clear reproduction scenario and exact runtime DOM exception when rapidly switching components within Transition and Suspense.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 8619,
-      "score": 5,
-      "reason": "Concise, self-contained report demonstrating that Teleport renders immediately rather than waiting for Suspense async dependencies."
+      "reason": "Concise, self-contained report demonstrating that Teleport renders immediately rather than waiting for Suspense async dependencies.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 9083,
-      "score": 5,
-      "reason": "Includes a clean, self-contained component showing that SSR hydration fails to update img src and v-html with client-side reactive values."
+      "reason": "Includes a clean, self-contained component showing that SSR hydration fails to update img src and v-html with client-side reactive values.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 9431,
-      "score": 5,
-      "reason": "Presents a minimal template snippet demonstrating that SSR renders only an anchor node for async components inside Teleport."
+      "reason": "Presents a minimal template snippet demonstrating that SSR renders only an anchor node for async components inside Teleport.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 11217,
-      "score": 5,
-      "reason": "Provides an exact minimal template snippet and compiler error demonstrating a build failure when inline comments appear within undefined bindings."
-    },
-    {
-      "pr": 11384,
-      "score": 5,
-      "reason": "Supplies a concise TypeScript code example showing that defineCustomElement props mistakenly become readonly when array emits are declared."
+      "reason": "Provides an exact minimal template snippet and compiler error demonstrating a build failure when inline comments appear within undefined bindings.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 11515,
-      "score": 5,
-      "reason": "Provides a complete SSR reproduction script and exact hydration mismatch warnings when using v-if inside TransitionGroup."
+      "reason": "Provides a complete SSR reproduction script and exact hydration mismatch warnings when using v-if inside TransitionGroup.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 11581,
-      "score": 5,
-      "reason": "Offers a self-contained type example showing that SFC compiler mistakenly infers Object instead of String for indexed keyof prop types."
+      "reason": "Offers a self-contained type example showing that SFC compiler mistakenly infers Object instead of String for indexed keyof prop types.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 11656,
-      "score": 5,
-      "reason": "Provides well-structured reproduction components illustrating unintended DOM updates and flickering when wrapping a checkbox with v-model."
+      "reason": "Provides well-structured reproduction components illustrating unintended DOM updates and flickering when wrapping a checkbox with v-model.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 11739,
-      "score": 5,
-      "reason": "Provides complete component code demonstrating an SSR hydration mismatch when parent CSS v-bind interacts with child dynamic style bindings."
+      "reason": "Provides complete component code demonstrating an SSR hydration mismatch when parent CSS v-bind interacts with child dynamic style bindings.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 11784,
-      "score": 5,
-      "reason": "Supplies a minimal component reproducing an SSR compilation syntax error when using expression v-bind inside scoped styles."
+      "reason": "Supplies a minimal component reproducing an SSR compilation syntax error when using expression v-bind inside scoped styles.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 11854,
-      "score": 5,
-      "reason": "Provides a concise scoped CSS nesting example clearly showing unexpected scope attribute duplication at every nesting level."
+      "reason": "Provides a concise scoped CSS nesting example clearly showing unexpected scope attribute duplication at every nesting level.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 11899,
-      "score": 5,
-      "reason": "Details a scoped CSS compilation defect where media queries within nested rules fail to receive the necessary nesting selector."
+      "reason": "Details a scoped CSS compilation defect where media queries within nested rules fail to receive the necessary nesting selector.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 11961,
-      "score": 5,
-      "reason": "Includes a concise template snippet and exact warning demonstrating that HTML comments inside TransitionGroup cause SSR hydration mismatches."
+      "reason": "Includes a concise template snippet and exact warning demonstrating that HTML comments inside TransitionGroup cause SSR hydration mismatches.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 12096,
-      "score": 5,
-      "reason": "Provides a clear code example demonstrating that option elements with null values fail when five or more options are present in the DOM."
+      "reason": "Provides a clear code example demonstrating that option elements with null values fail when five or more options are present in the DOM.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 12143,
-      "score": 5,
-      "reason": "Provides clear template comparisons showing that setting hyphenated attributes to null on custom elements fails to remove them from the DOM."
+      "reason": "Provides clear template comparisons showing that setting hyphenated attributes to null on custom elements fails to remove them from the DOM.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 12321,
-      "score": 5,
-      "reason": "Includes a minimal template example and exact error demonstrating a compiler failure when preserve whitespace is used with v-slot and v-if."
+      "reason": "Includes a minimal template example and exact error demonstrating a compiler failure when preserve whitespace is used with v-slot and v-if.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 12870,
-      "score": 5,
-      "reason": "Provides precise TypeScript type comparison showing internal $-prefixed properties leaking into ComponentInstance props under strictFunctionTypes."
+      "reason": "Provides precise TypeScript type comparison showing internal $-prefixed properties leaking into ComponentInstance props under strictFunctionTypes.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 12876,
-      "score": 5,
-      "reason": "Provides a complete type and template example showing that compiler-sfc fails to infer runtime prop types from generic aliases, breaking boolean casting."
+      "reason": "Provides a complete type and template example showing that compiler-sfc fails to infer runtime prop types from generic aliases, breaking boolean casting.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 12900,
-      "score": 5,
-      "reason": "Supplies a self-contained component demonstrating that template refs are improperly assigned to sibling elements rather than null on conditional updates."
+      "reason": "Supplies a self-contained component demonstrating that template refs are improperly assigned to sibling elements rather than null on conditional updates.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 12918,
-      "score": 5,
-      "reason": "Provides an insightful analysis with concrete selector examples showing scoped universal selectors improperly leaking into child components."
+      "reason": "Provides an insightful analysis with concrete selector examples showing scoped universal selectors improperly leaking into child components.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 13091,
-      "score": 5,
-      "reason": "Presents a minimal template and script reproduction demonstrating that readonly array references lose immutability protections inside v-for."
+      "reason": "Presents a minimal template and script reproduction demonstrating that readonly array references lose immutability protections inside v-for.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 13137,
-      "score": 5,
-      "reason": "Identifies a formatting defect in compat mode where deprecation messages for .sync modifiers generate duplicate .sync suffixes."
+      "reason": "Identifies a formatting defect in compat mode where deprecation messages for .sync modifiers generate duplicate .sync suffixes.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 13320,
-      "score": 5,
-      "reason": "Points out an erroneous HTML validation warning claiming tr elements cannot be children of template tags, contrary to the HTML specification."
+      "reason": "Points out an erroneous HTML validation warning claiming tr elements cannot be children of template tags, contrary to the HTML specification.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 13339,
-      "score": 5,
-      "reason": "Provides a minimal template and exact hydration warning showing that Transition appear triggers class mismatches during SSR."
+      "reason": "Provides a minimal template and exact hydration warning showing that Transition appear triggers class mismatches during SSR.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 7247,
-      "score": 4,
-      "reason": "Clearly demonstrates with code snippets that dynamic components with v-show fail to apply display: none on initial render."
+      "reason": "Clearly demonstrates with code snippets that dynamic components with v-show fail to apply display: none on initial render.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 11162,
-      "score": 4,
-      "reason": "Identifies an issue where defineModel triggers update events even when assigned values have not changed."
+      "reason": "Identifies an issue where defineModel triggers update events even when assigned values have not changed.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 11496,
-      "score": 4,
-      "reason": "Clearly articulates a KeepAlive bug where exceeding max cache size with unresolved async components prevents content from rendering."
+      "reason": "Clearly articulates a KeepAlive bug where exceeding max cache size with unresolved async components prevents content from rendering.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 11536,
-      "score": 4,
-      "reason": "Demonstrates with concise code how separate setter typing in Ref allows nested refs that cause runtime errors."
+      "reason": "Demonstrates with concise code how separate setter typing in Ref allows nested refs that cause runtime errors.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 11589,
-      "score": 4,
-      "reason": "Provides concise, side-by-side code examples showing inconsistent execution ordering of sync watchers on computed properties compared to refs."
+      "reason": "Provides concise, side-by-side code examples showing inconsistent execution ordering of sync watchers on computed properties compared to refs.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 11718,
-      "score": 4,
-      "reason": "Accurately describes a KeepAlive defect where modifying the include prop via Array.splice fails to trigger onUnmounted on excluded components."
+      "reason": "Accurately describes a KeepAlive defect where modifying the include prop via Array.splice fails to trigger onUnmounted on excluded components.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 11861,
-      "score": 4,
-      "reason": "Clearly articulates slot rendering failures when nesting Vue custom elements configured without shadow roots."
+      "reason": "Clearly articulates slot rendering failures when nesting Vue custom elements configured without shadow roots.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 12034,
-      "score": 4,
-      "reason": "Identifies a false positive missing prop warning caused by improper hyphenation of prop names containing numbers."
+      "reason": "Identifies a false positive missing prop warning caused by improper hyphenation of prop names containing numbers.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 12051,
-      "score": 4,
-      "reason": "Presents a clear code example showing inconsistent behavior between dev and prod when template refs point to non-Ref class instances."
+      "reason": "Presents a clear code example showing inconsistent behavior between dev and prod when template refs point to non-Ref class instances.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 12128,
-      "score": 4,
-      "reason": "Explains with clear reasoning how onServerPrefetch alters the generation order of useId IDs between server and client, causing hydration mismatches."
+      "reason": "Explains with clear reasoning how onServerPrefetch alters the generation order of useId IDs between server and client, causing hydration mismatches.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 12411,
-      "score": 4,
-      "reason": "Describes an 'oldVNode is undefined' runtime error when combining reactive and non-reactive states in conditional template rendering."
+      "reason": "Describes an 'oldVNode is undefined' runtime error when combining reactive and non-reactive states in conditional template rendering.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 12601,
-      "score": 4,
-      "reason": "Details an SSR failure where onErrorCaptured does not intercept errors from async setup, leading to server-side rendering crashes."
+      "reason": "Details an SSR failure where onErrorCaptured does not intercept errors from async setup, leading to server-side rendering crashes.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 12823,
-      "score": 4,
-      "reason": "Identifies a compiler failure where withDefaults default prop factories fail when written as method declarations rather than arrow functions."
+      "reason": "Identifies a compiler failure where withDefaults default prop factories fail when written as method declarations rather than arrow functions.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 12855,
-      "score": 4,
-      "reason": "Explains an attribute reflection issue in custom elements where primitive prop types are incorrectly coerced to strings on initial render."
+      "reason": "Explains an attribute reflection issue in custom elements where primitive prop types are incorrectly coerced to strings on initial render.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 12948,
-      "score": 4,
-      "reason": "Provides a concise code example demonstrating that custom console formatters erroneously display Ref values as undefined."
-    },
-    {
-      "pr": 13201,
-      "score": 4,
-      "reason": "Describes an unhandled null pointer error when repeatedly toggling custom elements configured without shadow roots."
+      "reason": "Provides a concise code example demonstrating that custom console formatters erroneously display Ref values as undefined.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 13216,
-      "score": 4,
-      "reason": "Clearly explains an overzealous compat mode behavior where the ATTR_VALUE_FALSE flag improperly removes falsy value attributes from inputs."
-    },
-    {
-      "pr": 13219,
-      "score": 4,
-      "reason": "Explains how nesting Vue custom elements breaks dependency injection scoping, preventing inner elements from accessing their own provided values."
+      "reason": "Clearly explains an overzealous compat mode behavior where the ATTR_VALUE_FALSE flag improperly removes falsy value attributes from inputs.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 13283,
-      "score": 4,
-      "reason": "Documents a hydration failure where updating a reactive component prop before delayed hydration completes permanently breaks prop reactivity."
+      "reason": "Documents a hydration failure where updating a reactive component prop before delayed hydration completes permanently breaks prop reactivity.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 9427,
-      "score": 3,
-      "reason": "Documents an unexpected component update cycle triggered by default slot content, with clear reproduction steps."
+      "reason": "Documents an unexpected component update cycle triggered by default slot content, with clear reproduction steps.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 11171,
-      "score": 3,
-      "reason": "Describes a lifecycle hook failure where onUnmounted does not fire when slotted child components are wrapped in a div."
+      "reason": "Describes a lifecycle hook failure where onUnmounted does not fire when slotted child components are wrapped in a div.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 11626,
-      "score": 3,
-      "reason": "Reports a defect where errors arising within computed properties fail to be caught by onErrorCaptured."
+      "reason": "Reports a defect where errors arising within computed properties fail to be caught by onErrorCaptured.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 12171,
-      "score": 3,
-      "reason": "Reports a false positive SSR hydration style mismatch when combining v-show=false with inline display styles."
+      "reason": "Reports a false positive SSR hydration style mismatch when combining v-show=false with inline display styles.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 12393,
-      "score": 3,
-      "reason": "Highlights a reactive Set proxy defect where adding an existing object causes unintended mutation."
+      "reason": "Highlights a reactive Set proxy defect where adding an existing object causes unintended mutation.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 12819,
-      "score": 3,
-      "reason": "Reports an unhandled runtime error during hot module replacement when editing components inside a Teleport."
+      "reason": "Reports an unhandled runtime error during hot module replacement when editing components inside a Teleport.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 15251,
+      "reason": "Includes a fully self-contained minimal reproduction demonstrating prop access timing issues in KeepAlive-cached children without leaking internal code.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 14296,
+      "reason": "Clearly demonstrates how variable shadowing inside a for...of loop incorrectly unbinds outer destructured props using minimal inline code.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 15071,
+      "reason": "Demonstrates an SSR memory leak triggered by dynamic component render errors using concise inline component definitions and heap metrics.",
+      "round": 2,
+      "score": 5
     }
   ]
 }

@@ -1,256 +1,306 @@
 {
+  "criteria_version": 2,
   "repo": "rust-lang/rust",
-  "criteria_version": 1,
   "selected": [
     {
-      "pr": 158751,
-      "score": 5,
-      "reason": "Exemplary regression report with a minimal dependency-free multi-crate reproducer isolating a rustdoc crash on glob imports of extern crates."
-    },
-    {
       "pr": 159317,
-      "score": 5,
-      "reason": "Outstanding defect report with C and Rust test cases proving an ABI miscompilation for boolean return types under AArch64 AAPCS."
-    },
-    {
-      "pr": 161975,
-      "score": 5,
-      "reason": "Exceptional panic-safety and soundness defect report with a standalone safe-Rust reproducer causing a double-free in BTreeMap::split_off."
-    },
-    {
-      "pr": 162462,
-      "score": 5,
-      "reason": "Detailed standard library defect report with a minimal reproducer exposing an internal head-capacity invariant violation in VecDeque."
+      "reason": "Outstanding defect report with C and Rust test cases proving an ABI miscompilation for boolean return types under AArch64 AAPCS.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 151817,
-      "score": 5,
-      "reason": "High-quality, self-contained report with clear expected versus actual output demonstrating missing lifetime hygiene comments in compiler expansion."
+      "reason": "High-quality, self-contained report with clear expected versus actual output demonstrating missing lifetime hygiene comments in compiler expansion.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 157797,
-      "score": 5,
-      "reason": "Outstanding performance regression report with version bisection, a minimal reproducer, assembly comparisons, and real-world impact analysis."
+      "reason": "Outstanding performance regression report with version bisection, a minimal reproducer, assembly comparisons, and real-world impact analysis.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 158061,
-      "score": 5,
-      "reason": "Critical soundness defect report providing self-contained safe code that triggers undefined behavior through coercion bypass in the pin! macro."
-    },
-    {
-      "pr": 159695,
-      "score": 5,
-      "reason": "Exemplary regression report with a complete multi-crate reproducer demonstrating a parser failure on cfg_attr inner attributes in out-of-line modules."
-    },
-    {
-      "pr": 160025,
-      "score": 5,
-      "reason": "Self-contained standard library defect report with a minimal reproducer exposing incorrect index calculation in StepBy::nth on non-fused iterators."
-    },
-    {
-      "pr": 160416,
-      "score": 5,
-      "reason": "Comprehensive standard library defect report with a standalone reproducer demonstrating incorrect NUL-termination assumptions in UnixDatagram::local_addr."
-    },
-    {
-      "pr": 160445,
-      "score": 5,
-      "reason": "Excellent real-world regression report isolating localized MSVC linker stdout messages that trigger unexpected compiler warnings on non-English systems."
-    },
-    {
-      "pr": 161009,
-      "score": 5,
-      "reason": "Thorough target-specific defect report with hardware sysctl evidence and a minimal reproducer proving broken runtime feature detection on Apple Silicon."
+      "reason": "Critical soundness defect report providing self-contained safe code that triggers undefined behavior through coercion bypass in the pin! macro.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 161394,
-      "score": 5,
-      "reason": "Comprehensive defect report detailing an AArch64 ABI calling convention violation for Homogeneous Vector Aggregates with C comparisons and disassembly."
-    },
-    {
-      "pr": 156935,
-      "score": 5,
-      "reason": "Rigorous soundness defect report with a runnable proof-of-concept demonstrating undefined behavior permitted under the documented Pin::new_unchecked contract."
+      "reason": "Comprehensive defect report detailing an AArch64 ABI calling convention violation for Homogeneous Vector Aggregates with C comparisons and disassembly.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 157641,
-      "score": 4,
-      "reason": "Clear minimal reproducer and compiler backtrace for an internal compiler error on static references enclosing external static values."
-    },
-    {
-      "pr": 160208,
-      "score": 4,
-      "reason": "Complete multi-file reproducer and shell script triggering an internal compiler error in rustdoc during cross-crate re-exports."
-    },
-    {
-      "pr": 160390,
-      "score": 4,
-      "reason": "Concrete defect report with a reduced reproducer isolating a compiler crash during autodiff typetree handling on slices."
+      "reason": "Clear minimal reproducer and compiler backtrace for an internal compiler error on static references enclosing external static values.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 162246,
-      "score": 4,
-      "reason": "Concise reproducer demonstrating an internal compiler error when passing macro-captured list meta items directly to derive macros."
+      "reason": "Concise reproducer demonstrating an internal compiler error when passing macro-captured list meta items directly to derive macros.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 123905,
-      "score": 4,
-      "reason": "Clear regression report with code demonstrating rustdoc incorrectly emitting a redundant explicit link lint on unimported types."
+      "reason": "Clear regression report with code demonstrating rustdoc incorrectly emitting a redundant explicit link lint on unimported types.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 154210,
-      "score": 4,
-      "reason": "Self-contained comparative reproducer demonstrating inconsistent closure capture sizes between let and if-let expressions."
+      "reason": "Self-contained comparative reproducer demonstrating inconsistent closure capture sizes between let and if-let expressions.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 154373,
-      "score": 4,
-      "reason": "Well-reasoned report with a clean reproducer showing false-positive unused_braces warnings on blocks with semantic drop ordering."
+      "reason": "Well-reasoned report with a clean reproducer showing false-positive unused_braces warnings on blocks with semantic drop ordering.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 156009,
-      "score": 4,
-      "reason": "Clean minimal test case showing a false negative where rustdoc redundant_explicit_links fails to fire on URL segment link targets."
-    },
-    {
-      "pr": 157949,
-      "score": 4,
-      "reason": "Concise reproducer demonstrating an erroneous compiler error rejecting Self in const generic parameters of concrete implementations."
+      "reason": "Clean minimal test case showing a false negative where rustdoc redundant_explicit_links fails to fire on URL segment link targets.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 158083,
-      "score": 4,
-      "reason": "Detailed performance regression report with a reproducible test case showing redundant buffer clearing on short reads in Read::read_to_end."
-    },
-    {
-      "pr": 158417,
-      "score": 4,
-      "reason": "Clean minimal reproducer triggering an internal compiler error during cfg_eval macro expansion on nested enum definitions."
+      "reason": "Detailed performance regression report with a reproducible test case showing redundant buffer clearing on short reads in Read::read_to_end.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 158934,
-      "score": 4,
-      "reason": "Crisp defect report demonstrating a diagnostic suggestion incorrectly pointing inside standard library implementation files."
+      "reason": "Crisp defect report demonstrating a diagnostic suggestion incorrectly pointing inside standard library implementation files.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 159173,
-      "score": 4,
-      "reason": "Clear defect report with contrasting test cases demonstrating broken linkage and resolution for naked EII implementations."
+      "reason": "Clear defect report with contrasting test cases demonstrating broken linkage and resolution for naked EII implementations.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 159232,
-      "score": 4,
-      "reason": "Self-contained reproducer demonstrating rustdoc and rustc emitting illegal nested HRTB syntax in type mismatch diagnostic notes."
-    },
-    {
-      "pr": 159518,
-      "score": 4,
-      "reason": "Actionable codegen performance report with side-by-side assembly comparisons showing missed loop optimizations on new range iterators."
+      "reason": "Self-contained reproducer demonstrating rustdoc and rustc emitting illegal nested HRTB syntax in type mismatch diagnostic notes.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 159996,
-      "score": 4,
-      "reason": "Clear reproducer demonstrating a confusing compiler suggestion when invoking the vec macro with bracket syntax instead of exclamation mark."
+      "reason": "Clear reproducer demonstrating a confusing compiler suggestion when invoking the vec macro with bracket syntax instead of exclamation mark.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 160175,
-      "score": 4,
-      "reason": "Concise reproducer demonstrating an erroneous parser ambiguity resolution treating comparison operators as const generic arguments."
+      "reason": "Concise reproducer demonstrating an erroneous parser ambiguity resolution treating comparison operators as const generic arguments.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 160444,
-      "score": 4,
-      "reason": "Solid defect report isolating an order-dependent compiler macro resolution regression with a concrete module layout reproducer."
+      "reason": "Solid defect report isolating an order-dependent compiler macro resolution regression with a concrete module layout reproducer.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 160868,
-      "score": 4,
-      "reason": "Detailed target-specific runtime defect report documenting an infinite loop in thread-local storage key deletion on wasm32-wasip2."
-    },
-    {
-      "pr": 161553,
-      "score": 4,
-      "reason": "Clean rustdoc bug report with a minimal doc comment reproducer showing missing 'Read more' links when followed by thematic breaks."
+      "reason": "Detailed target-specific runtime defect report documenting an infinite loop in thread-local storage key deletion on wasm32-wasip2.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 161607,
-      "score": 4,
-      "reason": "Thorough audit and reproducer exposing inconsistent track_caller annotations across primitive integer division and remainder functions."
+      "reason": "Thorough audit and reproducer exposing inconsistent track_caller annotations across primitive integer division and remainder functions.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 161690,
-      "score": 4,
-      "reason": "Well-explained defect report demonstrating that #[inline(always)] on default EII implementations erroneously bypasses explicit implementations."
+      "reason": "Well-explained defect report demonstrating that #[inline(always)] on default EII implementations erroneously bypasses explicit implementations.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 154644,
-      "score": 4,
-      "reason": "Well-written rustdoc report detailing inaccurate sidebar categorization of non-method associated functions."
-    },
-    {
-      "pr": 158874,
-      "score": 4,
-      "reason": "Highly minimal one-line reproducer triggering a compiler query consistency assertion failure on async closures in const generics."
-    },
-    {
-      "pr": 159632,
-      "score": 4,
-      "reason": "Clear defect report with minimal test cases demonstrating a compiler panic during CFI type encoding of char and str constants."
-    },
-    {
-      "pr": 159786,
-      "score": 4,
-      "reason": "Actionable build system report showing compiletest mistakenly executing editor autosave symlinks as test files."
-    },
-    {
-      "pr": 159864,
-      "score": 4,
-      "reason": "Well-reasoned standard library report demonstrating an unhandled LayoutError panic on capacity overflow in Rc and Arc."
-    },
-    {
-      "pr": 160628,
-      "score": 4,
-      "reason": "Crisp minimal reproducer triggering an unexpected AST node panic in fn_sig when constructing a struct with missing fields."
-    },
-    {
-      "pr": 161080,
-      "score": 4,
-      "reason": "Actionable regression report with a minimal reproducer isolating an AliasTerm replacement panic in trait resolution across stable versions."
-    },
-    {
-      "pr": 161411,
-      "score": 4,
-      "reason": "Clear reproducer demonstrating an internal compiler panic caused by overlapping suggestion spans on invalid macro ranges."
+      "reason": "Well-written rustdoc report detailing inaccurate sidebar categorization of non-method associated functions.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 142680,
-      "score": 4,
-      "reason": "Clear target-specific ABI defect report demonstrating inconsistent calling conventions on sparc64 for repr(transparent) wrappers."
-    },
-    {
-      "pr": 149127,
-      "score": 4,
-      "reason": "Concise standard library defect report with a clean reproducer exposing unexpected Some return on empty remainders in ArrayChunks."
+      "reason": "Clear target-specific ABI defect report demonstrating inconsistent calling conventions on sparc64 for repr(transparent) wrappers.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 153749,
-      "score": 4,
-      "reason": "Actionable compiler diagnostic defect report showing misleading borrow suggestions on mismatched function return types."
+      "reason": "Actionable compiler diagnostic defect report showing misleading borrow suggestions on mismatched function return types.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 155452,
-      "score": 4,
-      "reason": "Concrete compiler performance scaling report with a Python reproduction generator showing quadratic compile times on large enums."
+      "reason": "Concrete compiler performance scaling report with a Python reproduction generator showing quadratic compile times on large enums.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 157382,
-      "score": 4,
-      "reason": "Crisp diagnostic defect report with a minimal reproducer showing erroneous keyword reordering in compiler fix suggestions."
+      "reason": "Crisp diagnostic defect report with a minimal reproducer showing erroneous keyword reordering in compiler fix suggestions.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 159887,
-      "score": 3,
-      "reason": "Clear bootstrap report showing the disable-minification configuration option is ignored for documentation tests in compiletest."
+      "reason": "Clear bootstrap report showing the disable-minification configuration option is ignored for documentation tests in compiletest.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 162181,
+      "reason": "Clear reproducer demonstrating that a compiler lint suggestion erroneously removes braces that affect temporary lifetime and cause a deadlock.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 159017,
+      "reason": "Detailed bug report demonstrating that a compiler lifetime suggestion produces syntactically invalid code on impl Trait.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 159583,
+      "reason": "Self-contained reproducer demonstrating that rustdoc markdown tables silently drop columns when backticked code contains pipe characters.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 161579,
+      "reason": "High-quality diagnostic report with clear code showing missing call suggestion for functions returning Iterator in for expressions.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 161730,
+      "reason": "Well-structured multi-case reproducer showing incorrect attribution of type mismatch errors when using the question mark operator in closures.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 162276,
+      "reason": "Minimal reproducer demonstrating an absurd diagnostic recommendation to unwrap an uninhabited Option<!> when assigning to Option<u32>.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 160001,
+      "reason": "Concise and clear explanation with reproducer demonstrating a misleading compiler error about immutable bindings when the binding is already mutable.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 158615,
+      "reason": "Reproducible example showing that applying the compiler's explicit outlives requirement suggestion results in broken code that fails compilation.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 159520,
+      "reason": "Clean reproducer demonstrating that the compiler produces an invalid diagnostic recommending returning an unsized byte slice.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 161340,
+      "reason": "Minimal reproducer demonstrating that rustdoc incorrectly truncates ordered list numbering down to two digits.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 161661,
+      "reason": "High-quality standard library bug report showing that Windows verbatim paths can compare equal while hashing to different values.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 161795,
+      "reason": "Concise reproducer demonstrating that mutually recursive async functions fail Send trait resolution unexpectedly.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 161805,
+      "reason": "Self-contained reproducer demonstrating that changing import order between a trait and its wildcard alias inconsistently triggers a lint.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 161847,
+      "reason": "Clear diagnostic defect report showing that suggestions for nested imports drop the pub visibility modifier.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 160719,
+      "reason": "Clean defect report showing misleading standard library error output when both append and truncate are set on OpenOptions.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 160861,
+      "reason": "Minimal reproducer with clear expected output showing lack of helpful diagnostic recovery for misplaced semicolons in if-let statements.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 160906,
+      "reason": "Clear diagnostic report showing that const array length suggestions insert a placeholder rather than the expected usize type.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 161016,
+      "reason": "Concise reproducer showing that the compiler produces invalid label syntax when suggesting labels for try blocks.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 161036,
+      "reason": "Clear reproducer demonstrating that match exhaustiveness diagnostics suggest a function name instead of the shadowed inner enum variant.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 161054,
+      "reason": "Precise reproducer showing that rustdoc generates incorrect HTML title attributes on intra-doc links to enum variant fields.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 162381,
+      "reason": "Clean bug report demonstrating that rustdoc bare URL detection incorrectly truncates links containing underscores.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 162449,
+      "reason": "Minimal reproducer showing an unnecessarily complex and unhelpful type error suggestion when passing an extraneous reference to extend.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 160246,
+      "reason": "Reproducible test case showing that unused_mut lint suggestions on pin ergonomics produce invalid syntax that breaks compilation.",
+      "round": 2,
+      "score": 5
     }
   ]
 }

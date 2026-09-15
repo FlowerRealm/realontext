@@ -1,10 +1,167 @@
 {
   "frozen": {
+    "ClickHouse/ClickHouse": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "7e68aa5fba919cb8b62b1125253154ce3527fb13f765bfaa259dcbf2e871db0b",
+      "sha256": "da4a0c981a55613a65a8f0d694575dddfc8af22cecb2c7d003d42819583b5de3",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "apache/airflow": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "bc326ddcb33136206af9de8251b8073bde7a3a8db7dcc394ebf3871e18a2111f",
+      "sha256": "8f94395043c3d054ece94626094724ef4cf2078912d6530a54f175a87fe23635",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "duckdb/duckdb": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "c10c072699fd52dd63e51b5fe3d5d49532b8f8f84ffb8e5f23a32ed56fb543d8",
+      "sha256": "09fcc42d8f8ed350d81f33c1a2ab766290f3a5395160a8b49056fdb5779d7e6f",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "elastic/elasticsearch": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "f95cd053e13a1cff639ef3b41b877b6d5a5d5de3e24bb6da8be68768e6afdf18",
+      "sha256": "1023af1dd34f0ea2eba98c3ca3ec3fbaab7e12e5627e82d06726d02d03f0d486",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "kubernetes/kubernetes": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "5329b2d76a394790049791a10bb5aa7bdf1ee924d85f03653c1b0b9a85565d1d",
+      "sha256": "ccfb36d4a91ff9160867178ab3a2ad1b238fdfcaea7ce6622b85826b425eeb49",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "microsoft/vscode": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "98472f02913eb847a2addc333d71f92f4c3bd3844ac74c4588be8f2da1d7a3ef",
+      "sha256": "de1103906f7c8c60692abc18629d91829a495151a5c53f83f9bd3d10f878e962",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "netty/netty": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "4551c7bf182bad17fcda397721effd2909db49c7c1510cd2c2d97ef06f1a201c",
+      "sha256": "b2af8398ae026f2e5f78d8748094a138464a4687e416ccb96de9e54994079a81",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "pandas-dev/pandas": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "8b412077d6c0013d87ea00074e36b9ca06394b1073e95e26cf59dafae9b49ec5",
+      "sha256": "0fedcb169f6fdec8f6e83f95afe26da974bd6c60a266d381598c4502f38d8def",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "prometheus/prometheus": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "482f02f4456d0a8758ef081d0b0844478697008eaad43f65cccecd07addec65a",
+      "sha256": "8314e24f69ed2a5c299708bdb8ead660a840e256fb85b15cf1db101d0963fb58",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "redis/redis": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "5a87a3d13eb1ab125e0691de01dc0d3deafc3f5c6c392973b1aa3b813c9e6eaf",
+      "sha256": "5448dbda353d3ff01a4335c7ea391c2da6478b6283c17ad62c31e650f53a9b7e",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "rust-lang/rust": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "7f2ac571e16871e205f9433a1b25ae453cfbddd5de296ec1beab608d035597f5",
+      "sha256": "c409e0c945723fde37277806ba7ed48654617b2e9a1b60cecc8853a3f0564b46",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "systemd/systemd": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "428bdd3c61c7b377249ebc4a64d8918be162bc264385239f86b56d537a521324",
+      "sha256": "bab5ccdb6e4957536a0411e4b1b217ad447f6b288eb29ab039c89d6c4864e55d",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
     "tokio-rs/tokio": {
-      "frozen_at": "2026-09-13T00:59:18Z",
-      "queries": 5,
-      "reason": "阶段 0 首次冻结：tokio 前 5 条，用于验证装置",
-      "sha256": "f2c79657fff3560e1b7bc0e2c2825988e1f7d3e76beba5c12261c0a46135334a",
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "9cabe7add612c3e14a056de733a9b51f4ce8a35f9d150cf3e780a99399b3345e",
+      "sha256": "05eccc3095b1c6bb96a9486de29fc6e69974ac2fbe9fb54c4aa23b289e863139",
+      "tools": {
+        "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
+        "git": "git version 2.55.0",
+        "ripgrep": "ripgrep 15.2.0"
+      }
+    },
+    "vuejs/core": {
+      "frozen_at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "selection_sha256": "2e163aa9d014233919c831a673c06f00c5dc16da0891fe62e2419e26e712e37e",
+      "sha256": "c6c8b58b73e140f7032722e115c5dc221debe5a9985efc959d1883fd380fde56",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -20,8 +177,260 @@
       "replaces": null,
       "repo": "tokio-rs/tokio",
       "sha256": "f2c79657fff3560e1b7bc0e2c2825988e1f7d3e76beba5c12261c0a46135334a"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "ClickHouse/ClickHouse",
+      "selection_sha256": "71a609f5d388e222adc728b3a0201dc8395d993d020fcbc65030b6174eeb4120",
+      "sha256": "305ff23296226783adffd9e5199d01dfa43b102a0c3b6b1bdac65d28989fe33e"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "duckdb/duckdb",
+      "selection_sha256": "4d5c453cf44cf0fa4b0f8cf987ee2e117dcdc493f93fedf9f7b37b62fc1da4fb",
+      "sha256": "68ee53499c678068a63412d1879097a5a05fc1fd96acf18ff8a15f1694e922a8"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "kubernetes/kubernetes",
+      "selection_sha256": "78f290e6c6f77f4dd000d951a4668263ac827d47af80094d571183962586e06b",
+      "sha256": "668bb4a642df12b29013197ce605e4775ebb7b206f93662729c6301368aef747"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "prometheus/prometheus",
+      "selection_sha256": "910c4b460229022f64bfcb85925193519ca089e8008e2a8986d535df596afcdd",
+      "sha256": "f23c2ebe79f3643751595545756af588ce0522c465b4e86a83fae6a236c220dd"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "rust-lang/rust",
+      "selection_sha256": "3f8d2418bf5f0c2933d5333a57a1a0ba38a043c9e20bef59057243e827f5b39f",
+      "sha256": "c531e7184b9a63a20e73095ce3d7de9e08be4202b6ff2961ec6568d2840fa1aa"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 49,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": "f2c79657fff3560e1b7bc0e2c2825988e1f7d3e76beba5c12261c0a46135334a",
+      "repo": "tokio-rs/tokio",
+      "selection_sha256": "7791123abc6e5211241e9fb5334c9c165c9a22af6c9d4eb3c29b2e47e5f56acd",
+      "sha256": "7f39338a79c75557e7c470ade10eb47f39b68b4dea3452750bc77658f3535969"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "microsoft/vscode",
+      "selection_sha256": "8fb00520f648bad253df100775831303bda72079ab939168e062b576a40724f7",
+      "sha256": "700c73c904355502b08c7acb6b2dfc365cfe644addf55bc2cc55831d6939cf25"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "vuejs/core",
+      "selection_sha256": "9a05b52dd363221bc0fee7e5fd2a0e25f4e52495951918ad448fa7d641c66d2e",
+      "sha256": "dcf538ecc474a99dcc1775466f1ddd98dd30f1b92299be873f80911ffe457289"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "systemd/systemd",
+      "selection_sha256": "16dd59f3b3a71e20bbe7719f936355b770776a061b24606cd06d29a14396b60a",
+      "sha256": "e3e84972d335e8e8ac383a3d4a4724ee73fc0ffe6cb2553411a35a6bd77621c7"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "redis/redis",
+      "selection_sha256": "7115cd3268401f80d42a7ac3381cdf3e7ef8185495e0f3dd055208880e4bf756",
+      "sha256": "ccf9c8c3c1f330de60b3f9cbb712ac89a1095e8a8338019cb4e991557039e5e0"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "apache/airflow",
+      "selection_sha256": "9870c748c48f4d7b8ef3839b452ea4b0aafc6fe10a255b511c05142a36162562",
+      "sha256": "73f2c7f0b42c786f517a63ae7485ac13a33b9fdb49b95bf5695cd128ac6b759b"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "pandas-dev/pandas",
+      "selection_sha256": "d1c4f19a75ad255ef29359fbcb33ab38b0b314863c9591c16afd39f6698c7cab",
+      "sha256": "0a800a99f1f380a444f1235fbcced530a5b991452e2f24b108e86cc4efac5a0b"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "elastic/elasticsearch",
+      "selection_sha256": "6854a41716d689c348c46e0d37b71c2b3578805ef7de9b7422b41f9df34669aa",
+      "sha256": "69d59d94cb06a45ace3d4f7c79d68751838278c811d27ed2ac27f22549842f89"
+    },
+    {
+      "at": "2026-09-13T09:32:52Z",
+      "queries": 50,
+      "reason": "精选 700 题首次冻结：14 仓库各 50 道 defect 类题目，按 curation-brief.md 六准则双盲挑选；tokio 因 PR 5375 为 fast-forward 合并、base 推导失效被 gt_empty 挡掉，实得 699 道。替换阶段 0 用于验证装置的 tokio 5 题。",
+      "replaces": null,
+      "repo": "netty/netty",
+      "selection_sha256": "8b759e778132623e1f6cac3b2fff613f4cb7ca5e57a1ac28d5debfb01adaadc8",
+      "sha256": "49cfab8eccba74047e90a19ce5d114e7affbcd3adb964983e1a1065783d2f8be"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "305ff23296226783adffd9e5199d01dfa43b102a0c3b6b1bdac65d28989fe33e",
+      "repo": "ClickHouse/ClickHouse",
+      "selection_sha256": "7e68aa5fba919cb8b62b1125253154ce3527fb13f765bfaa259dcbf2e871db0b",
+      "sha256": "da4a0c981a55613a65a8f0d694575dddfc8af22cecb2c7d003d42819583b5de3"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "68ee53499c678068a63412d1879097a5a05fc1fd96acf18ff8a15f1694e922a8",
+      "repo": "duckdb/duckdb",
+      "selection_sha256": "c10c072699fd52dd63e51b5fe3d5d49532b8f8f84ffb8e5f23a32ed56fb543d8",
+      "sha256": "09fcc42d8f8ed350d81f33c1a2ab766290f3a5395160a8b49056fdb5779d7e6f"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "668bb4a642df12b29013197ce605e4775ebb7b206f93662729c6301368aef747",
+      "repo": "kubernetes/kubernetes",
+      "selection_sha256": "5329b2d76a394790049791a10bb5aa7bdf1ee924d85f03653c1b0b9a85565d1d",
+      "sha256": "ccfb36d4a91ff9160867178ab3a2ad1b238fdfcaea7ce6622b85826b425eeb49"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "f23c2ebe79f3643751595545756af588ce0522c465b4e86a83fae6a236c220dd",
+      "repo": "prometheus/prometheus",
+      "selection_sha256": "482f02f4456d0a8758ef081d0b0844478697008eaad43f65cccecd07addec65a",
+      "sha256": "8314e24f69ed2a5c299708bdb8ead660a840e256fb85b15cf1db101d0963fb58"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "c531e7184b9a63a20e73095ce3d7de9e08be4202b6ff2961ec6568d2840fa1aa",
+      "repo": "rust-lang/rust",
+      "selection_sha256": "7f2ac571e16871e205f9433a1b25ae453cfbddd5de296ec1beab608d035597f5",
+      "sha256": "c409e0c945723fde37277806ba7ed48654617b2e9a1b60cecc8853a3f0564b46"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "7f39338a79c75557e7c470ade10eb47f39b68b4dea3452750bc77658f3535969",
+      "repo": "tokio-rs/tokio",
+      "selection_sha256": "9cabe7add612c3e14a056de733a9b51f4ce8a35f9d150cf3e780a99399b3345e",
+      "sha256": "05eccc3095b1c6bb96a9486de29fc6e69974ac2fbe9fb54c4aa23b289e863139"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "700c73c904355502b08c7acb6b2dfc365cfe644addf55bc2cc55831d6939cf25",
+      "repo": "microsoft/vscode",
+      "selection_sha256": "98472f02913eb847a2addc333d71f92f4c3bd3844ac74c4588be8f2da1d7a3ef",
+      "sha256": "de1103906f7c8c60692abc18629d91829a495151a5c53f83f9bd3d10f878e962"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "dcf538ecc474a99dcc1775466f1ddd98dd30f1b92299be873f80911ffe457289",
+      "repo": "vuejs/core",
+      "selection_sha256": "2e163aa9d014233919c831a673c06f00c5dc16da0891fe62e2419e26e712e37e",
+      "sha256": "c6c8b58b73e140f7032722e115c5dc221debe5a9985efc959d1883fd380fde56"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "e3e84972d335e8e8ac383a3d4a4724ee73fc0ffe6cb2553411a35a6bd77621c7",
+      "repo": "systemd/systemd",
+      "selection_sha256": "428bdd3c61c7b377249ebc4a64d8918be162bc264385239f86b56d537a521324",
+      "sha256": "bab5ccdb6e4957536a0411e4b1b217ad447f6b288eb29ab039c89d6c4864e55d"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "ccf9c8c3c1f330de60b3f9cbb712ac89a1095e8a8338019cb4e991557039e5e0",
+      "repo": "redis/redis",
+      "selection_sha256": "5a87a3d13eb1ab125e0691de01dc0d3deafc3f5c6c392973b1aa3b813c9e6eaf",
+      "sha256": "5448dbda353d3ff01a4335c7ea391c2da6478b6283c17ad62c31e650f53a9b7e"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "73f2c7f0b42c786f517a63ae7485ac13a33b9fdb49b95bf5695cd128ac6b759b",
+      "repo": "apache/airflow",
+      "selection_sha256": "bc326ddcb33136206af9de8251b8073bde7a3a8db7dcc394ebf3871e18a2111f",
+      "sha256": "8f94395043c3d054ece94626094724ef4cf2078912d6530a54f175a87fe23635"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "0a800a99f1f380a444f1235fbcced530a5b991452e2f24b108e86cc4efac5a0b",
+      "repo": "pandas-dev/pandas",
+      "selection_sha256": "8b412077d6c0013d87ea00074e36b9ca06394b1073e95e26cf59dafae9b49ec5",
+      "sha256": "0fedcb169f6fdec8f6e83f95afe26da974bd6c60a266d381598c4502f38d8def"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "69d59d94cb06a45ace3d4f7c79d68751838278c811d27ed2ac27f22549842f89",
+      "repo": "elastic/elasticsearch",
+      "selection_sha256": "f95cd053e13a1cff639ef3b41b877b6d5a5d5de3e24bb6da8be68768e6afdf18",
+      "sha256": "1023af1dd34f0ea2eba98c3ca3ec3fbaab7e12e5627e82d06726d02d03f0d486"
+    },
+    {
+      "at": "2026-09-15T03:50:40Z",
+      "queries": 50,
+      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "replaces": "49cfab8eccba74047e90a19ce5d114e7affbcd3adb964983e1a1065783d2f8be",
+      "repo": "netty/netty",
+      "selection_sha256": "4551c7bf182bad17fcda397721effd2909db49c7c1510cd2c2d97ef06f1a201c",
+      "sha256": "b2af8398ae026f2e5f78d8748094a138464a4687e416ccb96de9e54994079a81"
     }
   ],
   "schema": 1,
-  "version": "v1-a830aed1bb5e3f48"
+  "version": "v1-f9ac044bffd4b4c2"
 }

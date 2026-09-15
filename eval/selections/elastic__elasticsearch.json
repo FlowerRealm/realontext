@@ -1,256 +1,306 @@
 {
+  "criteria_version": 2,
   "repo": "elastic/elasticsearch",
-  "criteria_version": 1,
   "selected": [
     {
       "pr": 149259,
-      "score": 5,
-      "reason": "Provides a self-contained curl reproduction demonstrating a NullPointerException when executing an ES|QL query against a time-series index with an unsigned_long counter."
+      "reason": "Provides a self-contained curl reproduction demonstrating a NullPointerException when executing an ES|QL query against a time-series index with an unsigned_long counter.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 155312,
-      "score": 5,
-      "reason": "Supplies a minimal reproducing ES|QL query and clear stack trace showing an optimizer verification failure when a STATS alias collides with a grouping key."
-    },
-    {
-      "pr": 156728,
-      "score": 5,
-      "reason": "Clearly articulates unexpected failure behavior across partially mapped indices and provides a focused unit test reproducing the dense vector query error."
-    },
-    {
-      "pr": 158152,
-      "score": 5,
-      "reason": "Provides comprehensive REST reproduction steps, expected versus actual behavior, and full stack trace for S3 dataset settings incorrectly routed through Iceberg validation."
+      "reason": "Supplies a minimal reproducing ES|QL query and clear stack trace showing an optimizer verification failure when a STATS alias collides with a grouping key.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 158174,
-      "score": 5,
-      "reason": "Contains a concrete reproducing PromQL query and explains the pipeline channel type mismatch causing an IllegalStateException during union execution."
-    },
-    {
-      "pr": 158301,
-      "score": 5,
-      "reason": "Gives an exact HTTP reproduction payload and demonstrates that an unresolved MMR query vector triggers an internal 500 error instead of a 400 validation error."
-    },
-    {
-      "pr": 156382,
-      "score": 5,
-      "reason": "Thoroughly explains an IllegalStateException occurring when diagnostic string truncation interrupts mid-object, complete with real-world CLI reproduction context."
-    },
-    {
-      "pr": 157044,
-      "score": 5,
-      "reason": "Presents detailed benchmark evidence and complete Docker reproduction steps showing that search_after with _shard_doc scans all matches instead of pruning."
+      "reason": "Contains a concrete reproducing PromQL query and explains the pipeline channel type mismatch causing an IllegalStateException during union execution.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 157442,
-      "score": 5,
-      "reason": "Extensively documents a long-running S3 Parquet scan failure with Apache HttpClient connection pool shutdown using a public dataset and full query reproduction."
+      "reason": "Extensively documents a long-running S3 Parquet scan failure with Apache HttpClient connection pool shutdown using a public dataset and full query reproduction.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 154323,
-      "score": 5,
-      "reason": "Provides a reproducible ES|QL query demonstrating that a FORK preceding an IN subquery prematurely breaks AST traversal, leading to an unknown column error."
+      "reason": "Provides a reproducible ES|QL query demonstrating that a FORK preceding an IN subquery prematurely breaks AST traversal, leading to an unknown column error.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 155580,
-      "score": 5,
-      "reason": "Documents a clean 3-step regression reproduction where nested integer sorting returns missing sentinels instead of actual document values."
+      "reason": "Documents a clean 3-step regression reproduction where nested integer sorting returns missing sentinels instead of actual document values.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 155648,
-      "score": 5,
-      "reason": "Supplies an exact public S3 reproducer contrasting succeeding non-empty queries with empty subqueries that crash with IndexOutOfBoundsException."
+      "reason": "Supplies an exact public S3 reproducer contrasting succeeding non-empty queries with empty subqueries that crash with IndexOutOfBoundsException.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 155706,
-      "score": 5,
-      "reason": "Features a clear user-reported regression with step-by-step curl commands demonstrating that a join field named _type duplicates across search results."
+      "reason": "Features a clear user-reported regression with step-by-step curl commands demonstrating that a join field named _type duplicates across search results.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 156602,
-      "score": 4,
-      "reason": "Includes a Gradle reproduction command and cluster state deserialization stack trace for a rolling upgrade stream misalignment bug across BWC tests."
+      "reason": "Includes a Gradle reproduction command and cluster state deserialization stack trace for a rolling upgrade stream misalignment bug across BWC tests.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 158079,
-      "score": 4,
-      "reason": "Clearly details the module name mismatch deadlock preventing stable plugins from being granted security entitlements, accompanied by reproduction scripts."
-    },
-    {
-      "pr": 144909,
-      "score": 4,
-      "reason": "Identifies an unhandled NullPointerException causing HTTP 500 errors in the preview datafeed API when the configured time field is missing from field capabilities."
+      "reason": "Clearly details the module name mismatch deadlock preventing stable plugins from being granted security entitlements, accompanied by reproduction scripts.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 154508,
-      "score": 4,
-      "reason": "Explains with a full stack trace why cross-index integer and long type conflicts trigger an IllegalStateException in ValuesSourceReaderOperator sanity checks."
-    },
-    {
-      "pr": 154925,
-      "score": 4,
-      "reason": "Detailed analysis of a production incident where automatic scroll slicing during ML job revert-on-open storms exhausted cluster scroll contexts."
-    },
-    {
-      "pr": 155693,
-      "score": 4,
-      "reason": "Documents an IllegalArgumentException where contradictory merge thread settings block cluster state application and prevent nodes from joining the cluster."
-    },
-    {
-      "pr": 157254,
-      "score": 3,
-      "reason": "Reports an IllegalStateException from an already closed circuit breaker during aggregation reduce phases, supported by a full stack trace."
-    },
-    {
-      "pr": 158603,
-      "score": 3,
-      "reason": "Provides a local Gradle reproduction command and stack trace for an ArrayIndexOutOfBoundsException during UTF-8 string decoding in generative cross-index tests."
-    },
-    {
-      "pr": 157701,
-      "score": 3,
-      "reason": "Provides an in-depth technical analysis and stack trace of query-phase IllegalStateExceptions caused by missing chunk paths in semantic_text fields."
+      "reason": "Explains with a full stack trace why cross-index integer and long type conflicts trigger an IllegalStateException in ValuesSourceReaderOperator sanity checks.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 158235,
-      "score": 3,
-      "reason": "Provides an actionable post-mortem detailing how primary indexing pressure rejections cause un-replicated documents and permanent sequence number gaps."
+      "reason": "Provides an actionable post-mortem detailing how primary indexing pressure rejections cause un-replicated documents and permanent sequence number gaps.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 155630,
-      "score": 3,
-      "reason": "Provides an exact Gradle reproduction command and seed capturing a numerical scoring discrepancy in the SIMD binary quantized vector scorer."
+      "reason": "Provides an exact Gradle reproduction command and seed capturing a numerical scoring discrepancy in the SIMD binary quantized vector scorer.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 156632,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction command and seed isolating a vector dimension mismatch exception in the learned asymmetric hashing quantizer pipeline."
+      "reason": "Provides a Gradle reproduction command and seed isolating a vector dimension mismatch exception in the learned asymmetric hashing quantizer pipeline.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 155981,
-      "score": 3,
-      "reason": "Provides an exact reproduction line and seed for an assertion failure where soar vectors fail assignment to centroids after empty cluster pruning in K-means."
-    },
-    {
-      "pr": 155934,
-      "score": 3,
-      "reason": "Provides a Gradle command and seed reproducing an assertion failure where snapshot lifecycle management incorrectly counts in-flight snapshots as failures."
-    },
-    {
-      "pr": 155873,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction line and seed demonstrating that translog files on isolated nodes are erroneously deleted during garbage collection."
-    },
-    {
-      "pr": 155778,
-      "score": 3,
-      "reason": "Provides an exact Gradle command and seed reproducing an assertion mismatch where virtual batched compound commit chunk pressure exceeds expected limits."
+      "reason": "Provides an exact reproduction line and seed for an assertion failure where soar vectors fail assignment to centroids after empty cluster pruning in K-means.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 149429,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction command and seed revealing a circuit breaker leak where the request breaker fails to reset to zero following translog recovery."
+      "reason": "Provides a Gradle reproduction command and seed revealing a circuit breaker leak where the request breaker fails to reset to zero following translog recovery.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 149044,
-      "score": 3,
-      "reason": "Provides an exact Gradle reproduction line and seed demonstrating premature deletion of commit blobs while an unpromotable shard is recovering."
-    },
-    {
-      "pr": 153388,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction line and seed capturing a shard lifecycle defect where relocated shards unexpectedly remain in a hollow state."
+      "reason": "Provides an exact Gradle reproduction line and seed demonstrating premature deletion of commit blobs while an unpromotable shard is recovering.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 157764,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction line and seed capturing an IllegalStateException where unclosed store references leak open shards past thread pool termination."
+      "reason": "Provides a Gradle reproduction line and seed capturing an IllegalStateException where unclosed store references leak open shards past thread pool termination.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 158153,
-      "score": 3,
-      "reason": "Provides a Gradle command and seed for an assertion failure when reading an edge-case Arrow Parquet file expected to parse successfully."
+      "reason": "Provides a Gradle command and seed for an assertion failure when reading an edge-case Arrow Parquet file expected to parse successfully.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 158052,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction command and seed isolating an InvalidPathException caused by improper path colon handling in Hive-partitioned CSV data sources."
+      "reason": "Provides a Gradle reproduction command and seed isolating an InvalidPathException caused by improper path colon handling in Hive-partitioned CSV data sources.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 153893,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction line and seed showing a data mismatch in time-series first and last aggregations when sorting over null values."
-    },
-    {
-      "pr": 154668,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction command and seed showing an unhandled stack overflow in AST parsing when expression depth exceeds configured limits."
+      "reason": "Provides a Gradle reproduction line and seed showing a data mismatch in time-series first and last aggregations when sorting over null values.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 147293,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction line and seed for an ES|QL query on downsampled metrics failing with an unexpected time bucket exception."
-    },
-    {
-      "pr": 150704,
-      "score": 3,
-      "reason": "Provides an exact Gradle command and seed reproducing a verification exception when sorting on counter_long fields within an ES|QL subquery rename chain."
+      "reason": "Provides a Gradle reproduction line and seed for an ES|QL query on downsampled metrics failing with an unexpected time bucket exception.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 151181,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction command and seed capturing a quantile monotonicity violation in the AVLTreeDigest implementation."
+      "reason": "Provides a Gradle reproduction command and seed capturing a quantile monotonicity violation in the AVLTreeDigest implementation.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 153617,
-      "score": 3,
-      "reason": "Provides an exact Gradle command and seed demonstrating an aggregation rate calculation divergence on randomized time series data."
-    },
-    {
-      "pr": 152207,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction command and seed showing that prefetched byte size exceeds expected limits upon first commit notification."
+      "reason": "Provides an exact Gradle command and seed demonstrating an aggregation rate calculation divergence on randomized time series data.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 142283,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction line and seed for an assertion failure where MMR retriever diversification produces incorrect document ranking order."
+      "reason": "Provides a Gradle reproduction line and seed for an assertion failure where MMR retriever diversification produces incorrect document ranking order.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 155773,
-      "score": 3,
-      "reason": "Provides an exact Gradle reproduction command and seed isolating a geometry calculation error where regular polygon generation exceeds allowed delta tolerance."
-    },
-    {
-      "pr": 137981,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction command and seed showing that timing stats counters fail to reset to zero when an ML datafeed is recreated."
-    },
-    {
-      "pr": 153798,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction command and seed demonstrating that stale task state remains uncleaned when starting a previously failed transform."
-    },
-    {
-      "pr": 152881,
-      "score": 3,
-      "reason": "Provides a Gradle command and seed showing an assertion failure where ML forecast status remains scheduled rather than transitioning to finished upon disk overflow."
+      "reason": "Provides an exact Gradle reproduction command and seed isolating a geometry calculation error where regular polygon generation exceeds allowed delta tolerance.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 153737,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction line and seed demonstrating that Watcher execution state is improperly throttled following a full cluster restart."
+      "reason": "Provides a Gradle reproduction line and seed demonstrating that Watcher execution state is improperly throttled following a full cluster restart.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 156434,
-      "score": 3,
-      "reason": "Provides a Gradle reproduction command and seed for a rolling upgrade failure caused by nested field rejections in time series index mode."
+      "reason": "Provides a Gradle reproduction command and seed for a rolling upgrade failure caused by nested field rejections in time series index mode.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 159095,
-      "score": 3,
-      "reason": "Provides an exact Gradle command and seed capturing a NullPointerException in ShardStateAction during snapshot operations concurrent with mapping updates."
+      "reason": "Provides an exact Gradle command and seed capturing a NullPointerException in ShardStateAction during snapshot operations concurrent with mapping updates.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 158060,
+      "reason": "Exceptionally thorough defect report with reproducible curl commands and an exact version matrix isolating a silent data loss bug in composite date histograms on logsdb.",
+      "round": 1,
+      "score": 5
+    },
+    {
+      "pr": 156606,
+      "reason": "Clear defect report identifying incremental snapshot state inconsistency after force merge operations, with straightforward reproduction steps.",
+      "round": 1,
+      "score": 5
+    },
+    {
+      "pr": 155279,
+      "reason": "Succinct report clearly identifying that index.auto_expand_replicas improperly overrides ILM replica count configurations.",
+      "round": 1,
+      "score": 5
+    },
+    {
+      "pr": 157422,
+      "reason": "Concise and well-documented defect report referencing RFC 9110 requirements for missing HTTP Date headers with simple curl verification.",
+      "round": 1,
+      "score": 5
+    },
+    {
+      "pr": 157741,
+      "reason": "Well-illustrated bug report showing coordinates wrapping across the dateline when converting H3 cells to GeoJSON shapes in ES|QL.",
+      "round": 1,
+      "score": 5
+    },
+    {
+      "pr": 156235,
+      "reason": "Well-constructed defect report with an end-to-end YAML test case reproducing a runtime ClassCastException in asymmetric TS queries.",
+      "round": 1,
+      "score": 5
+    },
+    {
+      "pr": 157862,
+      "reason": "Actionable performance defect report providing exact ES|QL queries demonstrating an unexpected 3x slowdown when approximation is enabled.",
+      "round": 1,
+      "score": 5
+    },
+    {
+      "pr": 144919,
+      "reason": "Clear CI failure report providing a deterministic reproduction command for an HTTP 400 ResponseException in classification model inference.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 154791,
+      "reason": "Reproducible CI report with full gradle command capturing a 404 ResponseException during rolling machine learning mappings upgrade.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 155717,
+      "reason": "Detailed CI defect report capturing an exact statistical rate aggregation assertion mismatch with a reproducible gradle test line.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 155795,
+      "reason": "Clear CI test failure report isolating an uncaught score exception during IVF byte vector search with a complete reproduction seed.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 155841,
+      "reason": "Reproducible generative query CI failure report isolating an assertion failure during uri_parts and dissect evaluation in ES|QL.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 156802,
+      "reason": "Concrete CI defect report providing a reproduction line for a Netty ByteBuf memory leak detected upon reindex task relocation.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 158215,
+      "reason": "Clear CI failure report with exact test command identifying a field level security policy mismatch between standard and logsdb indices.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 157085,
+      "reason": "Automated CI regression report capturing client YAML test suite assertion failures across mixed-cluster node versions.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 157438,
+      "reason": "Actionable CI report reproducing an unexpected 400 Bad Request ResponseException during S3 repository deprecation cleanup.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 157790,
+      "reason": "Actionable CI failure report isolating cross-mode parity divergence in generative ES|QL limit queries with full reproduction flags.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 158391,
+      "reason": "Reproducible CI test report capturing an ExternalServerException during nulls-first top-N queries on external Parquet data.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 158544,
+      "reason": "Automated CI failure report with reproduction command capturing a 400 ResponseException when resolving remote federated datasets.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 158644,
+      "reason": "Clear backwards compatibility CI failure report providing a reproduction command for an HTTP 400 error during role validation.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 143637,
+      "reason": "Actionable CI report with full reproduction line for an unexpected non-zero retry count assertion failure in Azure blob storage.",
+      "round": 1,
+      "score": 3
     }
   ]
 }

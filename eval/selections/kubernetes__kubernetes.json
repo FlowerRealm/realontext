@@ -1,256 +1,306 @@
 {
+  "criteria_version": 2,
   "repo": "kubernetes/kubernetes",
-  "criteria_version": 1,
   "selected": [
     {
-      "pr": 140189,
-      "score": 5,
-      "reason": "Outstanding security defect report explaining world-readable file permissions on pod logs with a self-contained shell reproduction."
-    },
-    {
-      "pr": 140258,
-      "score": 5,
-      "reason": "Clear and impactful security vulnerability report detailing an iSCSI path traversal flaw with exact reproduction commands and expected behavior."
-    },
-    {
       "pr": 141342,
-      "score": 5,
-      "reason": "Superb bug report on container probe lifecycle races featuring a comprehensive Bash reproduction script and clear expected probe sequencing."
-    },
-    {
-      "pr": 138885,
-      "score": 5,
-      "reason": "Comprehensive panic report featuring full stack traces, a minimal kind-based reproduction scenario, and explicit expected behavior."
-    },
-    {
-      "pr": 140723,
-      "score": 5,
-      "reason": "Thorough performance defect report documenting nftables sync time scaling issues with reproducible benchmark metrics and environment setup."
-    },
-    {
-      "pr": 139516,
-      "score": 5,
-      "reason": "Detailed report explaining how Linux kernel comment limits cause complete nftables sync failure, complete with precise error logs and reproduction steps."
-    },
-    {
-      "pr": 139457,
-      "score": 5,
-      "reason": "High-quality report with a minimal bash reproduction script demonstrating how backoff causes invalid status update rejections."
-    },
-    {
-      "pr": 141302,
-      "score": 5,
-      "reason": "Rigorous bug report showing step-by-step mathematical calculations of how succeeded pods distort Horizontal Pod Autoscaler decisions."
-    },
-    {
-      "pr": 140519,
-      "score": 5,
-      "reason": "High-severity security defect report showing clear credentials leakage in logs at standard verbosity with a one-line reproduction command."
-    },
-    {
-      "pr": 140586,
-      "score": 5,
-      "reason": "Well-structured crash report with panic stack trace, precise failure trigger conditions, and step-by-step reproduction instructions."
-    },
-    {
-      "pr": 138937,
-      "score": 5,
-      "reason": "Detailed kubelet crash report with full stack traces, systemd exit codes, and explicit feature gate context."
-    },
-    {
-      "pr": 141489,
-      "score": 5,
-      "reason": "Excellent Windows-specific crash report with complete panic stack traces, reproduction instructions, and clear expected behavior."
-    },
-    {
-      "pr": 139850,
-      "score": 5,
-      "reason": "Thorough memory leak analysis supported by pprof heap profiles, goroutine counts, and production runtime data."
-    },
-    {
-      "pr": 140448,
-      "score": 5,
-      "reason": "Well-documented high-scale resource leak report in scheduler event recording with monitoring metrics, pprof data, and clear impact description."
+      "reason": "Superb bug report on container probe lifecycle races featuring a comprehensive Bash reproduction script and clear expected probe sequencing.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 141966,
-      "score": 5,
-      "reason": "Excellent real-world defect report detailing recovery failures after node reboots with clear timeline analysis and kubelet error logs."
+      "reason": "Excellent real-world defect report detailing recovery failures after node reboots with clear timeline analysis and kubelet error logs.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 139456,
-      "score": 5,
-      "reason": "In-depth report documenting CPU affinity shrinking across multi-NUMA nodes with detailed hardware topology specifications and clear repro steps."
+      "reason": "In-depth report documenting CPU affinity shrinking across multi-NUMA nodes with detailed hardware topology specifications and clear repro steps.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 140498,
-      "score": 5,
-      "reason": "Detailed report describing improper cpuset assignment on hybrid CPU architectures with hardware topology breakdown and CLI reproduction steps."
-    },
-    {
-      "pr": 141863,
-      "score": 5,
-      "reason": "Highly actionable report on orphaned block-mode volume detach failures, complete with attachdetach-controller error logs and reproduction steps."
+      "reason": "Detailed report describing improper cpuset assignment on hybrid CPU architectures with hardware topology breakdown and CLI reproduction steps.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 42538,
-      "score": 5,
-      "reason": "Classic, beautifully structured defect report with minimal reproduction steps, clear CLI outputs, and explicit expected behavior."
+      "reason": "Classic, beautifully structured defect report with minimal reproduction steps, clear CLI outputs, and explicit expected behavior.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 136776,
-      "score": 5,
-      "reason": "Well-articulated defect report demonstrating how unvalidated node names trap pods with finalizers in deletion, with complete curl reproduction steps."
-    },
-    {
-      "pr": 136949,
-      "score": 5,
-      "reason": "Clear defect report explaining silent field management data loss during CRD conversion outages with manifests and repro steps."
+      "reason": "Well-articulated defect report demonstrating how unvalidated node names trap pods with finalizers in deletion, with complete curl reproduction steps.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 140108,
-      "score": 5,
-      "reason": "Concise, actionable API bug report demonstrating internal server errors instead of client validation errors using an exact curl reproduction."
-    },
-    {
-      "pr": 138574,
-      "score": 5,
-      "reason": "Crisp defect report explaining container status update failures for valid 32-bit Linux UIDs with exact error messages and expected semantics."
-    },
-    {
-      "pr": 138834,
-      "score": 5,
-      "reason": "Clear security context validation bug report with minimal YAML manifest reproducing the discrepancy between capability naming conventions."
+      "reason": "Concise, actionable API bug report demonstrating internal server errors instead of client validation errors using an exact curl reproduction.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 138908,
-      "score": 5,
-      "reason": "Precise bug report demonstrating unintended object persistence during server-side apply using minimal YAML and kubectl commands."
+      "reason": "Precise bug report demonstrating unintended object persistence during server-side apply using minimal YAML and kubectl commands.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 138571,
-      "score": 5,
-      "reason": "Concrete performance regression report with quantitative benchmark comparison tables and reproducible test methodology across node variants."
-    },
-    {
-      "pr": 138462,
-      "score": 5,
-      "reason": "Well-specified defect report showing sidecar container limit enforcement gaps with complete YAML reproduction and clear expected eviction behavior."
-    },
-    {
-      "pr": 140325,
-      "score": 5,
-      "reason": "Clear, detailed report on structured allocator backtracking failures with complete resource claim and slice manifests."
-    },
-    {
-      "pr": 140600,
-      "score": 5,
-      "reason": "Rigorous defect report demonstrating constraint violation in multi-device allocation with an exact unit test case reproduction."
+      "reason": "Concrete performance regression report with quantitative benchmark comparison tables and reproducible test methodology across node variants.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 141648,
-      "score": 5,
-      "reason": "Thorough defect report highlighting a major behavior discrepancy where an omitted selector unexpectedly taints all cluster devices."
-    },
-    {
-      "pr": 139698,
-      "score": 5,
-      "reason": "Clear panic defect report detailing integer divide-by-zero during API validation with stack trace and Go test case."
-    },
-    {
-      "pr": 140227,
-      "score": 5,
-      "reason": "High-scale race condition report documenting duplicate claim creation with controller logs and clear scale-out parameters."
+      "reason": "Thorough defect report highlighting a major behavior discrepancy where an omitted selector unexpectedly taints all cluster devices.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 138510,
-      "score": 5,
-      "reason": "Precise mathematical defect report demonstrating incorrect rounding for small quantities with wolfram comparison and test tables."
+      "reason": "Precise mathematical defect report demonstrating incorrect rounding for small quantities with wolfram comparison and test tables.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 141938,
-      "score": 5,
-      "reason": "Clear API machinery bug report showing integer boundary parsing failures with concise Go reproduction snippets."
-    },
-    {
-      "pr": 138750,
-      "score": 5,
-      "reason": "Well-reproduced crash report with full stack traces and minimal code reproducing panic behavior in DeepCopyJSON."
-    },
-    {
-      "pr": 134540,
-      "score": 5,
-      "reason": "Realistic concurrency defect report from production detailing subPath creation collisions with exact kubelet error logs."
+      "reason": "Clear API machinery bug report showing integer boundary parsing failures with concise Go reproduction snippets.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 138367,
-      "score": 5,
-      "reason": "Practical, well-described volume lifecycle issue with kubelet error logs, lsof analysis, and expected termination semantics."
+      "reason": "Practical, well-described volume lifecycle issue with kubelet error logs, lsof analysis, and expected termination semantics.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 139237,
-      "score": 5,
-      "reason": "Highly actionable report detailing connection reuse issues to terminating admission controller pods during rollouts with diagnostic evidence."
-    },
-    {
-      "pr": 140163,
-      "score": 4,
-      "reason": "Good symptom-focused defect report showing high-volume log flooding that exhausts node disk space under debug verbosity."
+      "reason": "Highly actionable report detailing connection reuse issues to terminating admission controller pods during rollouts with diagnostic evidence.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 130551,
-      "score": 4,
-      "reason": "Solid defect report detailing container runtime sandbox conflicts delaying control plane startup after power cycles."
-    },
-    {
-      "pr": 138096,
-      "score": 4,
-      "reason": "Detailed timing breakdown from production showing node watcher race conditions during startup causing false affinity rejections."
-    },
-    {
-      "pr": 138127,
-      "score": 4,
-      "reason": "Concise, well-reasoned defect report explaining how hugepage reservations distort memory available calculations and delay evictions."
+      "reason": "Solid defect report detailing container runtime sandbox conflicts delaying control plane startup after power cycles.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 139275,
-      "score": 4,
-      "reason": "Solid storage recovery report documenting node restart mount failures with cluster topology details and host path checks."
-    },
-    {
-      "pr": 139791,
-      "score": 4,
-      "reason": "Clear prober defect report demonstrating obscured error reporting for missing named ports with minimal YAML reproduction."
+      "reason": "Solid storage recovery report documenting node restart mount failures with cluster topology details and host path checks.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 141077,
-      "score": 4,
-      "reason": "Good analysis of double-allocation accounting bugs during kubelet restart when restoring pod-level resource manager state."
-    },
-    {
-      "pr": 138903,
-      "score": 4,
-      "reason": "Clear regression report explaining stale cgroup v2 attributes left behind after disabling a feature gate, with repro steps."
-    },
-    {
-      "pr": 139238,
-      "score": 4,
-      "reason": "Solid scheduler performance report with pprof profiling snapshots showing throughput drops when scheduling pods with PVC mounts."
+      "reason": "Good analysis of double-allocation accounting bugs during kubelet restart when restoring pod-level resource manager state.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 141057,
-      "score": 4,
-      "reason": "Practical controller report describing how quota-induced scale-up failures prevent subsequent scale-down operations."
-    },
-    {
-      "pr": 137141,
-      "score": 4,
-      "reason": "Good crash report with 10,000-thread exhaustion stack traces, top memory statistics, and dbus signal leak tracing."
+      "reason": "Practical controller report describing how quota-induced scale-up failures prevent subsequent scale-down operations.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 139876,
-      "score": 4,
-      "reason": "Real-world defect report detailing pod termination deadlocks when multi-device resource claim preparation fails."
+      "reason": "Real-world defect report detailing pod termination deadlocks when multi-device resource claim preparation fails.",
+      "round": 1,
+      "score": 4
+    },
+    {
+      "pr": 137652,
+      "reason": "Clear symptom report detailing allocatable vs capacity format discrepancy in node status with exact CLI reproduction.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 140387,
+      "reason": "Exemplary defect report describing in-place memory resize failure for OOMKilled pods with minimal reproduction and clear symptom description.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 138139,
+      "reason": "Detailed defect report identifying incorrect memory.high calculation on cgroup v2 for BestEffort pods with manifest reproduction.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 139040,
+      "reason": "Clear defect report on DRA shared counter accounting during multi-allocation with complete ResourceSlice reproduction steps.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 138075,
+      "reason": "Concrete bug report on kube-apiserver etcd connection log spam with error output, though reproduction is environment-specific.",
+      "round": 2,
+      "score": 3
+    },
+    {
+      "pr": 138000,
+      "reason": "Documents genuine Windows DNS resolution failures under high pod churn, though reproduction takes days to observe.",
+      "round": 2,
+      "score": 3
+    },
+    {
+      "pr": 138757,
+      "reason": "Concise defect description identifying flawed minCount victim selection during workload preemption.",
+      "round": 2,
+      "score": 3
+    },
+    {
+      "pr": 138432,
+      "reason": "Describes distracting warning events on successful image pulls, but focuses heavily on user experience feedback.",
+      "round": 2,
+      "score": 2
+    },
+    {
+      "pr": 136411,
+      "reason": "Discusses unexpected CLI failure during container creation, but reads primarily as an API design debate.",
+      "round": 2,
+      "score": 2
+    },
+    {
+      "pr": 140607,
+      "reason": "Identifies an authorization fallback failure, but the issue body is copied from a pull request review comment.",
+      "round": 2,
+      "score": 2
+    },
+    {
+      "pr": 27122,
+      "reason": "Addresses init container handling in kubectl logs, but frames the issue as design questions rather than a concrete bug.",
+      "round": 2,
+      "score": 2
+    },
+    {
+      "pr": 131299,
+      "reason": "Describes CDI spec generation error when reusing admin claims, but asks an open design question deferring to Slack.",
+      "round": 2,
+      "score": 2
+    },
+    {
+      "pr": 139904,
+      "reason": "Identifies unnecessary key traversal for unschedulable pods in node nominator, but names internal maps and helper methods.",
+      "round": 2,
+      "score": 2
+    },
+    {
+      "pr": 34574,
+      "reason": "Points to container restart backoff test failures, but relies almost entirely on external CI links.",
+      "round": 2,
+      "score": 2
+    },
+    {
+      "pr": 138940,
+      "reason": "Links directly to kube-proxy server.go source lines regarding bind address options.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 55956,
+      "reason": "Links directly to the git commit that caused the glusterfs volume size defect.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 139623,
+      "reason": "Feature request template proposing longer driver names in DRA kubelet plugin helper.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 139633,
+      "reason": "Feature request proposing alternative WithContext APIs across client-go and staging repos.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 140687,
+      "reason": "Feature request template for KEP-5304 proposing declarative validation for DRA device metadata.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 141641,
+      "reason": "Feature request template proposing error message wording improvements for OpenAPI MinProperties.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 138855,
+      "reason": "Feature request proposing retry logic with backoff for pod group binding API calls.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 139107,
+      "reason": "Feature request proposing node filtering flag support in kubectl top pods.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 139472,
+      "reason": "Feature request issue proposing nominated node name support in topology aware scheduling.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 139604,
+      "reason": "Feature request issue proposing Prometheus latency metrics for topology aware scheduling.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 128287,
+      "reason": "Feature gate proposal to disable in-place resize for guaranteed pods on static topology nodes.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 132342,
+      "reason": "High-level architectural design discussion on kubelet state machine integration for pod resizing.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 141463,
+      "reason": "Internal refactoring issue to eliminate scheduler dependency on apis/core/validation.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 140016,
+      "reason": "Refactoring task moving includes CEL function to standard CEL library from DRA.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 139395,
+      "reason": "KEP implementation tracking issue regarding stored expression evaluation under disabled feature gate.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 140363,
+      "reason": "Flaky test tracking issue for uncertain mount detach timeouts in volumemanager reconciler.",
+      "round": 2,
+      "score": 1
+    },
+    {
+      "pr": 140054,
+      "reason": "Flaking test tracking issue for scheduler preemption integration tests.",
+      "round": 2,
+      "score": 1
     }
   ]
 }

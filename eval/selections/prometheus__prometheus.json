@@ -1,256 +1,306 @@
 {
+  "criteria_version": 2,
   "repo": "prometheus/prometheus",
-  "criteria_version": 1,
   "selected": [
     {
-      "pr": 17031,
-      "score": 5,
-      "reason": "Provides a minimal standalone Go reproducer demonstrating incorrect AST position ranges for aggregations wrapped in parentheses."
-    },
-    {
-      "pr": 18229,
-      "score": 5,
-      "reason": "Exemplary report of a collector crash on malformed scrape metrics, with minimal input and standalone Go reproducers."
-    },
-    {
-      "pr": 19194,
-      "score": 5,
-      "reason": "Provides a comprehensive crash report with minimal configuration, step-by-step reproduction, and full nil pointer panic stack trace."
-    },
-    {
       "pr": 19516,
-      "score": 5,
-      "reason": "Documents a regex matcher false positive with a minimal standalone Go reproducer comparing against stdlib RE2."
+      "reason": "Documents a regex matcher false positive with a minimal standalone Go reproducer comparing against stdlib RE2.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 17817,
-      "score": 5,
-      "reason": "Clearly demonstrates a PromQL info() defect with sample metrics, contrasting working queries against failing queries."
+      "reason": "Clearly demonstrates a PromQL info() defect with sample metrics, contrasting working queries against failing queries.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 16713,
-      "score": 5,
-      "reason": "Demonstrates parser operator precedence defects in offset arithmetic using concrete curl commands and contrasting results."
-    },
-    {
-      "pr": 17146,
-      "score": 5,
-      "reason": "Documents real-world data corruption during histogram conversion with complete configuration, affected services, and remote storage rejection logs."
-    },
-    {
-      "pr": 17424,
-      "score": 5,
-      "reason": "Thoroughly analyzes histogram_fraction returning NaN for classic histograms when lower bound falls in the first bucket, with arithmetic proofs."
+      "reason": "Demonstrates parser operator precedence defects in offset arithmetic using concrete curl commands and contrasting results.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 18219,
-      "score": 5,
-      "reason": "Provides exact Windows commands and startup flags reproducing a complete TSDB block writing failure with API error responses."
-    },
-    {
-      "pr": 18409,
-      "score": 5,
-      "reason": "Presents a concise PromQL test reproducing an inconsistency where last_over_time fails to drop metric names when wrapping name-dropping functions."
+      "reason": "Provides exact Windows commands and startup flags reproducing a complete TSDB block writing failure with API error responses.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 18778,
-      "score": 5,
-      "reason": "Supplies exact Docker commands reproducing an issue where docker_sd_configs discovers IPv6-only containers with missing host addresses."
+      "reason": "Supplies exact Docker commands reproducing an issue where docker_sd_configs discovers IPv6-only containers with missing host addresses.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 19187,
-      "score": 5,
-      "reason": "Supplies a comprehensive PromQL evaluation suite demonstrating that step-invariant subqueries inside non-step-invariant functions yield empty results."
-    },
-    {
-      "pr": 19343,
-      "score": 5,
-      "reason": "Masterful report of a severe regression where empty OTLP data points roll back and 500 entire batches, detailing production impact and cause."
+      "reason": "Supplies a comprehensive PromQL evaluation suite demonstrating that step-invariant subqueries inside non-step-invariant functions yield empty results.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 16478,
-      "score": 4,
-      "reason": "Documents inconsistent millisecond selector formatting in query explanations with clear concrete examples and screenshots."
+      "reason": "Documents inconsistent millisecond selector formatting in query explanations with clear concrete examples and screenshots.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 17387,
-      "score": 4,
-      "reason": "Contrasts direct scraping with Remote Write v2 agent forwarding to clearly demonstrate missing type labels with configs and curl commands."
+      "reason": "Contrasts direct scraping with Remote Write v2 agent forwarding to clearly demonstrate missing type labels with configs and curl commands.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 17486,
-      "score": 4,
-      "reason": "Reports a concrete UI performance regression on the alerts page with an external reproducer and network inspection screenshots."
+      "reason": "Reports a concrete UI performance regression on the alerts page with an external reproducer and network inspection screenshots.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 18375,
-      "score": 4,
-      "reason": "Explains how templated alerting rules cause alert state loss and refirings across restarts, supported by unit test assertion diffs."
-    },
-    {
-      "pr": 18725,
-      "score": 4,
-      "reason": "Details a reproducible Windows build failure in the lezer-promql UI module with exact shell commands and Rollup error logs."
+      "reason": "Explains how templated alerting rules cause alert state loss and refirings across restarts, supported by unit test assertion diffs.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 14078,
-      "score": 4,
-      "reason": "Detailed real-world bug report describing data corruption and unexpected series creation when sample_age_limit is triggered after an outage."
-    },
-    {
-      "pr": 18020,
-      "score": 4,
-      "reason": "Identifies an engine panic when using the @ modifier on empty ranges across several functions, with unit test cases and panic traces."
+      "reason": "Detailed real-world bug report describing data corruption and unexpected series creation when sample_age_limit is triggered after an outage.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 15260,
-      "score": 4,
-      "reason": "Identifies a scrape parsing error when an exemplar label key contains quotes, providing the exact metric line and parser error."
+      "reason": "Identifies a scrape parsing error when an exemplar label key contains quotes, providing the exact metric line and parser error.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 15489,
-      "score": 4,
-      "reason": "Documents that always_scrape_classic_histograms fails to update scrape behavior during configuration hot reload, with full config and curl steps."
-    },
-    {
-      "pr": 16174,
-      "score": 4,
-      "reason": "Reports false-positive duplicate timestamp alerts following a version upgrade, supported by correlated debug logs showing scrape EOF handling."
+      "reason": "Documents that always_scrape_classic_histograms fails to update scrape behavior during configuration hot reload, with full config and curl steps.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 16340,
-      "score": 4,
-      "reason": "Describes a failure of auto-reload-config when referenced files are in subdirectories, contrasting working same-directory paths with failing subpaths."
+      "reason": "Describes a failure of auto-reload-config when referenced files are in subdirectories, contrasting working same-directory paths with failing subpaths.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 16604,
-      "score": 4,
-      "reason": "Reports a UI discrepancy where the service discovery overview incorrectly displays a fixed count of 100 dropped targets regardless of actual count."
+      "reason": "Reports a UI discrepancy where the service discovery overview incorrectly displays a fixed count of 100 dropped targets regardless of actual count.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 16794,
-      "score": 4,
-      "reason": "Identifies duplicate monotonicity warning annotations in range queries when delayed name removal is disabled, showing exact input series and annotations."
-    },
-    {
-      "pr": 17029,
-      "score": 4,
-      "reason": "Details a TSDB WAL checkpoint bug where series references are dropped prematurely for samples kept across non-time-aligned segments."
+      "reason": "Identifies duplicate monotonicity warning annotations in range queries when delayed name removal is disabled, showing exact input series and annotations.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 17355,
-      "score": 4,
-      "reason": "Reports AWS EC2 service discovery breaking after upgrading to 3.7.0 due to cached credential refresh errors, with config and error logs."
+      "reason": "Reports AWS EC2 service discovery breaking after upgrading to 3.7.0 due to cached credential refresh errors, with config and error logs.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 17605,
-      "score": 4,
-      "reason": "Provides a clean, reproducible report of the UI autocomplete repeatedly inserting an errant 'd' character when editing rate durations."
+      "reason": "Provides a clean, reproducible report of the UI autocomplete repeatedly inserting an errant 'd' character when editing rate durations.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 17682,
-      "score": 4,
-      "reason": "Shows Prometheus failing to recognize HELP and TYPE metadata for OpenMetrics counters with full HTTP curl scrape payloads."
-    },
-    {
-      "pr": 18006,
-      "score": 4,
-      "reason": "Demonstrates a contradiction between documentation and implementation regarding node selectors in Kubernetes pod service discovery."
+      "reason": "Shows Prometheus failing to recognize HELP and TYPE metadata for OpenMetrics counters with full HTTP curl scrape payloads.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 18192,
-      "score": 4,
-      "reason": "Documents duplicate target scraping under Kubernetes EndpointSlice discovery when ipFamilyPolicy=PreferDualStack is used on dual-stack services."
+      "reason": "Documents duplicate target scraping under Kubernetes EndpointSlice discovery when ipFamilyPolicy=PreferDualStack is used on dual-stack services.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 18323,
-      "score": 4,
-      "reason": "Reports Azure service discovery breaking with system managed identities after upgrading to 3.4.0 due to an unhandled empty client ID error."
+      "reason": "Reports Azure service discovery breaking with system managed identities after upgrading to 3.4.0 due to an unhandled empty client ID error.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 18401,
-      "score": 4,
-      "reason": "Documents an integer overflow on large datasets where the TSDB web UI displays negative numbers for total chunk counts."
-    },
-    {
-      "pr": 18653,
-      "score": 4,
-      "reason": "Shows YAML marshaling dropping explicit empty replacement and separator fields in relabel configs, corrupting serialized configurations."
+      "reason": "Documents an integer overflow on large datasets where the TSDB web UI displays negative numbers for total chunk counts.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 18658,
-      "score": 4,
-      "reason": "Shows the UI improperly handling escaped characters in label matchers, causing queries copied from UI tables to return empty results."
+      "reason": "Shows the UI improperly handling escaped characters in label matchers, causing queries copied from UI tables to return empty results.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 18682,
-      "score": 4,
-      "reason": "Documents insufficient significant digits in React UI Y-axis graph labels over small numerical ranges, causing identical label values."
+      "reason": "Documents insufficient significant digits in React UI Y-axis graph labels over small numerical ranges, causing identical label values.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 18772,
-      "score": 4,
-      "reason": "Reports Scaleway service discovery failing to discover VPC/IPAM instances because private IPs reside in nested private_nics structures."
+      "reason": "Reports Scaleway service discovery failing to discover VPC/IPAM instances because private IPs reside in nested private_nics structures.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 19404,
-      "score": 4,
-      "reason": "Explains how Kubernetes service discovery load balancer IP metadata is empty in newer Kubernetes versions due to spec field deprecation."
+      "reason": "Explains how Kubernetes service discovery load balancer IP metadata is empty in newer Kubernetes versions due to spec field deprecation.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 15431,
-      "score": 4,
-      "reason": "Identifies that direct subquery results incorrectly include the left boundary timestamp, conflicting with left-open range selector semantics."
-    },
-    {
-      "pr": 15434,
-      "score": 4,
-      "reason": "Reports memory exhaustion when query logging is enabled in Prometheus 3.0, backed by pprof heap analysis isolating buffer allocations."
-    },
-    {
-      "pr": 15562,
-      "score": 4,
-      "reason": "Reports a fatal crash from concurrent map writes in logging dedupers with full panic stack dump and version information."
-    },
-    {
-      "pr": 16060,
-      "score": 4,
-      "reason": "Presents a clear step-by-step trace of how duplicate series record handling across WAL checkpoints and replays leads to dropped samples."
-    },
-    {
-      "pr": 16332,
-      "score": 4,
-      "reason": "Reports a startup crash with an unlocked mutex panic triggered specifically by enabling created-timestamp-zero-ingestion."
+      "reason": "Identifies that direct subquery results incorrectly include the left boundary timestamp, conflicting with left-open range selector semantics.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 16623,
-      "score": 4,
-      "reason": "Reports TSDB compaction failures and missing metrics following an upgrade to 3.3.0, including persistent alignment error logs."
-    },
-    {
-      "pr": 16352,
-      "score": 3,
-      "reason": "Provides a query reproducing a panic when subquery range is smaller than resolution in parameterized aggregations, though primarily diagnosing the code line."
-    },
-    {
-      "pr": 16404,
-      "score": 3,
-      "reason": "Clearly explains a PromQL range query bug where parameterized aggregations only evaluate the parameter at the first time step, with a pointer to the implementation."
-    },
-    {
-      "pr": 18628,
-      "score": 3,
-      "reason": "Identifies a startup failure when percentage retention is configured but the metric data directory does not yet exist."
-    },
-    {
-      "pr": 19460,
-      "score": 3,
-      "reason": "Documents a deadlock between series garbage collection and chunk memory-mapping with goroutine stack traces showing lock inversion."
+      "reason": "Reports TSDB compaction failures and missing metrics following an upgrade to 3.3.0, including persistent alignment error logs.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 15895,
-      "score": 3,
-      "reason": "Documents confusing warning annotations with empty metric names when binary operators encounter incompatible native histogram layouts."
+      "reason": "Documents confusing warning annotations with empty metric names when binary operators encounter incompatible native histogram layouts.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 17329,
+      "reason": "Detailed report with configuration and architecture diagram showing type and unit labels are dropped over Remote Write 2.0.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 15828,
+      "reason": "Concise defect report showing that forced monotonicity annotations in PromQL omit the metric name.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 16052,
+      "reason": "Reports that Prometheus erroneously defaults GOGC to 0 rather than 75 when started with an empty configuration file.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 16403,
+      "reason": "Provides exact test syntax demonstrating a parser syntax error when loading native histograms with multiple increment expressions.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 17210,
+      "reason": "Identifies that invalid native histogram requests return an HTTP 500 internal server error instead of an HTTP 400 bad request.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 17703,
+      "reason": "Clear PromQL test case demonstrating that range queries using label_replace fail on series that do not overlap in time.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 18069,
+      "reason": "Demonstrates a severe performance discrepancy where the label values API is drastically slower than the equivalent series API.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 19181,
+      "reason": "Thorough accessibility report documenting that rule group label colors on the alerts page fail WCAG contrast requirements.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 17250,
+      "reason": "Reports that Remote Write 2.0 silently drops exemplars lacking series or histograms while returning a success status code.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 17602,
+      "reason": "Reports a web UI editor defect where autocompletion suggestions continue to appear after a vector selector closing brace.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 17687,
+      "reason": "Identifies that format_query outputs unquoted UTF-8 label names in binary query clauses, producing invalid PromQL syntax.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 13241,
+      "reason": "Well-structured report showing that Azure service discovery fails to populate the public IP label on discovered virtual machines.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 17546,
+      "reason": "Clear reproduction showing type and unit labels are not visible on the receiver when sending via Remote Write 2.0 from an agent.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 16558,
+      "reason": "Explains that the GOGC environment variable is ignored and defaults to 75 when no runtime configuration block is present.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 17344,
+      "reason": "Documents a regression where OpenTelemetry metric attribute names starting with underscores lose their prefix when translated.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 18706,
+      "reason": "Reports a web UI defect where rule names on the rules page cannot be selected or copied because clicking toggles collapse.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 16910,
+      "reason": "Reports that the Explore Metrics interface drops TYPE and HELP metadata for non-histogram metrics ending with _count.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 19025,
+      "reason": "Documents that the TSDB status page renders admin-only form controls even when the admin API feature is disabled.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 16601,
+      "reason": "Highlights a critical startup order defect where WAL replay occurs before validating alert rules, causing recovery failure loops.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 15731,
+      "reason": "Detailed investigation into memory churn and CPU overhead caused by protobuf parsing when scraping native histograms.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 17611,
+      "reason": "Visual regression report highlighting significant loss of information density on the alerts page in version 3.",
+      "round": 2,
+      "score": 3
     }
   ]
 }

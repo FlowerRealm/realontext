@@ -1,256 +1,306 @@
 {
+  "criteria_version": 2,
   "repo": "microsoft/vscode",
-  "criteria_version": 1,
   "selected": [
     {
       "pr": 335206,
-      "score": 5,
-      "reason": "In-app update fails to install and unexpectedly opens the browser to download a raw zip archive instead of updating in place."
-    },
-    {
-      "pr": 335241,
-      "score": 5,
-      "reason": "Activity and status bar icons render as broken glyphs in Remote-SSH sessions due to glicons font loading failure."
-    },
-    {
-      "pr": 326383,
-      "score": 5,
-      "reason": "Standard clipboard shortcuts fail to function inside the integrated browser view when using non-Latin keyboard layouts."
+      "reason": "In-app update fails to install and unexpectedly opens the browser to download a raw zip archive instead of updating in place.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 320898,
-      "score": 5,
-      "reason": "Korean IME composition keystrokes are dropped or corrupted when typing into the Markdown preview find input."
+      "reason": "Korean IME composition keystrokes are dropped or corrupted when typing into the Markdown preview find input.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 318756,
-      "score": 5,
-      "reason": "Dragging a file while holding Shift into one terminal editor erroneously inserts the path into all other open terminal editors."
+      "reason": "Dragging a file while holding Shift into one terminal editor erroneously inserts the path into all other open terminal editors.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 327841,
-      "score": 5,
-      "reason": "API keys copied from terminal with a trailing newline are stored untrimmed in SecretStorage, causing 403 authorization failures."
+      "reason": "API keys copied from terminal with a trailing newline are stored untrimmed in SecretStorage, causing 403 authorization failures.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 334864,
-      "score": 5,
-      "reason": "Primary sidebar width resets to its default narrow size whenever its visibility is toggled using the keyboard shortcut."
-    },
-    {
-      "pr": 334515,
-      "score": 5,
-      "reason": "Alt-Tabbing away from the editor leaves the tab close button visually and functionally stuck in the Close Others state."
-    },
-    {
-      "pr": 315184,
-      "score": 5,
-      "reason": "Completed progress notifications in Notification Center lose their individual close buttons and disable the Clear All action."
+      "reason": "Primary sidebar width resets to its default narrow size whenever its visibility is toggled using the keyboard shortcut.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 334945,
-      "score": 5,
-      "reason": "Agent can read arbitrary sensitive system files outside the workspace via terminal execution without prompting the user."
+      "reason": "Agent can read arbitrary sensitive system files outside the workspace via terminal execution without prompting the user.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 327742,
-      "score": 5,
-      "reason": "Sandboxed agent terminal commands crash in Linux devcontainers because unprivileged user namespaces are disallowed by bubblewrap."
+      "reason": "Sandboxed agent terminal commands crash in Linux devcontainers because unprivileged user namespaces are disallowed by bubblewrap.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 328081,
-      "score": 5,
-      "reason": "Contributed language model tools appear duplicated in the tool picker when defined in an extension manifest."
-    },
-    {
-      "pr": 335880,
-      "score": 5,
-      "reason": "Opening a custom contributed notebook fails to activate its designated serializer extension in recent Insiders builds."
+      "reason": "Contributed language model tools appear duplicated in the tool picker when defined in an extension manifest.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 313185,
-      "score": 5,
-      "reason": "Command line argument --no-proxy-server fails on startup with an error requiring a non-empty value."
+      "reason": "Command line argument --no-proxy-server fails on startup with an error requiring a non-empty value.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 327074,
-      "score": 5,
-      "reason": "Setting the per-group editor limit to 1 triggers an infinite open-close loop that freezes the Agents window UI."
+      "reason": "Setting the per-group editor limit to 1 triggers an infinite open-close loop that freezes the Agents window UI.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 327160,
-      "score": 5,
-      "reason": "Subagent declaring a different model than its parent session fails with a WebSocket error disallowing model changes."
+      "reason": "Subagent declaring a different model than its parent session fails with a WebSocket error disallowing model changes.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 327192,
-      "score": 5,
-      "reason": "Local file attachments fail to transfer to remote Agent Host sessions, rendering them unreadable by the remote agent."
-    },
-    {
-      "pr": 327666,
-      "score": 5,
-      "reason": "Screen reader announcements for inline next-edit suggestions are emitted empty or truncated in the ARIA live region."
+      "reason": "Local file attachments fail to transfer to remote Agent Host sessions, rendering them unreadable by the remote agent.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 326864,
-      "score": 5,
-      "reason": "Integrated browser misinterprets URLs containing spaces as search queries instead of percent-encoding them."
+      "reason": "Integrated browser misinterprets URLs containing spaces as search queries instead of percent-encoding them.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 327225,
-      "score": 5,
-      "reason": "Creating draft chat sessions repeatedly leaks orphaned terminal subscriptions and server processes without cleanup."
-    },
-    {
-      "pr": 326753,
-      "score": 5,
-      "reason": "Pending VS Code updates hold an InnoSetup mutex that blocks extension test runner installations until all instances are restarted."
+      "reason": "Creating draft chat sessions repeatedly leaks orphaned terminal subscriptions and server processes without cleanup.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 326750,
-      "score": 5,
-      "reason": "Copilot chat intermittently drops the final assistant summary message after tool call execution turns."
+      "reason": "Copilot chat intermittently drops the final assistant summary message after tool call execution turns.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 334063,
-      "score": 5,
-      "reason": "Session start hooks defined in the codex configuration file fail to trigger or execute commands."
+      "reason": "Session start hooks defined in the codex configuration file fail to trigger or execute commands.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 334929,
-      "score": 5,
-      "reason": "Codex fails to discover and load agent skills from configured skill location directories."
+      "reason": "Codex fails to discover and load agent skills from configured skill location directories.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 327095,
-      "score": 5,
-      "reason": "Git worktrees created for agent chat sessions are left orphaned on disk after sessions are marked completed."
+      "reason": "Git worktrees created for agent chat sessions are left orphaned on disk after sessions are marked completed.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 327877,
-      "score": 4,
-      "reason": "Switching models mid-conversation from Qwen to Kimi fails because tool call IDs are not normalized for Kimi."
+      "reason": "Switching models mid-conversation from Qwen to Kimi fails because tool call IDs are not normalized for Kimi.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 335447,
-      "score": 4,
-      "reason": "Customization discovery floods the logs with thousands of ENOENT stack traces for non-existent optional config directories."
+      "reason": "Customization discovery floods the logs with thousands of ENOENT stack traces for non-existent optional config directories.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 326902,
-      "score": 4,
-      "reason": "Agent host and Copilot CLI processes launch automatically even when AI features are explicitly disabled in user settings."
+      "reason": "Agent host and Copilot CLI processes launch automatically even when AI features are explicitly disabled in user settings.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 327302,
-      "score": 4,
-      "reason": "Copilot chat initialization fails on ARM64 Linux due to an invalid binary path lookup for the bundled ripgrep executable."
+      "reason": "Copilot chat initialization fails on ARM64 Linux due to an invalid binary path lookup for the bundled ripgrep executable.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 327345,
-      "score": 4,
-      "reason": "Clicking the speech-to-text button initiates a download that cannot be stopped or cancelled by clicking again."
+      "reason": "Clicking the speech-to-text button initiates a download that cannot be stopped or cancelled by clicking again.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 327652,
-      "score": 4,
-      "reason": "Selected chat model unexpectedly resets back to default when navigating between multiple open chat sessions."
+      "reason": "Selected chat model unexpectedly resets back to default when navigating between multiple open chat sessions.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 327693,
-      "score": 4,
-      "reason": "Restarting the Copilot client during settings changes resets the model picker to a random BYOK model."
+      "reason": "Restarting the Copilot client during settings changes resets the model picker to a random BYOK model.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 328044,
-      "score": 4,
-      "reason": "Voice mode appears visually active in newly opened sessions but fails to receive audio or accept spoken input."
+      "reason": "Voice mode appears visually active in newly opened sessions but fails to receive audio or accept spoken input.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 334593,
-      "score": 4,
-      "reason": "MCP server credentials are not retained across chat sessions, requiring manual re-authentication on every new session."
+      "reason": "MCP server credentials are not retained across chat sessions, requiring manual re-authentication on every new session.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 334654,
-      "score": 4,
-      "reason": "Conflicting device and server sandbox policies cause managed sandbox enforcement to be unexpectedly dropped."
+      "reason": "Conflicting device and server sandbox policies cause managed sandbox enforcement to be unexpectedly dropped.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 335700,
-      "score": 4,
-      "reason": "Source control status badges for modified and untracked files render at inconsistent sizes and misaligned."
+      "reason": "Source control status badges for modified and untracked files render at inconsistent sizes and misaligned.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 327381,
-      "score": 4,
-      "reason": "Inline clipboard images attached to Agent Host chats render as broken images after reloading the window."
+      "reason": "Inline clipboard images attached to Agent Host chats render as broken images after reloading the window.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 327387,
-      "score": 4,
-      "reason": "Steering messages submitted in one chat fork erroneously affect and alter the execution of other active forks."
-    },
-    {
-      "pr": 335120,
-      "score": 4,
-      "reason": "Equal-share layout algorithm shrinks customization list sections to tiny one-row scrollable boxes when multiple sections exist."
-    },
-    {
-      "pr": 335872,
-      "score": 4,
-      "reason": "Check-before-await race condition in session cleanup allows permanent deletion or archival using stale eligibility state."
+      "reason": "Steering messages submitted in one chat fork erroneously affect and alter the execution of other active forks.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 327011,
-      "score": 4,
-      "reason": "Configured default chat model is ignored in local sessions, which retain the previous session's selected model instead."
+      "reason": "Configured default chat model is ignored in local sessions, which retain the previous session's selected model instead.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 327677,
-      "score": 4,
-      "reason": "Main menu items overflowing into the ellipsis menu are unexpectedly styled with prominent yellow borders."
+      "reason": "Main menu items overflowing into the ellipsis menu are unexpectedly styled with prominent yellow borders.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 328028,
-      "score": 4,
-      "reason": "Symlinked directories in the Agents view display multiple duplicate symlink icon decorations."
-    },
-    {
-      "pr": 326535,
-      "score": 3,
-      "reason": "Foreground chat session count updates cause repeated synchronous DOM reflows that degrade UI responsiveness."
-    },
-    {
-      "pr": 326961,
-      "score": 3,
-      "reason": "Large chat responses remain visually clipped until an explicit window resize forces the virtualized list to re-measure."
-    },
-    {
-      "pr": 327483,
-      "score": 3,
-      "reason": "Startup configuration changes during an active turn restart the client mid-stream and cause the session to hang indefinitely."
-    },
-    {
-      "pr": 325833,
-      "score": 3,
-      "reason": "Inbound Anthropic document blocks are silently dropped by the language model server without error notifications."
+      "reason": "Symlinked directories in the Agents view display multiple duplicate symlink icon decorations.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 327450,
-      "score": 3,
-      "reason": "Sessions approved out of plan mode revert back to plan mode upon reload due to unpersisted server-dispatched state."
+      "reason": "Sessions approved out of plan mode revert back to plan mode upon reload due to unpersisted server-dispatched state.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 335860,
-      "score": 3,
-      "reason": "Migrations panel enters a continuous flickering refresh loop when multi-root workspaces share identical MCP configs."
+      "reason": "Migrations panel enters a continuous flickering refresh loop when multi-root workspaces share identical MCP configs.",
+      "round": 1,
+      "score": 3
     },
     {
       "pr": 335242,
-      "score": 3,
-      "reason": "Reloading the Agents window unexpectedly closes open subagent tabs while preserving top-level session tabs."
+      "reason": "Reloading the Agents window unexpectedly closes open subagent tabs while preserving top-level session tabs.",
+      "round": 1,
+      "score": 3
+    },
+    {
+      "pr": 327553,
+      "reason": "Clear reproduction steps and expected versus actual behavior for an incorrect hover tooltip appearing over the cache break tip.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 326889,
+      "reason": "Detailed reproduction steps and system information demonstrating that force-submitting a steering message hangs the chat and fails to render the response.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 335011,
+      "reason": "Clear defect report showing that configuring migrationHint to once still displays the hint repeatedly across messages.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 335318,
+      "reason": "Precise reproduction showing that pressing Escape with an active context menu closes the parent modal instead of only the context menu.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 335439,
+      "reason": "Clear defect report identifying that the documentation link in the skills configuration dialog routes to prompt files instead of agent skills.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 335878,
+      "reason": "Well-structured reproduction steps showing that the MCP Server migration section fails to display when reopening the workspace in a dev container.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 327044,
+      "reason": "Succinct reproduction steps demonstrating that browser tool call links degrade to non-interactive plain text after reloading the window.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 327046,
+      "reason": "Clear steps showing that restarting VS Code renders an unclickable browser UUID pill as implicit context.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 334911,
+      "reason": "Clear bug report showing that newly created file links generated on Windows fail to open due to an incorrect file path format.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 333998,
+      "reason": "Straightforward reproduction and environment details showing that dragging a session from a custom group back to its workspace group fails.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 327931,
+      "reason": "Step-by-step reproduction and screenshots showing that clicking into the Ask Question input unexpectedly deselects previously selected text.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 335089,
+      "reason": "Clear steps demonstrating that arrow keys fail to cycle between chat tabs in the agents window as expected.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 334215,
+      "reason": "Reproduction steps showing that the implicit PR attachment prompt reappears after the pull request is already attached.",
+      "round": 2,
+      "score": 5
     }
   ]
 }

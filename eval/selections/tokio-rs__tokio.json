@@ -1,256 +1,306 @@
 {
+  "criteria_version": 2,
   "repo": "tokio-rs/tokio",
-  "criteria_version": 1,
   "selected": [
     {
-      "pr": 5630,
-      "score": 5,
-      "reason": "Reports a wheel indexing panic in DelayQueue after 2^36 milliseconds with an exact reproducer using paused time."
-    },
-    {
-      "pr": 7139,
-      "score": 5,
-      "reason": "Identifies an unexpected EOF signal after calling poll_read with an empty buffer, complete with a minimal reproducer and panic trace."
-    },
-    {
-      "pr": 7882,
-      "score": 5,
-      "reason": "Details a timing race in tokio-test resulting in unexpected WouldBlock errors, complete with deterministic reproduction via gdb."
-    },
-    {
-      "pr": 6194,
-      "score": 5,
-      "reason": "Provides a clear reproducer and full backtrace for an assertion panic in task state during tokio_taskdump."
-    },
-    {
       "pr": 1520,
-      "score": 5,
-      "reason": "Demonstrates a compilation failure in assert_pending! formatting arguments with a minimal test and precise compiler errors."
-    },
-    {
-      "pr": 4485,
-      "score": 5,
-      "reason": "Documents a panic when spawn_blocking exceeds the OS thread limit with reproduction steps under ulimit and full backtrace."
-    },
-    {
-      "pr": 4976,
-      "score": 5,
-      "reason": "Reports a regression where storing a LocalSet in thread-local storage triggers an AccessError panic, with a minimal reproducer."
-    },
-    {
-      "pr": 5328,
-      "score": 5,
-      "reason": "Pinpoints an arithmetic overflow panic in the tinyhttp example when handling HTTP requests, with exact reproduction commands and backtrace."
+      "reason": "Demonstrates a compilation failure in assert_pending! formatting arguments with a minimal test and precise compiler errors.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 6080,
-      "score": 5,
-      "reason": "Describes an arithmetic overflow in tokio::io::Take on 32-bit targets with a clean unit test and cross-compilation instructions."
-    },
-    {
-      "pr": 6638,
-      "score": 5,
-      "reason": "Clearly illustrates payload truncation in LengthDelimitedCodec when num_skip is zero using a diagram, test case, and assertion failure."
-    },
-    {
-      "pr": 6838,
-      "score": 5,
-      "reason": "Shows an erroneous null byte prefix when binding abstract Unix domain sockets using netstat output and a concise reproduction snippet."
-    },
-    {
-      "pr": 6846,
-      "score": 5,
-      "reason": "Demonstrates how watch::Receiver::changed creates a spin loop that prevents runtime shutdown, contrasting it with mpsc behavior."
+      "reason": "Describes an arithmetic overflow in tokio::io::Take on 32-bit targets with a clean unit test and cross-compilation instructions.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 7164,
-      "score": 5,
-      "reason": "Reports an MPSC channel hang after receiving exactly 128 items during repeated polling, accompanied by a minimal reproducer and logs."
+      "reason": "Reports an MPSC channel hang after receiving exactly 128 items during repeated polling, accompanied by a minimal reproducer and logs.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 7394,
-      "score": 5,
-      "reason": "Identifies an arithmetic overflow panic when advancing paused time by Duration::MAX with a concise unit test."
-    },
-    {
-      "pr": 7686,
-      "score": 5,
-      "reason": "Documents inconsistent return values between try_recv and poll_recv after closing an MPSC receiver with a minimal code example."
-    },
-    {
-      "pr": 8062,
-      "score": 5,
-      "reason": "Provides a fast, standalone reproducer for an arithmetic overflow panic in MPSC list handling when combining PollSender and is_empty."
-    },
-    {
-      "pr": 8323,
-      "score": 5,
-      "reason": "Clearly shows zero-length operations on duplex and simplex streams erroneously returning Pending with a self-contained reproducer."
-    },
-    {
-      "pr": 5375,
-      "score": 5,
-      "reason": "Details a critical Pin contract violation and unsoundness in ReadHalf::unsplit with an extensive explanation and working proof of concept."
-    },
-    {
-      "pr": 8408,
-      "score": 5,
-      "reason": "Presents a deterministic reproducer demonstrating orphaned spawn_blocking tasks when thread creation encounters EAGAIN under process limits."
+      "reason": "Identifies an arithmetic overflow panic when advancing paused time by Duration::MAX with a concise unit test.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 4479,
-      "score": 5,
-      "reason": "Identifies a failure to transmit EOF on ChildStdin shutdown with a clear example and comparison to working alternatives."
+      "reason": "Identifies a failure to transmit EOF on ChildStdin shutdown with a clear example and comparison to working alternatives.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 4519,
-      "score": 5,
-      "reason": "Reports an off-by-one compiler limitation in the select! macro when handling 64 branches with a direct reproducer and error message."
-    },
-    {
-      "pr": 4555,
-      "score": 5,
-      "reason": "Documents an unexpected panic when attempting to listen to valid POSIX real-time signals with a concise reproducer."
-    },
-    {
-      "pr": 4582,
-      "score": 5,
-      "reason": "Shows UDP socket readability failing to wake up on Windows in try_io with a cross-platform reproducer and execution output."
+      "reason": "Reports an off-by-one compiler limitation in the select! macro when handling 64 branches with a direct reproducer and error message.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 4624,
-      "score": 5,
-      "reason": "Demonstrates cooperative scheduling starvation caused by repeated Semaphore acquires with a minimal two-task reproducer."
+      "reason": "Demonstrates cooperative scheduling starvation caused by repeated Semaphore acquires with a minimal two-task reproducer.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 4636,
-      "score": 5,
-      "reason": "Highlights an unexpected macro expansion bug in #[tokio::main] that permits arbitrary return values with concise code examples."
+      "reason": "Highlights an unexpected macro expansion bug in #[tokio::main] that permits arbitrary return values with concise code examples.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 4849,
-      "score": 5,
-      "reason": "Features a failing unit test demonstrating that Builder::worker_threads ignores configuration instead of panicking on current-thread runtimes."
-    },
-    {
-      "pr": 4867,
-      "score": 5,
-      "reason": "Reports an indefinite hang when awaiting recv on a resubscribed closed broadcast receiver with a complete Cargo and source reproducer."
+      "reason": "Features a failing unit test demonstrating that Builder::worker_threads ignores configuration instead of panicking on current-thread runtimes.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 5115,
-      "score": 5,
-      "reason": "Shows that paused time auto-advancement ignores active spawn_blocking tasks with a self-contained example showing premature timeouts."
-    },
-    {
-      "pr": 5208,
-      "score": 5,
-      "reason": "Provides a complete MCVE showing a 100% CPU freeze when using unidirectional Windows named pipes on a single-threaded runtime."
+      "reason": "Shows that paused time auto-advancement ignores active spawn_blocking tasks with a self-contained example showing premature timeouts.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 5222,
-      "score": 5,
-      "reason": "Demonstrates that TcpStream::try_io hangs indefinitely when queried with multiple readiness interests using a concise reproducer."
+      "reason": "Demonstrates that TcpStream::try_io hangs indefinitely when queried with multiple readiness interests using a concise reproducer.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 5468,
-      "score": 5,
-      "reason": "Identifies severe memory bloating in future sizes returned by tokio::time::timeout with a clean size comparison snippet."
-    },
-    {
-      "pr": 5471,
-      "score": 5,
-      "reason": "Exposes a re-entrant deadlock when dropping custom wakers in Notify and Semaphore with two targeted reproduction tests."
-    },
-    {
-      "pr": 5555,
-      "score": 5,
-      "reason": "Documents an infinite loop when iterating directory entries on Windows network shares with an async reproducer and synchronous baseline."
-    },
-    {
-      "pr": 5610,
-      "score": 5,
-      "reason": "Demonstrates redundant buffer growth in read_to_end when used with take limits through logged buffer capacity measurements."
-    },
-    {
-      "pr": 5772,
-      "score": 5,
-      "reason": "Features a crisp unit test showing broken runtime context state when interleaved Handle::enter guards are dropped out of order."
-    },
-    {
-      "pr": 5814,
-      "score": 5,
-      "reason": "Shows that tokio_test::io::Mock erroneously returns BrokenPipe on handle writes with a minimal reproducer and expected output."
-    },
-    {
-      "pr": 6016,
-      "score": 5,
-      "reason": "Demonstrates a current-thread runtime hang caused by LocalEnterGuard with a self-contained, minimal reproducer."
+      "reason": "Identifies severe memory bloating in future sizes returned by tokio::time::timeout with a clean size comparison snippet.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 6131,
-      "score": 5,
-      "reason": "Documents a metrics regression where worker busy duration continuously inflates on idle workloads with a reproducer and output values."
-    },
-    {
-      "pr": 6647,
-      "score": 5,
-      "reason": "Pinpoints an invalid generic parameter in StreamReader's Sink implementation with compiler error output and a reproduction snippet."
-    },
-    {
-      "pr": 6752,
-      "score": 5,
-      "reason": "Demonstrates a missing wakeup in DelayQueue when removing the last remaining element with a clean multithreaded reproducer."
+      "reason": "Documents a metrics regression where worker busy duration continuously inflates on idle workloads with a reproducer and output values.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 7041,
-      "score": 5,
-      "reason": "Identifies a platform-specific hang in tokio::time::timeout on WASI targets with a self-contained reproducer and execution logs."
+      "reason": "Identifies a platform-specific hang in tokio::time::timeout on WASI targets with a self-contained reproducer and execution logs.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 7216,
-      "score": 5,
-      "reason": "Reports a regression where acquiring a Mutex inside block_in_place hangs on the 129th iteration with a minimal reproducer."
+      "reason": "Reports a regression where acquiring a Mutex inside block_in_place hangs on the 129th iteration with a minimal reproducer.",
+      "round": 1,
+      "score": 5
     },
     {
-      "pr": 4478,
-      "score": 4,
-      "reason": "Shows task starvation in DuplexStream due to missing cooperative scheduling checks with a concise hanging test case."
+      "pr": 6744,
+      "reason": "Superb minimal reproducer showing Miri detecting undefined behavior under stacked and tree borrows.",
+      "round": 2,
+      "score": 5
     },
     {
-      "pr": 4747,
-      "score": 4,
-      "reason": "Reports an unwrap panic when enabling Notify futures as illustrated in documentation with code snippets and backtrace."
+      "pr": 6874,
+      "reason": "Detailed minimal reproducer showing clippy warning for needless return on macro-expanded code.",
+      "round": 2,
+      "score": 5
     },
     {
-      "pr": 5036,
-      "score": 4,
-      "reason": "Demonstrates an unexpected runtime context requirement during chunks_timeout stream construction with a minimal reproducer."
+      "pr": 5803,
+      "reason": "Clear reproducer demonstrating race condition where Clone misses ongoing operations.",
+      "round": 2,
+      "score": 5
     },
     {
-      "pr": 8222,
-      "score": 4,
-      "reason": "Details a failure to poll timer and I/O drivers when spawning tasks within on_thread_park on current-thread runtimes."
+      "pr": 5925,
+      "reason": "Comprehensive reproducible report and benchmark demonstrating quadratic latency slowdown in broadcast channel.",
+      "round": 2,
+      "score": 5
     },
     {
-      "pr": 2560,
-      "score": 4,
-      "reason": "Highlights redundant buffer zeroing across poll calls in read_to_end with reproduction code and execution times."
+      "pr": 7724,
+      "reason": "Concise minimal reproducer showing unexpected Operation Not Permitted error opening symlinks with io-uring.",
+      "round": 2,
+      "score": 5
     },
     {
-      "pr": 4649,
-      "score": 4,
-      "reason": "Documents a cross-compilation failure for 32-bit MIPS architectures caused by missing 64-bit atomics with compiler diagnostics."
+      "pr": 7752,
+      "reason": "Clear minimal reproducer demonstrating worker thread blocking caused by TcpStream::set_linger.",
+      "round": 2,
+      "score": 5
     },
     {
-      "pr": 4682,
-      "score": 4,
-      "reason": "Reports a feature-gating compilation error when combining process and rt without net under unstable cfg, including git bisect details."
+      "pr": 7766,
+      "reason": "Minimal code example proving join! macro leaks internal support traits into caller scope.",
+      "round": 2,
+      "score": 5
     },
     {
-      "pr": 7428,
-      "score": 4,
-      "reason": "Identifies a compilation failure when building for cargo fuzz with limited feature flags, accompanied by compiler error messages."
+      "pr": 7834,
+      "reason": "Detailed strace-verified reproduction of spurious write syscall on current_thread runtime.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 7856,
+      "reason": "Clear reproduction of misleading and inaccurate compiler error message produced by tokio::main macro.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 7872,
+      "reason": "Reproduction on ESP32 showing short-write optimization causes socket write to hang forever.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 7879,
+      "reason": "Well-explained defect scenario with repro demonstrating block_in_place stalls deferred wakers.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 7996,
+      "reason": "Minimal self-contained example demonstrating Notify::notify_one incorrectly overtaking notify_waiters.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 5504,
+      "reason": "Minimal reproduction showing empty join! and try_join! invocations cause deadlock by emitting empty loop.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 6414,
+      "reason": "Clear description of frame truncation and data corruption defect in LengthDelimitedCodec.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 7501,
+      "reason": "Clear minimal reproduction showing spawn_blocking during shutdown fails to execute closures.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 7584,
+      "reason": "Self-contained reproducer demonstrating watch::Receiver::has_changed fails to detect dropped sender.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 7638,
+      "reason": "Clean reproduction showing COUNT constant in join! macros collides with caller constants.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 6722,
+      "reason": "Minimal reproducer demonstrating select! macro failing to compile due to temporary value dropped while borrowed.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 6821,
+      "reason": "Clean reproduction showing AsyncFd fails to close underlying file descriptor on drop.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 7290,
+      "reason": "Reproduction showing TcpStream::shutdown on macOS localhost unexpectedly fails with NotConnected error.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 7773,
+      "reason": "Concrete reproducer demonstrating file descriptor memory leak when using AsyncFd.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 6221,
+      "reason": "Reproduction showing current_thread runtime fails to release open file handles once limit is hit.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 5762,
+      "reason": "Clear minimal example showing tokio::main proc macro attaches incorrect spans to user statements.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 5666,
+      "reason": "Technical issue explaining unnecessary T: Debug bound on TrySendError resulting in compile errors for users.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 5154,
+      "reason": "Detailed technical analysis showing tokio::sync::Notify violates UnwindSafe invariants.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 5438,
+      "reason": "Clear report identifying regression where CancellationToken lost UnwindSafe implementation in tokio-util.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 6265,
+      "reason": "Defect report explaining that io::copy can monopolize executor without yielding when copying repeatedly.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 7372,
+      "reason": "Clear report showing block_in_place unexpectedly fails to panic when invoked on spawn_local tasks.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 5509,
+      "reason": "Defect report demonstrating timeout unexpectedly elapses even when inner future resolves immediately.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 6779,
+      "reason": "Performance defect report showing unexpected heap allocations introduced in Tokio v1.38.1.",
+      "round": 2,
+      "score": 4
+    },
+    {
+      "pr": 5793,
+      "reason": "Defect report explaining how low max_blocking_threads causes runtime tasks to deadlock indefinitely on Windows pipes.",
+      "round": 2,
+      "score": 3
+    },
+    {
+      "pr": 6445,
+      "reason": "Defect report showing runtime Builder with global_queue_interval set to zero inverted scheduling order.",
+      "round": 2,
+      "score": 3
+    },
+    {
+      "pr": 6909,
+      "reason": "Bug report showing task spawning hooks display incorrect stability attributes.",
+      "round": 2,
+      "score": 3
+    },
+    {
+      "pr": 6239,
+      "reason": "Defect report showing Either type fails to implement Sink trait when both branches implement Sink.",
+      "round": 2,
+      "score": 3
+    },
+    {
+      "pr": 6235,
+      "reason": "Defect report showing io::Empty missing AsyncWrite implementation required by standard I/O combinators.",
+      "round": 2,
+      "score": 3
     }
   ]
 }

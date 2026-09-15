@@ -1,256 +1,306 @@
 {
+  "criteria_version": 2,
   "repo": "duckdb/duckdb",
-  "criteria_version": 1,
   "selected": [
     {
       "pr": 24752,
-      "score": 5,
-      "reason": "Exemplary defect report with bisection analysis and minimal reproducer demonstrating an optimizer crash during hash join statistics propagation."
-    },
-    {
-      "pr": 22134,
-      "score": 5,
-      "reason": "Complete, standalone C program proving data corruption during nested list appender writes when exceeding standard vector boundaries."
+      "reason": "Exemplary defect report with bisection analysis and minimal reproducer demonstrating an optimizer crash during hash join statistics propagation.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22538,
-      "score": 5,
-      "reason": "Detailed report with Python reproducer demonstrating silent string truncation to eight bytes during parquet min and max aggregations."
+      "reason": "Detailed report with Python reproducer demonstrating silent string truncation to eight bytes during parquet min and max aggregations.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 23389,
-      "score": 5,
-      "reason": "Exceptionally structured report with multiple control queries showing string-to-list casts failing when quoted fields contain closing braces."
+      "reason": "Exceptionally structured report with multiple control queries showing string-to-list casts failing when quoted fields contain closing braces.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 23422,
-      "score": 5,
-      "reason": "Comprehensive test cases proving regexp_replace silently returns corrupted strings instead of errors on malformed replacement patterns."
+      "reason": "Comprehensive test cases proving regexp_replace silently returns corrupted strings instead of errors on malformed replacement patterns.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 25101,
-      "score": 5,
-      "reason": "Detailed report with query plan comparisons and standalone SQL reproducing a native JVM crash in the JDBC driver after repeated executions."
+      "reason": "Detailed report with query plan comparisons and standalone SQL reproducing a native JVM crash in the JDBC driver after repeated executions.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22177,
-      "score": 5,
-      "reason": "Self-contained Python reproducer demonstrating a parquet union-by-name regression on optional nested struct fields."
+      "reason": "Self-contained Python reproducer demonstrating a parquet union-by-name regression on optional nested struct fields.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 23569,
-      "score": 5,
-      "reason": "Well-structured SQL reproducer showing a parser regression where inheriting from an earlier named window in the same clause fails."
+      "reason": "Well-structured SQL reproducer showing a parser regression where inheriting from an earlier named window in the same clause fails.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 21943,
-      "score": 5,
-      "reason": "Highly actionable report demonstrating a regression where regex-guarded CASE expressions with TRY(strptime) return uninitialized memory."
+      "reason": "Highly actionable report demonstrating a regression where regex-guarded CASE expressions with TRY(strptime) return uninitialized memory.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 23413,
-      "score": 5,
-      "reason": "Elegant SQL reproducer demonstrating that common subexpression elimination erroneously deduplicates separate calls to volatile functions."
-    },
-    {
-      "pr": 20042,
-      "score": 5,
-      "reason": "Well-documented CLI issue with debugger backtrace showing an indefinite startup hang due to blocking terminal background color detection."
+      "reason": "Elegant SQL reproducer demonstrating that common subexpression elimination erroneously deduplicates separate calls to volatile functions.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 24332,
-      "score": 5,
-      "reason": "Concise four-line SQL reproducer and AddressSanitizer trace for a fatal segfault when decoding malformed percent-encoded strings."
+      "reason": "Concise four-line SQL reproducer and AddressSanitizer trace for a fatal segfault when decoding malformed percent-encoded strings.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 20038,
-      "score": 5,
-      "reason": "Minimal SQL reproducer and stack trace showing a query decorrelation internal error triggered by an unused CTE."
+      "reason": "Minimal SQL reproducer and stack trace showing a query decorrelation internal error triggered by an unused CTE.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 20097,
-      "score": 5,
-      "reason": "Clear explanation of a CTE type inference regression that causes premature type binding and comparison errors with timestamps."
+      "reason": "Clear explanation of a CTE type inference regression that causes premature type binding and comparison errors with timestamps.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 16111,
-      "score": 5,
-      "reason": "Concise reproducer demonstrating optimizer filter reordering that prematurely executes an error-throwing function before its guard condition."
+      "reason": "Concise reproducer demonstrating optimizer filter reordering that prematurely executes an error-throwing function before its guard condition.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 16686,
-      "score": 5,
-      "reason": "Minimal SQL reproducer showing filter pushdown incorrectly eliminating rows when filtering dynamically on JSON keys."
+      "reason": "Minimal SQL reproducer showing filter pushdown incorrectly eliminating rows when filtering dynamically on JSON keys.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 16880,
-      "score": 5,
-      "reason": "Compact SQL reproducer demonstrating an incorrect query result where a RIGHT JOIN with a subquery returns rows violating the WHERE clause."
+      "reason": "Compact SQL reproducer demonstrating an incorrect query result where a RIGHT JOIN with a subquery returns rows violating the WHERE clause.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 17425,
-      "score": 5,
-      "reason": "Minimal SQL reproducer demonstrating an incorrect inner join result caused by evaluating NULL >= NULL as true."
+      "reason": "Minimal SQL reproducer demonstrating an incorrect inner join result caused by evaluating NULL >= NULL as true.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 19891,
-      "score": 5,
-      "reason": "Clear reproducer demonstrating an internal vector type error and database invalidation when calling APPROX_QUANTILE on TIME values."
+      "reason": "Clear reproducer demonstrating an internal vector type error and database invalidation when calling APPROX_QUANTILE on TIME values.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 21522,
-      "score": 5,
-      "reason": "Self-contained shell reproducer demonstrating a binder failure when streaming JSON from stdin to stdout with COPY TO."
+      "reason": "Self-contained shell reproducer demonstrating a binder failure when streaming JSON from stdin to stdout with COPY TO.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 21901,
-      "score": 5,
-      "reason": "Minimal SQL reproducer demonstrating that TRY_CAST raises a conversion error rather than returning NULL as documented."
+      "reason": "Minimal SQL reproducer demonstrating that TRY_CAST raises a conversion error rather than returning NULL as documented.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22073,
-      "score": 5,
-      "reason": "Concrete demonstration of a CLI regression where boolean values in JSON output mode are improperly emitted as strings."
+      "reason": "Concrete demonstration of a CLI regression where boolean values in JSON output mode are improperly emitted as strings.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22183,
-      "score": 5,
-      "reason": "Self-contained SQL example demonstrating that copying a table to Parquet fails to preserve NOT NULL column constraints in the schema."
+      "reason": "Self-contained SQL example demonstrating that copying a table to Parquet fails to preserve NOT NULL column constraints in the schema.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22208,
-      "score": 5,
-      "reason": "Reproducible SQL test showing that RESET memory_limit fails to restore default memory limits, triggering spurious out-of-memory errors."
+      "reason": "Reproducible SQL test showing that RESET memory_limit fails to restore default memory limits, triggering spurious out-of-memory errors.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22259,
-      "score": 5,
-      "reason": "Clear SQL examples demonstrating that casting from TIME to TIMETZ ignores session timezone offset and incorrectly hardcodes UTC."
+      "reason": "Clear SQL examples demonstrating that casting from TIME to TIMETZ ignores session timezone offset and incorrectly hardcodes UTC.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22646,
-      "score": 5,
-      "reason": "Step-by-step SQL test demonstrating that truncating log files deletes the CSV header and prevents subsequent log reading."
+      "reason": "Step-by-step SQL test demonstrating that truncating log files deletes the CSV header and prevents subsequent log reading.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22753,
-      "score": 5,
-      "reason": "Well-argued defect report with SQL examples showing that power with negative exponents returns infinity rather than a domain error."
+      "reason": "Well-argued defect report with SQL examples showing that power with negative exponents returns infinity rather than a domain error.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22783,
-      "score": 5,
-      "reason": "Self-contained SQL reproducer and error log demonstrating a column reference type mismatch internal error in LATERAL queries."
+      "reason": "Self-contained SQL reproducer and error log demonstrating a column reference type mismatch internal error in LATERAL queries.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22825,
-      "score": 5,
-      "reason": "Minimal SQL reproducer demonstrating a regression where case-insensitive column matching in INSERT on conflict fails NOT NULL checks."
+      "reason": "Minimal SQL reproducer demonstrating a regression where case-insensitive column matching in INSERT on conflict fails NOT NULL checks.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22839,
-      "score": 5,
-      "reason": "Clear SQL reproducer showing that MERGE unexpectedly reorders WHEN MATCHED clauses, incorrectly deleting updated rows."
+      "reason": "Clear SQL reproducer showing that MERGE unexpectedly reorders WHEN MATCHED clauses, incorrectly deleting updated rows.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22870,
-      "score": 5,
-      "reason": "Clear SQL reproducer and stack trace for an internal crash when passing NULL to boolean COPY options."
+      "reason": "Clear SQL reproducer and stack trace for an internal crash when passing NULL to boolean COPY options.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22874,
-      "score": 5,
-      "reason": "Precision-focused defect report demonstrating discrepancies between literal and cast floating-point parsing at binade boundaries."
+      "reason": "Precision-focused defect report demonstrating discrepancies between literal and cast floating-point parsing at binade boundaries.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22900,
-      "score": 5,
-      "reason": "Concrete SQL reproducer demonstrating that query optimization causes a premature parser error on valid JSON expressions."
+      "reason": "Concrete SQL reproducer demonstrating that query optimization causes a premature parser error on valid JSON expressions.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 22963,
-      "score": 5,
-      "reason": "Thorough report with Python reproducer demonstrating that a boolean INNER JOIN over a CTE incorrectly returns empty results."
-    },
-    {
-      "pr": 23105,
-      "score": 5,
-      "reason": "Clear SQL reproducer showing ORDER BY true/false erroneously bypassing literal validation and triggering unnecessary sort pipelines."
+      "reason": "Thorough report with Python reproducer demonstrating that a boolean INNER JOIN over a CTE incorrectly returns empty results.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 23206,
-      "score": 5,
-      "reason": "Precise SQL demonstration showing that json_tree and json_each improperly escape keys with dots, breaking subsequent json_extract calls."
+      "reason": "Precise SQL demonstration showing that json_tree and json_each improperly escape keys with dots, breaking subsequent json_extract calls.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 23491,
-      "score": 5,
-      "reason": "Compact SQL reproducer demonstrating that LIST DISTINCT with ORDER BY returns reversed results when evaluated as a window aggregate."
+      "reason": "Compact SQL reproducer demonstrating that LIST DISTINCT with ORDER BY returns reversed results when evaluated as a window aggregate.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 23637,
-      "score": 5,
-      "reason": "Compact SQL test case demonstrating a regression where COUNT over an inverted ROWS frame returns a negative count instead of zero."
-    },
-    {
-      "pr": 23667,
-      "score": 5,
-      "reason": "Self-contained SQL reproducer demonstrating that ROW_NUMBER over read_duckdb incorrectly emits zero-based internal row identifiers."
+      "reason": "Compact SQL test case demonstrating a regression where COUNT over an inverted ROWS frame returns a negative count instead of zero.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 23773,
-      "score": 5,
-      "reason": "Detailed SQL reproducer showing that scientific-notation strings with negative exponents erroneously round up when cast to decimal."
+      "reason": "Detailed SQL reproducer showing that scientific-notation strings with negative exponents erroneously round up when cast to decimal.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 17716,
-      "score": 5,
-      "reason": "Self-contained SQL reproducer and stack trace for an unexpected physical operator internal error during multi-join query execution."
-    },
-    {
-      "pr": 18749,
-      "score": 5,
-      "reason": "Clear Python reproduction script demonstrating an internal error when combining execute and lazy Polars evaluation."
-    },
-    {
-      "pr": 21686,
-      "score": 5,
-      "reason": "Clear SQL reproducer demonstrating an internal error where the binder fails to find a CTE definition in a macro with QUALIFY."
-    },
-    {
-      "pr": 24348,
-      "score": 5,
-      "reason": "Self-contained SQL proof-of-concept and debugger trace demonstrating a fatal crash on crafted CUME_DIST window frames."
+      "reason": "Self-contained SQL reproducer and stack trace for an unexpected physical operator internal error during multi-join query execution.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 25267,
-      "score": 5,
-      "reason": "Self-contained SQL test case and stack trace demonstrating an internal column reference binding error on nested QUALIFY queries."
+      "reason": "Self-contained SQL test case and stack trace demonstrating an internal column reference binding error on nested QUALIFY queries.",
+      "round": 1,
+      "score": 5
     },
     {
       "pr": 20983,
-      "score": 4,
-      "reason": "Clear reproduction on Windows showing IO Error when accessing parquet files on paths exceeding standard length limits."
+      "reason": "Clear reproduction on Windows showing IO Error when accessing parquet files on paths exceeding standard length limits.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 22922,
-      "score": 4,
-      "reason": "Clear SQL examples demonstrating inconsistent ISO-8601 timestamp parsing when trailing timezone Z is supplied without seconds."
+      "reason": "Clear SQL examples demonstrating inconsistent ISO-8601 timestamp parsing when trailing timezone Z is supplied without seconds.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 22923,
-      "score": 4,
-      "reason": "Concise SQL comparison showing that BIT comparison of unequal lengths truncates the operand and yields incorrect boolean results."
+      "reason": "Concise SQL comparison showing that BIT comparison of unequal lengths truncates the operand and yields incorrect boolean results.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 23280,
-      "score": 4,
-      "reason": "Two-line SQL reproducer triggering an internal VectorBuffer assertion failure when inserting into a nested struct with a variant field."
+      "reason": "Two-line SQL reproducer triggering an internal VectorBuffer assertion failure when inserting into a nested struct with a variant field.",
+      "round": 1,
+      "score": 4
     },
     {
       "pr": 23329,
-      "score": 4,
-      "reason": "Clear SQL test case demonstrating that the dateformat parameter in JSON export formats top-level fields but ignores nested dates."
+      "reason": "Clear SQL test case demonstrating that the dateformat parameter in JSON export formats top-level fields but ignores nested dates.",
+      "round": 1,
+      "score": 4
+    },
+    {
+      "pr": 25232,
+      "reason": "Parallel CSV reader produces duplicate rows without errors on files with Windows carriage-return line endings due to thread buffer boundary misalignment.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 17045,
+      "reason": "LEFT JOIN query with an inequality WHERE clause unexpectedly returns non-empty results even when the join predicate cannot evaluate to NULL.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 24696,
+      "reason": "Executing a prepared statement returns a stale zero count because the cached plan fails to reflect newly inserted rows.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 23947,
+      "reason": "Three-valued boolean logic incorrectly evaluates NULL OR false to false instead of NULL.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 24258,
+      "reason": "UNION ALL combining two filtered count aggregations incorrectly duplicates the result of the first query arm.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 24318,
+      "reason": "Hive partitioning incorrectly interprets the string literal 'NULL' as an SQL NULL value upon reading back partitioned Parquet files.",
+      "round": 2,
+      "score": 5
+    },
+    {
+      "pr": 24875,
+      "reason": "ROW_NUMBER with an argument ORDER BY evaluates to 0 rather than 1 over a legal singleton following ROWS frame.",
+      "round": 2,
+      "score": 5
     }
   ]
 }
