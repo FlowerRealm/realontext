@@ -570,6 +570,7 @@ D5（API-only 无法微调）造成的差距也因此无法直接量化——没
 | IDF | 全库统计 | `modules/lexical.md` |
 | 文件级排名 | 最高 Chunk 分与整文件 BM25 两个排名做 RRF 融合 | `modules/match.md` |
 | 测试代码 | 按路径识别，分数乘 0.5，不排除 | `modules/match.md` |
+| Chunk 排名 | 自身名次与所在文件名次做 RRF 融合 | `modules/match.md` |
 | 候选数 | `match/` 交出 200 块 | `modules/match.md` |
 | 索引范围 | 全部 remote 分支，评测额外注册 base commit 为伪 Branch | `modules/match.md` |
 | 过滤规则 | 评测时照常生效 | `modules/ingest.md` |
@@ -612,6 +613,18 @@ n-gram 倒排，亚秒级正则搜索。否决原因：在已 checkout 的工作
 ### 否决：文件分数只取最高 Chunk 分
 
 大文件吃亏：pandas 的答案集中在 `frame.py`、`generic.py`，答案文件中位数 117 个 Chunk，排进前 10 的文件只有 29 个。加入整文件 BM25 做 RRF 融合后，train 文件级 Recall@10 从 0.452 升到 0.474。
+
+### 否决：Chunk 只按自身分数排序
+
+train 误差分析：函数级未命中里，26% 的答案文件已经排进前 10、函数却在 10 名以外。Chunk 名次融合文件名次后，train 函数级 Recall@10 0.217 → 0.242，Recall@50 0.382 → 0.398，文件级不变。
+
+### 否决：路径词作为第三路文件排名
+
+Zoekt 靠文件名命中加权。train 离线模拟：query 词命中路径分词、按 IDF 加权后与另外两路等权 RRF，文件级 Recall@10 0.474 → 0.431。目录名里的常见词噪声太大。
+
+### 否决：BM25 用 Pyserini 参数（k1 = 0.9、b = 0.4）
+
+FTS5 内置 bm25() 固定 k1 = 1.2、b = 0.75。实现带参数的排序函数后在 train 上实测，文件级 Recall@10 0.474 → 0.424，函数级 Recall@50 0.398 → 0.356。长度惩罚轻了，长文件与长函数反而挤到前面。
 
 ### 否决：评测时关掉过滤规则
 

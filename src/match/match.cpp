@@ -127,12 +127,27 @@ Result<Ranked> retrieve(store::Db& db, std::string_view branch, std::string_view
             fused[(*list)[i]] += 1.0 / (rrf_k + static_cast<double>(i + 1));
 
     Ranked out;
-    out.chunks = std::move(*chunks);
     for (auto& [path, score] : fused)
         out.files.push_back({path, score});
     std::sort(out.files.begin(), out.files.end(), [](const File& a, const File& b) {
         return a.score != b.score ? a.score > b.score : a.path < b.path;
     });
+
+    // A chunk in a highly ranked file is more likely the one to change: fuse each
+    // chunk's own rank with the rank of the best file it occurs in.
+    std::unordered_map<std::string, size_t> file_rank;
+    for (size_t i = 0; i < out.files.size(); i++)
+        file_rank.emplace(out.files[i].path, i);
+    out.chunks = std::move(*chunks);
+    for (size_t i = 0; i < out.chunks.size(); i++) {
+        size_t best_file = out.files.size();
+        for (const store::Location& l : out.chunks[i].info.where)
+            best_file = std::min(best_file, file_rank.at(l.path));
+        out.chunks[i].score = 1.0 / (rrf_k + static_cast<double>(i + 1)) +
+                              1.0 / (rrf_k + static_cast<double>(best_file + 1));
+    }
+    std::stable_sort(out.chunks.begin(), out.chunks.end(),
+                     [](const Candidate& a, const Candidate& b) { return a.score > b.score; });
     return out;
 }
 
