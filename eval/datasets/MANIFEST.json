@@ -1,11 +1,11 @@
 {
   "frozen": {
     "ClickHouse/ClickHouse": {
-      "frozen_at": "2026-09-15T03:50:40Z",
-      "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "frozen_at": "2026-09-15T12:51:56Z",
+      "queries": 46,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "7e68aa5fba919cb8b62b1125253154ce3527fb13f765bfaa259dcbf2e871db0b",
-      "sha256": "da4a0c981a55613a65a8f0d694575dddfc8af22cecb2c7d003d42819583b5de3",
+      "sha256": "481992a05ab96bee79bb0107939e7b66a454666854941894d04e8c24ee69cd7b",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -13,11 +13,11 @@
       }
     },
     "apache/airflow": {
-      "frozen_at": "2026-09-15T03:50:40Z",
-      "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "frozen_at": "2026-09-15T12:51:56Z",
+      "queries": 47,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "bc326ddcb33136206af9de8251b8073bde7a3a8db7dcc394ebf3871e18a2111f",
-      "sha256": "8f94395043c3d054ece94626094724ef4cf2078912d6530a54f175a87fe23635",
+      "sha256": "24adb4207eb0808f15613c08fac51eac6afd11c1538695c4dc422b5a19527fb5",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -25,11 +25,11 @@
       }
     },
     "duckdb/duckdb": {
-      "frozen_at": "2026-09-15T03:50:40Z",
-      "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "frozen_at": "2026-09-15T12:51:56Z",
+      "queries": 48,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "c10c072699fd52dd63e51b5fe3d5d49532b8f8f84ffb8e5f23a32ed56fb543d8",
-      "sha256": "09fcc42d8f8ed350d81f33c1a2ab766290f3a5395160a8b49056fdb5779d7e6f",
+      "sha256": "6bdbf2f7d11e8ef928f21da37d515e6d1935d80fb35eba68303529e9a10431db",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -37,11 +37,11 @@
       }
     },
     "elastic/elasticsearch": {
-      "frozen_at": "2026-09-15T03:50:40Z",
-      "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "frozen_at": "2026-09-15T12:51:56Z",
+      "queries": 37,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "f95cd053e13a1cff639ef3b41b877b6d5a5d5de3e24bb6da8be68768e6afdf18",
-      "sha256": "1023af1dd34f0ea2eba98c3ca3ec3fbaab7e12e5627e82d06726d02d03f0d486",
+      "sha256": "1cd63811454f7d9b6a5d89b6f85c8a4fbc373d53e0abe69ce844990b543aaaae",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -49,11 +49,11 @@
       }
     },
     "kubernetes/kubernetes": {
-      "frozen_at": "2026-09-15T03:50:40Z",
-      "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "frozen_at": "2026-09-15T12:51:56Z",
+      "queries": 49,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "5329b2d76a394790049791a10bb5aa7bdf1ee924d85f03653c1b0b9a85565d1d",
-      "sha256": "ccfb36d4a91ff9160867178ab3a2ad1b238fdfcaea7ce6622b85826b425eeb49",
+      "sha256": "113e0c1048e2d9f036785d67519b5fe0bf5489180a7155c3915c81b91058b99e",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -61,11 +61,11 @@
       }
     },
     "microsoft/vscode": {
-      "frozen_at": "2026-09-15T03:50:40Z",
+      "frozen_at": "2026-09-15T12:51:56Z",
       "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "98472f02913eb847a2addc333d71f92f4c3bd3844ac74c4588be8f2da1d7a3ef",
-      "sha256": "de1103906f7c8c60692abc18629d91829a495151a5c53f83f9bd3d10f878e962",
+      "sha256": "1b2783c1cf96d28d28bfa60e20f6f89b2d7f95109981f9042aee8648f3518036",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -73,11 +73,11 @@
       }
     },
     "netty/netty": {
-      "frozen_at": "2026-09-15T03:50:40Z",
-      "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "frozen_at": "2026-09-15T12:51:56Z",
+      "queries": 29,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "4551c7bf182bad17fcda397721effd2909db49c7c1510cd2c2d97ef06f1a201c",
-      "sha256": "b2af8398ae026f2e5f78d8748094a138464a4687e416ccb96de9e54994079a81",
+      "sha256": "03924ef5c925776dfbd247fe66127df931a3d1bb8b9e3db9f3e5553272917b4e",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -85,11 +85,11 @@
       }
     },
     "pandas-dev/pandas": {
-      "frozen_at": "2026-09-15T03:50:40Z",
+      "frozen_at": "2026-09-15T12:51:56Z",
       "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "8b412077d6c0013d87ea00074e36b9ca06394b1073e95e26cf59dafae9b49ec5",
-      "sha256": "0fedcb169f6fdec8f6e83f95afe26da974bd6c60a266d381598c4502f38d8def",
+      "sha256": "7225a927074e4b3ad0e3bd26152911525011c391410e9ebe559b66a227ef218c",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -97,11 +97,11 @@
       }
     },
     "prometheus/prometheus": {
-      "frozen_at": "2026-09-15T03:50:40Z",
+      "frozen_at": "2026-09-15T12:51:56Z",
       "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "482f02f4456d0a8758ef081d0b0844478697008eaad43f65cccecd07addec65a",
-      "sha256": "8314e24f69ed2a5c299708bdb8ead660a840e256fb85b15cf1db101d0963fb58",
+      "sha256": "ce6ca45ebb92e74ac105c00f9021c5711565f93a0ba8dfa517c18824ff583c93",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -109,11 +109,11 @@
       }
     },
     "redis/redis": {
-      "frozen_at": "2026-09-15T03:50:40Z",
-      "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "frozen_at": "2026-09-15T12:51:56Z",
+      "queries": 43,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "5a87a3d13eb1ab125e0691de01dc0d3deafc3f5c6c392973b1aa3b813c9e6eaf",
-      "sha256": "5448dbda353d3ff01a4335c7ea391c2da6478b6283c17ad62c31e650f53a9b7e",
+      "sha256": "c999d34a2acb9238528b87954f15454f699f2ac2776da7286c67bda0145e5138",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -121,11 +121,11 @@
       }
     },
     "rust-lang/rust": {
-      "frozen_at": "2026-09-15T03:50:40Z",
-      "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "frozen_at": "2026-09-15T12:51:56Z",
+      "queries": 47,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "7f2ac571e16871e205f9433a1b25ae453cfbddd5de296ec1beab608d035597f5",
-      "sha256": "c409e0c945723fde37277806ba7ed48654617b2e9a1b60cecc8853a3f0564b46",
+      "sha256": "544f9992d8c36000fea1e3857a313b104127db7fd221bdd7fc05863cdebf228d",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -133,11 +133,11 @@
       }
     },
     "systemd/systemd": {
-      "frozen_at": "2026-09-15T03:50:40Z",
-      "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "frozen_at": "2026-09-15T12:51:56Z",
+      "queries": 49,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "428bdd3c61c7b377249ebc4a64d8918be162bc264385239f86b56d537a521324",
-      "sha256": "bab5ccdb6e4957536a0411e4b1b217ad447f6b288eb29ab039c89d6c4864e55d",
+      "sha256": "a38a65774c43f42b9be055a5c299f74462063746690c78df6f3c0f60b75582d4",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -145,11 +145,11 @@
       }
     },
     "tokio-rs/tokio": {
-      "frozen_at": "2026-09-15T03:50:40Z",
-      "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "frozen_at": "2026-09-15T12:51:56Z",
+      "queries": 47,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "9cabe7add612c3e14a056de733a9b51f4ce8a35f9d150cf3e780a99399b3345e",
-      "sha256": "05eccc3095b1c6bb96a9486de29fc6e69974ac2fbe9fb54c4aa23b289e863139",
+      "sha256": "bfa1073676ba121fe1ae83fd1a08b15f68178cba7ad659788fc97b3fbb6daa65",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -157,11 +157,11 @@
       }
     },
     "vuejs/core": {
-      "frozen_at": "2026-09-15T03:50:40Z",
-      "queries": 50,
-      "reason": "第二轮：剔除全部 287 道泄露题（issue 正文直接点名答案文件或函数），用 agy gemini-3.8-flash-high 按 curation-brief.md v2 第 1 条硬准则盲审补选 247 道，逐题用装置实算 ground truth 复验泄露为 0。14 仓库各 50 道，共 700 道。",
+      "frozen_at": "2026-09-15T12:51:56Z",
+      "queries": 46,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
       "selection_sha256": "2e163aa9d014233919c831a673c06f00c5dc16da0891fe62e2419e26e712e37e",
-      "sha256": "c6c8b58b73e140f7032722e115c5dc221debe5a9985efc959d1883fd380fde56",
+      "sha256": "506b08103b29382a4fd688413992bcc6501fe3038a524f6bda8c6a1674564501",
       "tools": {
         "ctags": "Universal Ctags 6.2.1, Copyright (C) 2015-2025 Universal Ctags Team",
         "git": "git version 2.55.0",
@@ -429,8 +429,350 @@
       "repo": "netty/netty",
       "selection_sha256": "4551c7bf182bad17fcda397721effd2909db49c7c1510cd2c2d97ef06f1a201c",
       "sha256": "b2af8398ae026f2e5f78d8748094a138464a4687e416ccb96de9e54994079a81"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "da4a0c981a55613a65a8f0d694575dddfc8af22cecb2c7d003d42819583b5de3",
+      "repo": "ClickHouse/ClickHouse",
+      "selection_sha256": "7e68aa5fba919cb8b62b1125253154ce3527fb13f765bfaa259dcbf2e871db0b",
+      "sha256": "b6fee1b670c4747cff3f315f5ba96cff94c9760a18cbeabb782c0b3c9c8e8b29"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "09fcc42d8f8ed350d81f33c1a2ab766290f3a5395160a8b49056fdb5779d7e6f",
+      "repo": "duckdb/duckdb",
+      "selection_sha256": "c10c072699fd52dd63e51b5fe3d5d49532b8f8f84ffb8e5f23a32ed56fb543d8",
+      "sha256": "eedacfe76af5f7a00b0145357ce630f20f16ff7c6d4b6fde3555b17cf1b608bf"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 49,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "ccfb36d4a91ff9160867178ab3a2ad1b238fdfcaea7ce6622b85826b425eeb49",
+      "repo": "kubernetes/kubernetes",
+      "selection_sha256": "5329b2d76a394790049791a10bb5aa7bdf1ee924d85f03653c1b0b9a85565d1d",
+      "sha256": "aaa964edff95a6fec9fe6e800e0f3e4434ddc1efc4948ede45ed29f854f28eae"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "8314e24f69ed2a5c299708bdb8ead660a840e256fb85b15cf1db101d0963fb58",
+      "repo": "prometheus/prometheus",
+      "selection_sha256": "482f02f4456d0a8758ef081d0b0844478697008eaad43f65cccecd07addec65a",
+      "sha256": "9a3346c19ab09be448e63623ee9633193e081089d933354af4e378ae8335b1cb"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "c409e0c945723fde37277806ba7ed48654617b2e9a1b60cecc8853a3f0564b46",
+      "repo": "rust-lang/rust",
+      "selection_sha256": "7f2ac571e16871e205f9433a1b25ae453cfbddd5de296ec1beab608d035597f5",
+      "sha256": "aed0c1c2cfc1bf9a76aa350668bddfdb0c3e96057dd115a68085670f46f3eaca"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "05eccc3095b1c6bb96a9486de29fc6e69974ac2fbe9fb54c4aa23b289e863139",
+      "repo": "tokio-rs/tokio",
+      "selection_sha256": "9cabe7add612c3e14a056de733a9b51f4ce8a35f9d150cf3e780a99399b3345e",
+      "sha256": "17468220eed59b9efb1caa3b09b4dffcafdf4f94223812acd9fd0986535670af"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "de1103906f7c8c60692abc18629d91829a495151a5c53f83f9bd3d10f878e962",
+      "repo": "microsoft/vscode",
+      "selection_sha256": "98472f02913eb847a2addc333d71f92f4c3bd3844ac74c4588be8f2da1d7a3ef",
+      "sha256": "eda7c48b6b2730e3130802f93dbc5428e9e07a7f36bc141700c667091d2e0b3d"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "c6c8b58b73e140f7032722e115c5dc221debe5a9985efc959d1883fd380fde56",
+      "repo": "vuejs/core",
+      "selection_sha256": "2e163aa9d014233919c831a673c06f00c5dc16da0891fe62e2419e26e712e37e",
+      "sha256": "cf15641e68ef51df4ee8ae3a05cd18243dcbccad25eb6047d8bf23ebff86e106"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "bab5ccdb6e4957536a0411e4b1b217ad447f6b288eb29ab039c89d6c4864e55d",
+      "repo": "systemd/systemd",
+      "selection_sha256": "428bdd3c61c7b377249ebc4a64d8918be162bc264385239f86b56d537a521324",
+      "sha256": "2642adf47a34f0ed2ed73a00f217587f8ec76da21f075d1fda2e246a0c0f48db"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "5448dbda353d3ff01a4335c7ea391c2da6478b6283c17ad62c31e650f53a9b7e",
+      "repo": "redis/redis",
+      "selection_sha256": "5a87a3d13eb1ab125e0691de01dc0d3deafc3f5c6c392973b1aa3b813c9e6eaf",
+      "sha256": "155c0cf7e383872c7098b73ddf786e40f8ba9bd777ec725ac1e849f86fa88004"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "8f94395043c3d054ece94626094724ef4cf2078912d6530a54f175a87fe23635",
+      "repo": "apache/airflow",
+      "selection_sha256": "bc326ddcb33136206af9de8251b8073bde7a3a8db7dcc394ebf3871e18a2111f",
+      "sha256": "7d65343b4aeb6f0f0ded4f1d96d8d45db06795f50d83bcba55c7a52f00f00f52"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "0fedcb169f6fdec8f6e83f95afe26da974bd6c60a266d381598c4502f38d8def",
+      "repo": "pandas-dev/pandas",
+      "selection_sha256": "8b412077d6c0013d87ea00074e36b9ca06394b1073e95e26cf59dafae9b49ec5",
+      "sha256": "5164a4befb2dfd552bae57126db1ad1cdb915c15b8cbb5e3cb6bd8f696ab493d"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 40,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "1023af1dd34f0ea2eba98c3ca3ec3fbaab7e12e5627e82d06726d02d03f0d486",
+      "repo": "elastic/elasticsearch",
+      "selection_sha256": "f95cd053e13a1cff639ef3b41b877b6d5a5d5de3e24bb6da8be68768e6afdf18",
+      "sha256": "2dab2a802eae386b5c8395fc0d2ffcbd4ec620158daad434030e2eff2c39aeb8"
+    },
+    {
+      "at": "2026-09-15T10:04:40Z",
+      "queries": 50,
+      "reason": "修复符号边界与语料完整性的六处缺陷后重建：(1) 去掉 ctags --extras=+q，此前同一 span 产生两个限定名，GT 侧与检索侧各取其一，导致 30.9% 的函数级 GT 永不可达；(2) Rust/TypeScript 的 ctags 不输出 end 字段，函数边界此前全部由 next-tag-minus-1 猜测，改为花括号扫描器（在 44,498 个有真 end 的 C/Go/Java tag 上验证，偏差 1 个），无法确定边界的 tag 丢弃并计数；(3) FUNC_KINDS 按语言定表，剔除 struct 成员、interface 声明、prototype 与 ctags TypeScript parser 吐出的控制流关键字；(4) ground truth 排除 PR 新增的文件，它们在 base 树上不存在，无法被检索；(5) TEST_RE/GENERATED_RE 补齐 *Test.java/*IT.java/test-*.c/testsuite/zz_generated/benchmarks；(6) git archive 此前执行仓库自身 .gitattributes 的 export-ignore，pandas 与 airflow 的语料被静默截断，改为用 info/attributes 覆盖。选题不变，(3)(5) 使 11 道题被过滤规则淘汰，共 689 道。",
+      "replaces": "b2af8398ae026f2e5f78d8748094a138464a4687e416ccb96de9e54994079a81",
+      "repo": "netty/netty",
+      "selection_sha256": "4551c7bf182bad17fcda397721effd2909db49c7c1510cd2c2d97ef06f1a201c",
+      "sha256": "d17c4887c25d85c01e05f38454d4e19fff66c9a1a45d82d724537bc59954b35e"
+    },
+    {
+      "at": "2026-09-15T12:09:08Z",
+      "queries": 46,
+      "reason": "泄露判据补上去扩展名的文件名主干（限复合标识符：含下划线、连字符或驼峰），并让 build 真正丢弃命中的题——此前 leak_path/leak_symbol 只写进数据行，从不过滤，而判据要求文件名带扩展名，几乎不可能命中，于是 leak_rate 恒为 0。实测被漏掉的是真泄露：netty 50 道里 21 道的答案文件主干原样出现在 issue 正文（ByteToMessageDecoder、SslHandler、HpackEncoder 等），这 21 道的基线分是其余 29 道的两到三倍（bm25 file_mrr 0.531 vs 0.262，grep file_recall@10 0.619 vs 0.239，grep func_recall@10 0.364 vs 0.074）。单个小写词的主干（validation、connections）不算泄露，它们定位不了任何文件。全量复验丢弃 51 道，689 -> 638，其中 netty 21、redis 7、ClickHouse 4、vuejs 4、airflow 3、elasticsearch 3、rust 3、tokio 3、duckdb 2、systemd 1。丢掉的题不补：候选池里排序靠后的题没经过盲审。选题与 ground truth 计算逻辑均未改动，各仓库的剩余行与重建前逐字节一致。",
+      "replaces": "b6fee1b670c4747cff3f315f5ba96cff94c9760a18cbeabb782c0b3c9c8e8b29",
+      "repo": "ClickHouse/ClickHouse",
+      "selection_sha256": "7e68aa5fba919cb8b62b1125253154ce3527fb13f765bfaa259dcbf2e871db0b",
+      "sha256": "0672d93ce565a77544d859c4d83dcb66f1e988ea6b9204bb4441278335337cb2"
+    },
+    {
+      "at": "2026-09-15T12:09:08Z",
+      "queries": 48,
+      "reason": "泄露判据补上去扩展名的文件名主干（限复合标识符：含下划线、连字符或驼峰），并让 build 真正丢弃命中的题——此前 leak_path/leak_symbol 只写进数据行，从不过滤，而判据要求文件名带扩展名，几乎不可能命中，于是 leak_rate 恒为 0。实测被漏掉的是真泄露：netty 50 道里 21 道的答案文件主干原样出现在 issue 正文（ByteToMessageDecoder、SslHandler、HpackEncoder 等），这 21 道的基线分是其余 29 道的两到三倍（bm25 file_mrr 0.531 vs 0.262，grep file_recall@10 0.619 vs 0.239，grep func_recall@10 0.364 vs 0.074）。单个小写词的主干（validation、connections）不算泄露，它们定位不了任何文件。全量复验丢弃 51 道，689 -> 638，其中 netty 21、redis 7、ClickHouse 4、vuejs 4、airflow 3、elasticsearch 3、rust 3、tokio 3、duckdb 2、systemd 1。丢掉的题不补：候选池里排序靠后的题没经过盲审。选题与 ground truth 计算逻辑均未改动，各仓库的剩余行与重建前逐字节一致。",
+      "replaces": "eedacfe76af5f7a00b0145357ce630f20f16ff7c6d4b6fde3555b17cf1b608bf",
+      "repo": "duckdb/duckdb",
+      "selection_sha256": "c10c072699fd52dd63e51b5fe3d5d49532b8f8f84ffb8e5f23a32ed56fb543d8",
+      "sha256": "3330aeb4b87a4faa40e8be713419140deb00efc5a25280e03805cefb131ad189"
+    },
+    {
+      "at": "2026-09-15T12:09:08Z",
+      "queries": 47,
+      "reason": "泄露判据补上去扩展名的文件名主干（限复合标识符：含下划线、连字符或驼峰），并让 build 真正丢弃命中的题——此前 leak_path/leak_symbol 只写进数据行，从不过滤，而判据要求文件名带扩展名，几乎不可能命中，于是 leak_rate 恒为 0。实测被漏掉的是真泄露：netty 50 道里 21 道的答案文件主干原样出现在 issue 正文（ByteToMessageDecoder、SslHandler、HpackEncoder 等），这 21 道的基线分是其余 29 道的两到三倍（bm25 file_mrr 0.531 vs 0.262，grep file_recall@10 0.619 vs 0.239，grep func_recall@10 0.364 vs 0.074）。单个小写词的主干（validation、connections）不算泄露，它们定位不了任何文件。全量复验丢弃 51 道，689 -> 638，其中 netty 21、redis 7、ClickHouse 4、vuejs 4、airflow 3、elasticsearch 3、rust 3、tokio 3、duckdb 2、systemd 1。丢掉的题不补：候选池里排序靠后的题没经过盲审。选题与 ground truth 计算逻辑均未改动，各仓库的剩余行与重建前逐字节一致。",
+      "replaces": "aed0c1c2cfc1bf9a76aa350668bddfdb0c3e96057dd115a68085670f46f3eaca",
+      "repo": "rust-lang/rust",
+      "selection_sha256": "7f2ac571e16871e205f9433a1b25ae453cfbddd5de296ec1beab608d035597f5",
+      "sha256": "191bdbe8b98d00c8fe03de14603d8c8395e563be0ad75d5cd2b79b380be0aa1c"
+    },
+    {
+      "at": "2026-09-15T12:09:08Z",
+      "queries": 47,
+      "reason": "泄露判据补上去扩展名的文件名主干（限复合标识符：含下划线、连字符或驼峰），并让 build 真正丢弃命中的题——此前 leak_path/leak_symbol 只写进数据行，从不过滤，而判据要求文件名带扩展名，几乎不可能命中，于是 leak_rate 恒为 0。实测被漏掉的是真泄露：netty 50 道里 21 道的答案文件主干原样出现在 issue 正文（ByteToMessageDecoder、SslHandler、HpackEncoder 等），这 21 道的基线分是其余 29 道的两到三倍（bm25 file_mrr 0.531 vs 0.262，grep file_recall@10 0.619 vs 0.239，grep func_recall@10 0.364 vs 0.074）。单个小写词的主干（validation、connections）不算泄露，它们定位不了任何文件。全量复验丢弃 51 道，689 -> 638，其中 netty 21、redis 7、ClickHouse 4、vuejs 4、airflow 3、elasticsearch 3、rust 3、tokio 3、duckdb 2、systemd 1。丢掉的题不补：候选池里排序靠后的题没经过盲审。选题与 ground truth 计算逻辑均未改动，各仓库的剩余行与重建前逐字节一致。",
+      "replaces": "17468220eed59b9efb1caa3b09b4dffcafdf4f94223812acd9fd0986535670af",
+      "repo": "tokio-rs/tokio",
+      "selection_sha256": "9cabe7add612c3e14a056de733a9b51f4ce8a35f9d150cf3e780a99399b3345e",
+      "sha256": "0ccc427f648653457ed108b07ac49f66a53cd24145269c807f98e8eb3275bc2e"
+    },
+    {
+      "at": "2026-09-15T12:09:08Z",
+      "queries": 46,
+      "reason": "泄露判据补上去扩展名的文件名主干（限复合标识符：含下划线、连字符或驼峰），并让 build 真正丢弃命中的题——此前 leak_path/leak_symbol 只写进数据行，从不过滤，而判据要求文件名带扩展名，几乎不可能命中，于是 leak_rate 恒为 0。实测被漏掉的是真泄露：netty 50 道里 21 道的答案文件主干原样出现在 issue 正文（ByteToMessageDecoder、SslHandler、HpackEncoder 等），这 21 道的基线分是其余 29 道的两到三倍（bm25 file_mrr 0.531 vs 0.262，grep file_recall@10 0.619 vs 0.239，grep func_recall@10 0.364 vs 0.074）。单个小写词的主干（validation、connections）不算泄露，它们定位不了任何文件。全量复验丢弃 51 道，689 -> 638，其中 netty 21、redis 7、ClickHouse 4、vuejs 4、airflow 3、elasticsearch 3、rust 3、tokio 3、duckdb 2、systemd 1。丢掉的题不补：候选池里排序靠后的题没经过盲审。选题与 ground truth 计算逻辑均未改动，各仓库的剩余行与重建前逐字节一致。",
+      "replaces": "cf15641e68ef51df4ee8ae3a05cd18243dcbccad25eb6047d8bf23ebff86e106",
+      "repo": "vuejs/core",
+      "selection_sha256": "2e163aa9d014233919c831a673c06f00c5dc16da0891fe62e2419e26e712e37e",
+      "sha256": "b4ad16e876fb810ee11a6f39853bdce29b780658f0a88f9c2d2789e09346bf46"
+    },
+    {
+      "at": "2026-09-15T12:09:08Z",
+      "queries": 49,
+      "reason": "泄露判据补上去扩展名的文件名主干（限复合标识符：含下划线、连字符或驼峰），并让 build 真正丢弃命中的题——此前 leak_path/leak_symbol 只写进数据行，从不过滤，而判据要求文件名带扩展名，几乎不可能命中，于是 leak_rate 恒为 0。实测被漏掉的是真泄露：netty 50 道里 21 道的答案文件主干原样出现在 issue 正文（ByteToMessageDecoder、SslHandler、HpackEncoder 等），这 21 道的基线分是其余 29 道的两到三倍（bm25 file_mrr 0.531 vs 0.262，grep file_recall@10 0.619 vs 0.239，grep func_recall@10 0.364 vs 0.074）。单个小写词的主干（validation、connections）不算泄露，它们定位不了任何文件。全量复验丢弃 51 道，689 -> 638，其中 netty 21、redis 7、ClickHouse 4、vuejs 4、airflow 3、elasticsearch 3、rust 3、tokio 3、duckdb 2、systemd 1。丢掉的题不补：候选池里排序靠后的题没经过盲审。选题与 ground truth 计算逻辑均未改动，各仓库的剩余行与重建前逐字节一致。",
+      "replaces": "2642adf47a34f0ed2ed73a00f217587f8ec76da21f075d1fda2e246a0c0f48db",
+      "repo": "systemd/systemd",
+      "selection_sha256": "428bdd3c61c7b377249ebc4a64d8918be162bc264385239f86b56d537a521324",
+      "sha256": "adad29c9aae98a0fa7581f62ea84fb5f805925ddcb0999379cece464f7b9079e"
+    },
+    {
+      "at": "2026-09-15T12:09:08Z",
+      "queries": 43,
+      "reason": "泄露判据补上去扩展名的文件名主干（限复合标识符：含下划线、连字符或驼峰），并让 build 真正丢弃命中的题——此前 leak_path/leak_symbol 只写进数据行，从不过滤，而判据要求文件名带扩展名，几乎不可能命中，于是 leak_rate 恒为 0。实测被漏掉的是真泄露：netty 50 道里 21 道的答案文件主干原样出现在 issue 正文（ByteToMessageDecoder、SslHandler、HpackEncoder 等），这 21 道的基线分是其余 29 道的两到三倍（bm25 file_mrr 0.531 vs 0.262，grep file_recall@10 0.619 vs 0.239，grep func_recall@10 0.364 vs 0.074）。单个小写词的主干（validation、connections）不算泄露，它们定位不了任何文件。全量复验丢弃 51 道，689 -> 638，其中 netty 21、redis 7、ClickHouse 4、vuejs 4、airflow 3、elasticsearch 3、rust 3、tokio 3、duckdb 2、systemd 1。丢掉的题不补：候选池里排序靠后的题没经过盲审。选题与 ground truth 计算逻辑均未改动，各仓库的剩余行与重建前逐字节一致。",
+      "replaces": "155c0cf7e383872c7098b73ddf786e40f8ba9bd777ec725ac1e849f86fa88004",
+      "repo": "redis/redis",
+      "selection_sha256": "5a87a3d13eb1ab125e0691de01dc0d3deafc3f5c6c392973b1aa3b813c9e6eaf",
+      "sha256": "a26a20d9834359235cc0775895c8f3caf97899f2d284fb5b9d22c2e6911bb8a1"
+    },
+    {
+      "at": "2026-09-15T12:09:08Z",
+      "queries": 47,
+      "reason": "泄露判据补上去扩展名的文件名主干（限复合标识符：含下划线、连字符或驼峰），并让 build 真正丢弃命中的题——此前 leak_path/leak_symbol 只写进数据行，从不过滤，而判据要求文件名带扩展名，几乎不可能命中，于是 leak_rate 恒为 0。实测被漏掉的是真泄露：netty 50 道里 21 道的答案文件主干原样出现在 issue 正文（ByteToMessageDecoder、SslHandler、HpackEncoder 等），这 21 道的基线分是其余 29 道的两到三倍（bm25 file_mrr 0.531 vs 0.262，grep file_recall@10 0.619 vs 0.239，grep func_recall@10 0.364 vs 0.074）。单个小写词的主干（validation、connections）不算泄露，它们定位不了任何文件。全量复验丢弃 51 道，689 -> 638，其中 netty 21、redis 7、ClickHouse 4、vuejs 4、airflow 3、elasticsearch 3、rust 3、tokio 3、duckdb 2、systemd 1。丢掉的题不补：候选池里排序靠后的题没经过盲审。选题与 ground truth 计算逻辑均未改动，各仓库的剩余行与重建前逐字节一致。",
+      "replaces": "7d65343b4aeb6f0f0ded4f1d96d8d45db06795f50d83bcba55c7a52f00f00f52",
+      "repo": "apache/airflow",
+      "selection_sha256": "bc326ddcb33136206af9de8251b8073bde7a3a8db7dcc394ebf3871e18a2111f",
+      "sha256": "58231e577166714976c77c9a50b52a35fcfca2b958a330664062a825e138cc5b"
+    },
+    {
+      "at": "2026-09-15T12:09:08Z",
+      "queries": 37,
+      "reason": "泄露判据补上去扩展名的文件名主干（限复合标识符：含下划线、连字符或驼峰），并让 build 真正丢弃命中的题——此前 leak_path/leak_symbol 只写进数据行，从不过滤，而判据要求文件名带扩展名，几乎不可能命中，于是 leak_rate 恒为 0。实测被漏掉的是真泄露：netty 50 道里 21 道的答案文件主干原样出现在 issue 正文（ByteToMessageDecoder、SslHandler、HpackEncoder 等），这 21 道的基线分是其余 29 道的两到三倍（bm25 file_mrr 0.531 vs 0.262，grep file_recall@10 0.619 vs 0.239，grep func_recall@10 0.364 vs 0.074）。单个小写词的主干（validation、connections）不算泄露，它们定位不了任何文件。全量复验丢弃 51 道，689 -> 638，其中 netty 21、redis 7、ClickHouse 4、vuejs 4、airflow 3、elasticsearch 3、rust 3、tokio 3、duckdb 2、systemd 1。丢掉的题不补：候选池里排序靠后的题没经过盲审。选题与 ground truth 计算逻辑均未改动，各仓库的剩余行与重建前逐字节一致。",
+      "replaces": "2dab2a802eae386b5c8395fc0d2ffcbd4ec620158daad434030e2eff2c39aeb8",
+      "repo": "elastic/elasticsearch",
+      "selection_sha256": "f95cd053e13a1cff639ef3b41b877b6d5a5d5de3e24bb6da8be68768e6afdf18",
+      "sha256": "2a2cfd858fb1ea051f032099789ca3e0f7045dd9898b6f6ac2bf0898f9663db5"
+    },
+    {
+      "at": "2026-09-15T12:09:08Z",
+      "queries": 29,
+      "reason": "泄露判据补上去扩展名的文件名主干（限复合标识符：含下划线、连字符或驼峰），并让 build 真正丢弃命中的题——此前 leak_path/leak_symbol 只写进数据行，从不过滤，而判据要求文件名带扩展名，几乎不可能命中，于是 leak_rate 恒为 0。实测被漏掉的是真泄露：netty 50 道里 21 道的答案文件主干原样出现在 issue 正文（ByteToMessageDecoder、SslHandler、HpackEncoder 等），这 21 道的基线分是其余 29 道的两到三倍（bm25 file_mrr 0.531 vs 0.262，grep file_recall@10 0.619 vs 0.239，grep func_recall@10 0.364 vs 0.074）。单个小写词的主干（validation、connections）不算泄露，它们定位不了任何文件。全量复验丢弃 51 道，689 -> 638，其中 netty 21、redis 7、ClickHouse 4、vuejs 4、airflow 3、elasticsearch 3、rust 3、tokio 3、duckdb 2、systemd 1。丢掉的题不补：候选池里排序靠后的题没经过盲审。选题与 ground truth 计算逻辑均未改动，各仓库的剩余行与重建前逐字节一致。",
+      "replaces": "d17c4887c25d85c01e05f38454d4e19fff66c9a1a45d82d724537bc59954b35e",
+      "repo": "netty/netty",
+      "selection_sha256": "4551c7bf182bad17fcda397721effd2909db49c7c1510cd2c2d97ef06f1a201c",
+      "sha256": "dd747327c262b0670bb34239c56defcf8872dca294268316bcf9ec3e8c015226"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 46,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "0672d93ce565a77544d859c4d83dcb66f1e988ea6b9204bb4441278335337cb2",
+      "repo": "ClickHouse/ClickHouse",
+      "selection_sha256": "7e68aa5fba919cb8b62b1125253154ce3527fb13f765bfaa259dcbf2e871db0b",
+      "sha256": "481992a05ab96bee79bb0107939e7b66a454666854941894d04e8c24ee69cd7b"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 48,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "3330aeb4b87a4faa40e8be713419140deb00efc5a25280e03805cefb131ad189",
+      "repo": "duckdb/duckdb",
+      "selection_sha256": "c10c072699fd52dd63e51b5fe3d5d49532b8f8f84ffb8e5f23a32ed56fb543d8",
+      "sha256": "6bdbf2f7d11e8ef928f21da37d515e6d1935d80fb35eba68303529e9a10431db"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 49,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "aaa964edff95a6fec9fe6e800e0f3e4434ddc1efc4948ede45ed29f854f28eae",
+      "repo": "kubernetes/kubernetes",
+      "selection_sha256": "5329b2d76a394790049791a10bb5aa7bdf1ee924d85f03653c1b0b9a85565d1d",
+      "sha256": "113e0c1048e2d9f036785d67519b5fe0bf5489180a7155c3915c81b91058b99e"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 50,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "9a3346c19ab09be448e63623ee9633193e081089d933354af4e378ae8335b1cb",
+      "repo": "prometheus/prometheus",
+      "selection_sha256": "482f02f4456d0a8758ef081d0b0844478697008eaad43f65cccecd07addec65a",
+      "sha256": "ce6ca45ebb92e74ac105c00f9021c5711565f93a0ba8dfa517c18824ff583c93"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 47,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "191bdbe8b98d00c8fe03de14603d8c8395e563be0ad75d5cd2b79b380be0aa1c",
+      "repo": "rust-lang/rust",
+      "selection_sha256": "7f2ac571e16871e205f9433a1b25ae453cfbddd5de296ec1beab608d035597f5",
+      "sha256": "544f9992d8c36000fea1e3857a313b104127db7fd221bdd7fc05863cdebf228d"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 47,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "0ccc427f648653457ed108b07ac49f66a53cd24145269c807f98e8eb3275bc2e",
+      "repo": "tokio-rs/tokio",
+      "selection_sha256": "9cabe7add612c3e14a056de733a9b51f4ce8a35f9d150cf3e780a99399b3345e",
+      "sha256": "bfa1073676ba121fe1ae83fd1a08b15f68178cba7ad659788fc97b3fbb6daa65"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 50,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "eda7c48b6b2730e3130802f93dbc5428e9e07a7f36bc141700c667091d2e0b3d",
+      "repo": "microsoft/vscode",
+      "selection_sha256": "98472f02913eb847a2addc333d71f92f4c3bd3844ac74c4588be8f2da1d7a3ef",
+      "sha256": "1b2783c1cf96d28d28bfa60e20f6f89b2d7f95109981f9042aee8648f3518036"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 46,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "b4ad16e876fb810ee11a6f39853bdce29b780658f0a88f9c2d2789e09346bf46",
+      "repo": "vuejs/core",
+      "selection_sha256": "2e163aa9d014233919c831a673c06f00c5dc16da0891fe62e2419e26e712e37e",
+      "sha256": "506b08103b29382a4fd688413992bcc6501fe3038a524f6bda8c6a1674564501"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 49,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "adad29c9aae98a0fa7581f62ea84fb5f805925ddcb0999379cece464f7b9079e",
+      "repo": "systemd/systemd",
+      "selection_sha256": "428bdd3c61c7b377249ebc4a64d8918be162bc264385239f86b56d537a521324",
+      "sha256": "a38a65774c43f42b9be055a5c299f74462063746690c78df6f3c0f60b75582d4"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 43,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "a26a20d9834359235cc0775895c8f3caf97899f2d284fb5b9d22c2e6911bb8a1",
+      "repo": "redis/redis",
+      "selection_sha256": "5a87a3d13eb1ab125e0691de01dc0d3deafc3f5c6c392973b1aa3b813c9e6eaf",
+      "sha256": "c999d34a2acb9238528b87954f15454f699f2ac2776da7286c67bda0145e5138"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 47,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "58231e577166714976c77c9a50b52a35fcfca2b958a330664062a825e138cc5b",
+      "repo": "apache/airflow",
+      "selection_sha256": "bc326ddcb33136206af9de8251b8073bde7a3a8db7dcc394ebf3871e18a2111f",
+      "sha256": "24adb4207eb0808f15613c08fac51eac6afd11c1538695c4dc422b5a19527fb5"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 50,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "5164a4befb2dfd552bae57126db1ad1cdb915c15b8cbb5e3cb6bd8f696ab493d",
+      "repo": "pandas-dev/pandas",
+      "selection_sha256": "8b412077d6c0013d87ea00074e36b9ca06394b1073e95e26cf59dafae9b49ec5",
+      "sha256": "7225a927074e4b3ad0e3bd26152911525011c391410e9ebe559b66a227ef218c"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 37,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "2a2cfd858fb1ea051f032099789ca3e0f7045dd9898b6f6ac2bf0898f9663db5",
+      "repo": "elastic/elasticsearch",
+      "selection_sha256": "f95cd053e13a1cff639ef3b41b877b6d5a5d5de3e24bb6da8be68768e6afdf18",
+      "sha256": "1cd63811454f7d9b6a5d89b6f85c8a4fbc373d53e0abe69ce844990b543aaaae"
+    },
+    {
+      "at": "2026-09-15T12:51:56Z",
+      "queries": 29,
+      "reason": "移除数据行里的 leak_path / leak_symbol 两个字段，以及报分表里的 leak_rate。上一次冻结让 build 真正丢弃泄露题之后，留下来的题按定义全部没泄露，这两个字段恒为 false、leak_rate 恒为 0——一个恒定值不是测出来的数，摆在报分表里只会被当成数据集质量的证据读，而它度量的是过滤器本身。丢弃数记在 build 的日志（stats[\"leaked\"]）和本文件的冻结理由里，那是它该待的地方。题目集合与 ground truth 未变，仍为 638 道；本次变更只删字段。",
+      "replaces": "dd747327c262b0670bb34239c56defcf8872dca294268316bcf9ec3e8c015226",
+      "repo": "netty/netty",
+      "selection_sha256": "4551c7bf182bad17fcda397721effd2909db49c7c1510cd2c2d97ef06f1a201c",
+      "sha256": "03924ef5c925776dfbd247fe66127df931a3d1bb8b9e3db9f3e5553272917b4e"
     }
   ],
   "schema": 1,
-  "version": "v1-f9ac044bffd4b4c2"
+  "version": "v1-4cf94bfd5e12401f"
 }

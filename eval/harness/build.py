@@ -5,6 +5,7 @@ Cheap filters (text, metadata) run first so the census can answer
 """
 import datetime as dt
 import os
+import re
 
 from . import groundtruth
 from .common import (DATASETS, VENDOR_RE, GENERATED_RE, ensure_mirror, fetch_commit,
@@ -13,6 +14,8 @@ from .common import (DATASETS, VENDOR_RE, GENERATED_RE, ensure_mirror, fetch_com
 MIN_BODY = 200
 MAX_FILES = 10
 MIN_GAP_SECONDS = 3600
+MIN_LEAK_STEM = 6
+COMPOUND_RE = re.compile(r"_|-|[a-z][A-Z]|[A-Z]{2,}[a-z]")
 BOT_TYPES = {"Bot"}
 BOT_NAME_HINTS = ("[bot]", "-bot", "bot-", "dependabot", "renovate", "mergify",
                   "codecov", "greenkeeper")
@@ -42,7 +45,7 @@ def build(repo, raw_rows, dry_run=False, limit=None, only_prs=None):
     stats = {k: 0 for k in (
         "no_issue", "cross_repo", "bot_issue", "short_body", "gap_too_small",
         "too_many_files", "no_code_files", "docs_or_tests_only", "vendored",
-        "later_pr_for_issue", "no_base_sha", "git_missing", "gt_empty")}
+        "later_pr_for_issue", "no_base_sha", "git_missing", "gt_empty", "leaked")}
 
     for r in raw_rows:
         r["_repo"] = repo
@@ -125,6 +128,12 @@ def build(repo, raw_rows, dry_run=False, limit=None, only_prs=None):
         gt_funcs = [q for q in gt["functions"] if q.split("::")[0] in keep_paths]
 
         query = (issue.get("title") or "") + "\n\n" + (issue.get("body") or "")
+        # The blind reviewer cannot check this: they are shown the issue and
+        # never the answer. So the machine checks it, and drops — the selection
+        # is a quality judgement, this is arithmetic.
+        if _leak_path(query, gt_files) or _leak_symbol(query, gt_funcs):
+            stats["leaked"] += 1
+            continue
         kept.append({
             "repo": repo,
             "pr": r["pr"],
@@ -137,8 +146,6 @@ def build(repo, raw_rows, dry_run=False, limit=None, only_prs=None):
             "gt_functions": gt_funcs,
             "func_eligible": bool(gt_funcs),
             "hunks_outside_functions": gt["hunks_outside_functions"],
-            "leak_path": _leak_path(query, gt_files),
-            "leak_symbol": _leak_symbol(query, gt_funcs),
         })
         if len(kept) % 25 == 0:
             log("[build] %s kept=%d" % (repo, len(kept)))
@@ -146,9 +153,23 @@ def build(repo, raw_rows, dry_run=False, limit=None, only_prs=None):
 
 
 def _leak_path(query, files):
-    """Does the issue text hand over a ground-truth path outright?"""
+    """Does the issue text hand over a ground-truth path outright?
+
+    The extension is not part of the giveaway. Nobody writes
+    `ByteToMessageDecoder.java` in prose, they write `ByteToMessageDecoder` —
+    and in Java, C# and TypeScript the type name *is* the file name, so that
+    single word ranks the answer first under any lexical baseline.
+
+    The bare stem only counts when it is a compound identifier: an underscore,
+    a hyphen or a case hump. A stem that is one ordinary lowercase word
+    (`validation`, `connections`, `base`) matches hundreds of files and locates
+    nothing, so treating it as leaked would throw away good queries.
+    """
     for p in files:
         if p in query or os.path.basename(p) in query:
+            return True
+        stem = os.path.splitext(os.path.basename(p))[0]
+        if len(stem) >= MIN_LEAK_STEM and COMPOUND_RE.search(stem) and stem in query:
             return True
     return False
 

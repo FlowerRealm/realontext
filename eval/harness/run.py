@@ -36,6 +36,64 @@ def _git_commit(path):
 
 CENSUS_DIR = os.path.join(RESULTS, "census")
 
+MAX_FAIL_RATE = 0.02
+
+HOLDOUT_LOG = os.path.join(ROOT, "holdout-log.md")
+HOLDOUT_BUDGET = 5
+
+
+def _holdout_used():
+    """Rows already in the log. The log is the counter — no second bookkeeping."""
+    if not os.path.exists(HOLDOUT_LOG):
+        return 0
+    n = 0
+    for line in open(HOLDOUT_LOG, encoding="utf-8"):
+        line = line.strip()
+        if not line.startswith("|"):
+            continue
+        first = line.strip("|").split("|")[0].strip()
+        if first.isdigit():
+            n += 1
+    return n
+
+
+def _holdout_guard(rows, args):
+    """Spending a holdout run is a decision, so make the tool ask for it.
+
+    Everything else in this harness is enforced by the machine rather than by
+    discipline; the holdout budget used to be the one exception, kept by hand in
+    a markdown table that nothing checked.
+    """
+    names = [r["repo"] for r in rows if r["split"] == "holdout"]
+    if not names:
+        return None
+    used = _holdout_used()
+    if used >= HOLDOUT_BUDGET:
+        raise SystemExit("holdout budget is spent: %d/%d runs already in %s"
+                         % (used, HOLDOUT_BUDGET, HOLDOUT_LOG))
+    if not args.holdout_reason:
+        raise SystemExit(
+            "%s is holdout. %d/%d runs left. Pass --holdout-reason \"...\" to "
+            "spend one; it is written into %s."
+            % (", ".join(names), HOLDOUT_BUDGET - used, HOLDOUT_BUDGET, HOLDOUT_LOG))
+    return names
+
+
+def _holdout_record(names, args, repos):
+    """Append the row now, while the run is fresh. Scores are filled in by hand
+    after `report` — an unfinished row is still a row, and the count is what
+    protects the holdout."""
+    row = "| %d | %s | %s | %s | %s：%s | — | — | （待填） |\n" % (
+        _holdout_used() + 1,
+        dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d"),
+        manifestmod.dataset_version([r["repo"] for r in repos]),
+        _git_commit(os.path.dirname(ROOT)),
+        ", ".join(names), args.holdout_reason)
+    with open(HOLDOUT_LOG, "a", encoding="utf-8") as f:
+        f.write(row)
+    log("[run] holdout run recorded in %s (%d/%d used)"
+        % (HOLDOUT_LOG, _holdout_used(), HOLDOUT_BUDGET))
+
 
 def _census_table(rows):
     out = ["| 仓库 | 语言 | 规模 | split | 关联 issue 的 PR | 过滤后可用 |",
@@ -211,7 +269,11 @@ def cmd_verify(args):
 
 def cmd_run(args):
     which = [w.strip() for w in args.baselines.split(",") if w.strip()]
-    for r in _repos(args):
+    repos = _repos(args)
+    holdout = _holdout_guard(repos, args)
+    if holdout:
+        _holdout_record(holdout, args, repos)
+    for r in repos:
         repo = r["repo"]
         rows = read_jsonl(buildmod.dataset_path(repo))
         if not rows:
@@ -224,14 +286,32 @@ def cmd_run(args):
             log("[run] %s frozen at %s (%d queries)"
                 % (repo, frozen["sha256"][:12], frozen["queries"]))
         per_query = {w: [] for w in which}
-        ceilings = []
+        ceilings, failed = [], []
+        gt_funcs_total = gt_funcs_unreachable = 0
+        gt_files_total = gt_files_unreachable = 0
         for i, row in enumerate(rows, 1):
             log("[run] %s %d/%d pr=%d" % (repo, i, len(rows), row["pr"]))
             try:
                 with Snapshot(repo, row["base_sha"]) as snap:
+                    # Hard rule: a ground-truth name the corpus does not contain
+                    # is a normalisation bug, not a hard query. Count it here or
+                    # the score silently absorbs it (docs/benchmark.md 评分规则).
+                    qnames = {t["qname"] for t in snap.tags}
+                    gt = row.get("gt_functions") or []
+                    gt_funcs_total += len(gt)
+                    gt_funcs_unreachable += sum(1 for q in gt if q not in qnames)
+                    # Same rule one level up. An answer file the corpus does not
+                    # hold caps file recall for every system at once, and no
+                    # metric shows it — the ripgrep defaults that hid dotted and
+                    # .gitignore'd paths were exactly this, unseen.
+                    corpus = set(snap.paths)
+                    gt_files_total += len(row["gt_files"])
+                    gt_files_unreachable += sum(
+                        1 for f in row["gt_files"] if f not in corpus)
                     res = _run_query(snap, row, which)
             except Exception as e:
                 log("[run] %s pr=%d failed: %s" % (repo, row["pr"], e))
+                failed.append({"pr": row["pr"], "error": str(e)[:300]})
                 continue
             if res.get("_pool_ceiling") is not None:
                 ceilings.append(res["_pool_ceiling"])
@@ -242,13 +322,27 @@ def cmd_run(args):
         payload = {
             "repo": repo, "meta": r,
             "dataset_stats": scoremod.dataset_stats(rows),
-            "systems": {w: scoremod.macro(per_query[w]) for w in which},
+            "systems": {w: scoremod.macro_counts(per_query[w]) for w in which},
             "per_query_counts": {w: len(per_query[w]) for w in which},
+            "attempted": len(rows),
+            "failed_queries": failed,
+            "gt_funcs_total": gt_funcs_total,
+            "gt_funcs_unreachable": gt_funcs_unreachable,
+            "gt_files_total": gt_files_total,
+            "gt_files_unreachable": gt_files_unreachable,
         }
         if ceilings:
             payload["vector_pool_ceiling"] = sum(ceilings) / len(ceilings)
         out = os.path.join(RESULTS, slug(repo) + ".json")
         scoremod.save(out, payload)
+        if failed:
+            log("[run] %s %d query(ies) failed and were not scored" % (repo, len(failed)))
+        if gt_funcs_unreachable:
+            log("[run] %s %d/%d ground-truth functions absent from the corpus index"
+                % (repo, gt_funcs_unreachable, gt_funcs_total))
+        if gt_files_unreachable:
+            log("[run] %s %d/%d ground-truth files absent from the corpus"
+                % (repo, gt_files_unreachable, gt_files_total))
         log("[run] %s -> %s" % (repo, out))
     return 0
 
@@ -267,24 +361,51 @@ def cmd_report(args):
     if not rows:
         raise SystemExit("no results/ found — run `run` first")
 
+    unreachable = total_gt = 0
+    f_unreachable = f_total = 0
+    failed = 0
     for payload in rows:
         if payload.get("vector_pool_ceiling") is not None:
             ceilings.append(payload["vector_pool_ceiling"])
+        unreachable += payload.get("gt_funcs_unreachable", 0)
+        total_gt += payload.get("gt_funcs_total", 0)
+        f_unreachable += payload.get("gt_files_unreachable", 0)
+        f_total += payload.get("gt_files_total", 0)
+        failed += len(payload.get("failed_queries") or [])
         for name, m in payload["systems"].items():
-            systems.setdefault(name, []).append((payload["dataset_stats"]["queries"], m))
+            systems.setdefault(name, []).append(m)
 
     merged = {}
     for name, parts in systems.items():
         keys = set()
-        for _, m in parts:
+        for m in parts:
             keys.update(m)
         acc = {}
         for k in keys:
-            num = sum(n * m[k] for n, m in parts if k in m)
-            den = sum(n for n, m in parts if k in m)
+            # each metric carries its own n: func_* is defined on fewer queries
+            num = sum(m[k][0] * m[k][1] for m in parts if k in m)
+            den = sum(m[k][1] for m in parts if k in m)
             if den:
                 acc[k] = num / den
         merged[name] = acc
+
+    rate = (unreachable / total_gt) if total_gt else 0.0
+    f_rate = (f_unreachable / f_total) if f_total else 0.0
+
+    # A query that threw is a query nobody answered. Averaging over the ones
+    # that survived quietly rewrites the test set mid-run, and failures are not
+    # random — they land on the biggest snapshots.
+    # from the payload, not from the dataset file: a --limit run attempts fewer
+    # queries than the dataset holds, and a denominator that ignores that makes
+    # the failure rate look smaller than it is.
+    attempted = sum(p.get("attempted", 0) for p in rows)
+    fail_rate = (failed / attempted) if attempted else 0.0
+    if fail_rate > MAX_FAIL_RATE and not args.allow_failures:
+        raise SystemExit(
+            "%d/%d queries (%.1f%%) failed and were not scored — over the %.0f%% "
+            "ceiling. Fix the runs or pass --allow-failures, and if you pass it, "
+            "the numbers do not get reported."
+            % (failed, attempted, 100 * fail_rate, 100 * MAX_FAIL_RATE))
 
     scored = [p["repo"] for p in rows]
     meta = {
@@ -292,13 +413,15 @@ def cmd_report(args):
         "unfrozen_repos": ", ".join(
             r for r in scored if r not in manifestmod.load()["frozen"]) or "none",
         "tools": json.dumps(manifestmod.tool_versions(), ensure_ascii=False),
-        "dataset_commit": _git_commit(os.path.dirname(ROOT)),
-        "code_commit": _git_commit(os.path.dirname(ROOT)),
+        "commit": _git_commit(os.path.dirname(ROOT)),
         "repos": "%d (%s)" % (len(rows), ", ".join(p["repo"] for p in rows)),
         "split": args.split or "all",
         "generated_at": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
     }
     stats = scoremod.dataset_stats(dataset_rows)
+    stats["gt_funcs_unreachable"] = "%d/%d (%.1f%%)" % (unreachable, total_gt, 100 * rate)
+    stats["gt_files_unreachable"] = "%d/%d (%.1f%%)" % (f_unreachable, f_total, 100 * f_rate)
+    stats["failed_queries"] = "%d/%d (%.1f%%)" % (failed, attempted, 100 * fail_rate)
     if ceilings:
         stats["vector_pool_ceiling"] = sum(ceilings) / len(ceilings)
     md = scoremod.markdown_report(meta, stats, merged)
@@ -359,10 +482,14 @@ def main(argv=None):
     p.add_argument("--limit", type=int, default=None)
     p.add_argument("--allow-drift", action="store_true",
                    help="对未冻结或已漂移的数据集打分。只用于本地探索，出来的数不许报")
+    p.add_argument("--holdout-reason",
+                   help="跑 holdout 仓库必填，会写进 holdout-log.md 并占掉一次预算")
     p.set_defaults(fn=cmd_run)
 
     p = sub.add_parser("report", help="合并 results/ 出报分表")
     common(p)
+    p.add_argument("--allow-failures", action="store_true",
+                   help="失败率超过上限仍然出表。只用于本地排查，出来的数不许报")
     p.set_defaults(fn=cmd_report)
 
     args = ap.parse_args(argv)

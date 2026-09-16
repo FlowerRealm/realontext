@@ -11,7 +11,7 @@ import subprocess
 import tarfile
 
 from . import symbols
-from .common import CACHE, is_code, log, mirror_path, slug
+from .common import CACHE, ensure_mirror, is_code, log, mirror_path, slug
 
 MAX_FILE_BYTES = 1 << 20            # 1 MB: past this it is data, not source
 
@@ -24,6 +24,7 @@ def materialize(repo, sha, dest):
     would issue one network round trip per missing blob and take hours.
     """
     os.makedirs(dest, exist_ok=True)
+    ensure_mirror(repo)                       # also neutralises export-ignore
     proc = subprocess.Popen(
         ["git", "-C", mirror_path(repo), "archive", "--format=tar", sha],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE)

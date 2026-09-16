@@ -12,7 +12,7 @@ HUNK_RE = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@")
 
 def changed_files(repo, base, merge):
     """[(status, path)] restricted to first-party source in the 7 languages."""
-    p = git(repo, ["diff", "--name-status", "-M", "--no-renames", base, merge])
+    p = git(repo, ["diff", "--name-status", "--no-renames", base, merge])
     out = []
     for line in p.stdout.splitlines():
         parts = line.split("\t")
@@ -26,7 +26,7 @@ def base_line_ranges(repo, base, merge, paths):
     """Lines that existed on the base side and were touched. Pure insertions yield none."""
     if not paths:
         return {}
-    args = ["diff", "-U0", "-M", "--no-renames", base, merge, "--"] + paths
+    args = ["diff", "-U0", "--no-renames", base, merge, "--"] + paths
     p = git(repo, args)
     ranges, cur = {}, None
     for line in p.stdout.splitlines():
@@ -63,7 +63,10 @@ def ground_truth(repo, base, merge):
     """{files, functions, unmapped, file_count_all} for one PR."""
     changes = changed_files(repo, base, merge)
     all_paths = [p for _, p in changes]
-    code = [p for st, p in changes if is_code(p)]
+    # A file the PR creates does not exist in the base tree, so it is not in the
+    # corpus and no retriever can return it. Counted, not scored.
+    code = [p for st, p in changes if is_code(p) and st != "A"]
+    added = [p for st, p in changes if is_code(p) and st == "A"]
     modified = [p for st, p in changes if is_code(p) and st == "M"]
 
     functions, unmapped = [], 0
@@ -94,4 +97,5 @@ def ground_truth(repo, base, merge):
         "hunks_outside_functions": unmapped,
         "changed_all": len(all_paths),
         "changed_code": len(code),
+        "added_files_dropped": len(added),
     }

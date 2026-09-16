@@ -156,8 +156,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: eval/.cache/tags/${{ matrix.target.slug }}
-          key: tags-${{ matrix.target.slug }}-${{ github.run_id }}
-          restore-keys: tags-${{ matrix.target.slug }}-
+          key: tags-v2-${{ matrix.target.slug }}-${{ github.run_id }}
+          restore-keys: tags-v2-${{ matrix.target.slug }}-
       - name: collect + build (proposal only)
         working-directory: eval
         env:
@@ -210,8 +210,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: eval/.cache/tags/${{ matrix.target.slug }}
-          key: tags-${{ matrix.target.slug }}-${{ github.run_id }}
-          restore-keys: tags-${{ matrix.target.slug }}-
+          key: tags-v2-${{ matrix.target.slug }}-${{ github.run_id }}
+          restore-keys: tags-v2-${{ matrix.target.slug }}-
       - name: cache local embeddings
         if: contains(inputs.baselines || 'grep,bm25', 'vector')
         uses: actions/cache@v4

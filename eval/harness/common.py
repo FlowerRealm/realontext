@@ -111,10 +111,12 @@ VENDOR_RE = re.compile(
     r"(^|/)(vendor|third_party|thirdparty|node_modules|deps|external|"
     r"generated|gen|dist|build|target|\.git)(/|$)|^contrib(/|$)")
 GENERATED_RE = re.compile(r"(\.pb\.go|_pb2\.py|\.generated\.[a-z]+|\.min\.js|"
-                          r"\.g\.dart|_generated\.[a-z]+)$")
+                          r"\.g\.dart|_generated\.[a-z]+)$|(^|/)zz_generated[^/]*$")
 TEST_RE = re.compile(
-    r"(^|/)(tests?|testing|spec|specs|__tests__|testdata|fixtures|e2e)(/|$)"
-    r"|(^|/)test_[^/]+$|_test\.[a-z]+$|\.test\.[a-z]+$|\.spec\.[a-z]+$|Test[A-Z][^/]*\.java$")
+    r"(^|/)(tests?|testing|testsuite|spec|specs|__tests__|testdata|fixtures|e2e|"
+    r"benchmarks?|asv_bench)(/|$)"
+    r"|(^|/)tests?[._-][^/]+$|_test\.[a-z]+$|\.test\.[a-z]+$|\.spec\.[a-z]+$"
+    r"|(^|/)Test[A-Z][^/]*\.java$|[A-Za-z0-9]Tests?\.java$|[A-Za-z0-9]IT\.java$")
 DOC_RE = re.compile(r"\.(md|rst|txt|adoc|png|jpg|svg|gif|pdf)$|(^|/)docs?/")
 
 
@@ -184,6 +186,16 @@ def ensure_mirror(repo, with_pull_refs=False):
             "https://github.com/%s.git" % repo, path])
         sh(["git", "-C", path, "config", "remote.origin.promisor", "true"])
         sh(["git", "-C", path, "config", "remote.origin.partialclonefilter", "blob:none"])
+    # `git archive` obeys export-ignore from the tree's own .gitattributes, which
+    # would silently cut files out of the corpus (pandas ships 57 such rules).
+    # info/attributes outranks the in-tree file, so this restores the full tree.
+    info = os.path.join(path, "info")
+    os.makedirs(info, exist_ok=True)
+    attrs = os.path.join(info, "attributes")
+    want = "* -export-ignore\n"
+    if not os.path.exists(attrs) or open(attrs, encoding="utf-8").read() != want:
+        with open(attrs, "w", encoding="utf-8") as f:
+            f.write(want)
     if with_pull_refs:
         marker = os.path.join(path, ".pull-refs-fetched")
         if not os.path.exists(marker):

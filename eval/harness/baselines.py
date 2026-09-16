@@ -10,6 +10,7 @@ import re
 import subprocess
 from collections import defaultdict
 
+from . import symbols
 from .common import log
 from .tokenize import IDENT_RE, bm25_terms, grep_terms
 
@@ -23,22 +24,22 @@ GREP_MIN_LEN = 4
 
 # ---------------------------------------------------------------- shared scan
 
-def _line_owner(path_tags, nlines):
-    """line number -> innermost enclosing qname."""
-    owner = [None] * (nlines + 2)
-    for t in sorted(path_tags, key=lambda t: -(t["end"] - t["line"])):
-        lo = max(1, t["line"])
-        hi = min(nlines, t["end"])
-        for i in range(lo, hi + 1):
-            owner[i] = t["qname"]
-    return owner
-
-
 def _rg(root, patterns, extra):
-    """One ripgrep invocation. Returns raw stdout lines."""
+    """One ripgrep invocation. Returns raw stdout lines.
+
+    `--hidden --no-ignore` are not optional. ripgrep's defaults skip dotted paths
+    and obey every .gitignore above the search root — and the corpus is unpacked
+    under eval/.cache/, inside realontext's own working tree. Without these two
+    flags the corpus is whatever this repository's .gitignore happens to say,
+    which is a test set that changes without changing its hash.
+
+    No --max-columns either: a truncated line comes back as a placeholder, and
+    grep_baseline would then fail to re-match the terms it was found by. File
+    size is already capped at snapshot.MAX_FILE_BYTES.
+    """
     pat = "\n".join(patterns) + "\n"
     args = [RG, "--no-messages", "--no-heading", "--fixed-strings",
-            "--ignore-case", "--word-regexp", "--max-columns", "500",
+            "--ignore-case", "--word-regexp", "--hidden", "--no-ignore",
             "-f", "-"] + extra + ["."]
     p = subprocess.run(args, cwd=root, input=pat, capture_output=True, text=True)
     if p.returncode not in (0, 1):
@@ -51,7 +52,7 @@ def candidate_files(root, terms):
         return []
     out = []
     for line in _rg(root, terms, ["--files-with-matches"]):
-        out.append(line.lstrip("./"))
+        out.append(line.removeprefix("./"))
     return out
 
 
@@ -76,7 +77,7 @@ def scan(root, paths, terms, by_file):
             continue
         text = raw.decode("utf-8", "replace")
         lines = text.split("\n")
-        owner = _line_owner(by_file.get(path, []), len(lines))
+        owner = symbols.line_owner(by_file.get(path, []), len(lines))
         total = 0
         for i, line in enumerate(lines, 1):
             who = owner[i] if i < len(owner) else None
@@ -126,17 +127,15 @@ def grep_baseline(root, paths, query, by_file, stats=None, corpus_files=None):
         num, _, text = text.partition(":")
         if not num.isdigit():
             continue
-        path = head.lstrip("./")
+        path = head.removeprefix("./")
         line = int(num)
         hit = [t for t, rx in matcher if rx.search(text)]
         if not hit:
             continue
         file_terms[path].update(hit)
-        tags = by_file.get(path)
-        if tags:
-            for t in tags:
-                if t["line"] <= line <= t["end"]:
-                    func_terms[t["qname"]].update(hit)
+        owner = symbols.enclosing(by_file.get(path, []), line)
+        if owner:
+            func_terms[owner["qname"]].update(hit)
 
     files = sorted(file_terms, key=lambda p: (-sum(idf[t] for t in file_terms[p]), p))
     funcs = sorted(func_terms, key=lambda q: (-sum(idf[t] for t in func_terms[q]), q))

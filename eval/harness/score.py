@@ -63,6 +63,13 @@ def score_one(ranked_files, ranked_funcs, row):
 
 def macro(per_query):
     """Average each metric over the queries where it is defined. Never pool."""
+    return {k: v for k, (v, _) in macro_counts(per_query).items()}
+
+
+def macro_counts(per_query):
+    """{metric: (mean, n)}. `n` differs per metric — the function-level ones are
+    defined only on func-eligible queries — so merging repositories has to weight
+    each metric by its own n, not by the query count."""
     keys = set()
     for r in per_query:
         keys.update(k for k, v in r.items() if isinstance(v, (int, float)) and v is not None)
@@ -70,14 +77,13 @@ def macro(per_query):
     for k in sorted(keys):
         vals = [r[k] for r in per_query if isinstance(r.get(k), (int, float))]
         if vals:
-            out[k] = sum(vals) / len(vals)
+            out[k] = (sum(vals) / len(vals), len(vals))
     return out
 
 
 def dataset_stats(rows):
     gt_sizes = [len(r["gt_files"]) for r in rows]
     fn_sizes = [len(r.get("gt_functions") or []) for r in rows if r.get("gt_functions")]
-    leaked = sum(1 for r in rows if r.get("leak_path") or r.get("leak_symbol"))
     outside = sum(r.get("hunks_outside_functions", 0) for r in rows)
     func_rows = sum(1 for r in rows if r.get("gt_functions"))
     return {
@@ -86,7 +92,6 @@ def dataset_stats(rows):
         "gt_files_median": statistics.median(gt_sizes) if gt_sizes else 0,
         "gt_files_p90": (sorted(gt_sizes)[int(0.9 * (len(gt_sizes) - 1))] if gt_sizes else 0),
         "gt_funcs_median": statistics.median(fn_sizes) if fn_sizes else 0,
-        "leak_rate": leaked / len(rows) if rows else 0.0,
         "hunks_outside_functions_total": outside,
     }
 
@@ -103,8 +108,8 @@ def markdown_report(meta, stats, systems):
     lines.append("")
     lines.append("| 字段 | 值 |")
     lines.append("|---|---|")
-    for k in ("dataset_version", "unfrozen_repos", "dataset_commit", "code_commit",
-              "repos", "split", "generated_at", "tools"):
+    for k in ("dataset_version", "unfrozen_repos", "commit", "repos", "split",
+              "generated_at", "tools"):
         if meta.get(k) is not None:
             lines.append("| %s | %s |" % (k, meta[k]))
     for k, v in stats.items():
