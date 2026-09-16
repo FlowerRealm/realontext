@@ -29,8 +29,10 @@ bool stopword(std::string_view w) { return std::binary_search(stopwords.begin(),
 
 // Column weights for bm25(): a hit in the definition's name says more than a
 // hit somewhere in its body.
-constexpr const char* ranked = "SELECT rowid, bm25(chunk_fts, 2.0, 1.0) FROM chunk_fts "
-                               "WHERE chunk_fts MATCH ?1 ORDER BY 2, 1";
+constexpr const char* ranked_chunks = "SELECT rowid, bm25(chunk_fts, 2.0, 1.0) FROM chunk_fts "
+                                      "WHERE chunk_fts MATCH ?1 ORDER BY 2, 1";
+constexpr const char* ranked_files = "SELECT rowid, bm25(file_fts) FROM file_fts "
+                                     "WHERE file_fts MATCH ?1 ORDER BY 2, 1";
 
 } // namespace
 
@@ -38,8 +40,13 @@ Status attach(store::Db& db)
 {
     if (auto s = register_tokenizer(db.handle()); !s)
         return s;
-    return db.exec("CREATE VIRTUAL TABLE IF NOT EXISTS chunk_fts USING fts5("
-                   "symbol_path, content, content = 'chunks', content_rowid = 'ord', tokenize = 'code')");
+    if (auto s = db.exec("CREATE VIRTUAL TABLE IF NOT EXISTS chunk_fts USING fts5("
+                         "symbol_path, content, content = 'chunks', content_rowid = 'ord', tokenize = 'code')");
+        !s)
+        return s;
+    // Contentless: the text already lives in chunks, only the index is needed.
+    return db.exec("CREATE VIRTUAL TABLE IF NOT EXISTS file_fts USING fts5("
+                   "content, content = '', tokenize = 'code')");
 }
 
 Status sync(store::Db& db)
@@ -50,21 +57,40 @@ Status sync(store::Db& db)
         db.exec(s ? "COMMIT" : "ROLLBACK");
         return s;
     };
-    auto synced = store::meta_int(db, "fts_synced");
-    if (!synced)
-        return done(Err{synced.error()});
-    auto insert = store::Stmt::prepare(db.handle(), "INSERT INTO chunk_fts (rowid, symbol_path, content) "
-                                                    "SELECT ord, symbol_path, content FROM chunks WHERE ord > ?1");
-    auto top = store::Stmt::prepare(db.handle(), "SELECT coalesce(max(ord), 0) FROM chunks");
-    if (!insert)
-        return done(Err{insert.error()});
-    if (!top)
-        return done(Err{top.error()});
-    insert->bind(1, *synced);
-    if (insert->step() != SQLITE_DONE)
-        return done(Err{"fts sync: " + insert->error()});
-    top->step();
-    return done(store::set_meta_int(db, "fts_synced", top->int64(0)));
+    // Both tables grow append-only by ordinal, so each keeps one high-water mark.
+    struct Feed {
+        const char* key;
+        const char* insert;
+        const char* top;
+    };
+    constexpr Feed feeds[] = {
+        {"fts_synced", "INSERT INTO chunk_fts (rowid, symbol_path, content) "
+                       "SELECT ord, symbol_path, content FROM chunks WHERE ord > ?1",
+         "SELECT coalesce(max(ord), 0) FROM chunks"},
+        {"file_fts_synced", "INSERT INTO file_fts (rowid, content) "
+                            "SELECT p.ord, group_concat(c.content, char(10)) FROM parsed p "
+                            "JOIN blob_chunks bc ON bc.blob = p.blob AND bc.lang = p.lang "
+                            "JOIN chunks c ON c.ord = bc.chunk WHERE p.ord > ?1 GROUP BY p.ord",
+         "SELECT coalesce(max(ord), 0) FROM parsed"},
+    };
+    for (const Feed& f : feeds) {
+        auto synced = store::meta_int(db, f.key);
+        if (!synced)
+            return done(Err{synced.error()});
+        auto insert = store::Stmt::prepare(db.handle(), f.insert);
+        auto top = store::Stmt::prepare(db.handle(), f.top);
+        if (!insert)
+            return done(Err{insert.error()});
+        if (!top)
+            return done(Err{top.error()});
+        insert->bind(1, *synced);
+        if (insert->step() != SQLITE_DONE)
+            return done(Err{std::string("fts sync ") + f.key + ": " + insert->error()});
+        top->step();
+        if (auto s = store::set_meta_int(db, f.key, top->int64(0)); !s)
+            return done(s);
+    }
+    return done(ok);
 }
 
 std::vector<std::string> terms(std::string_view query)
@@ -79,7 +105,7 @@ std::vector<std::string> terms(std::string_view query)
     return out;
 }
 
-Result<Ranking> Ranking::search(store::Db& db, std::string_view query)
+Result<Ranking> Ranking::search(store::Db& db, std::string_view query, Unit unit)
 {
     std::string match;
     for (const std::string& t : terms(query)) {
@@ -89,7 +115,7 @@ Result<Ranking> Ranking::search(store::Db& db, std::string_view query)
     }
     if (match.empty())
         return Ranking(std::nullopt);
-    auto stmt = store::Stmt::prepare(db.handle(), ranked);
+    auto stmt = store::Stmt::prepare(db.handle(), unit == Unit::Chunk ? ranked_chunks : ranked_files);
     if (!stmt)
         return Err{stmt.error()};
     stmt->bind(1, match);

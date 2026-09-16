@@ -72,12 +72,14 @@ class Resolver {
 public:
     static Result<Resolver> make(Db& db, std::string_view branch);
     Result<ChunkInfo> resolve(uint32_t chunk);
+    // Paths on the branch holding the parsed (blob, lang) document `parsed`.
+    Result<std::vector<std::string>> paths(uint32_t parsed);
 
 private:
-    Resolver(roaring::Roaring files, Stmt info, Stmt where)
-        : files_(std::move(files)), info_(std::move(info)), where_(std::move(where)) {}
+    Resolver(roaring::Roaring files, Stmt info, Stmt where, Stmt doc)
+        : files_(std::move(files)), info_(std::move(info)), where_(std::move(where)), doc_(std::move(doc)) {}
     roaring::Roaring files_;
-    Stmt info_, where_;
+    Stmt info_, where_, doc_;
 };
 
 // Every function chunk on the branch as path::symbol.

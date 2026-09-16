@@ -568,7 +568,8 @@ D5（API-only 无法微调）造成的差距也因此无法直接量化——没
 | 分词 | 驼峰、下划线拆分并保留原词 | `modules/lexical.md` |
 | query | 同一分词器，去停用词，全部词 OR | `modules/lexical.md` |
 | IDF | 全库统计 | `modules/lexical.md` |
-| 文件级排名 | 取最高 Chunk 分 | `modules/match.md` |
+| 文件级排名 | 最高 Chunk 分与整文件 BM25 两个排名做 RRF 融合 | `modules/match.md` |
+| 测试代码 | 按路径识别，分数乘 0.5，不排除 | `modules/match.md` |
 | 候选数 | `match/` 交出 200 块 | `modules/match.md` |
 | 索引范围 | 全部 remote 分支，评测额外注册 base commit 为伪 Branch | `modules/match.md` |
 | 过滤规则 | 评测时照常生效 | `modules/ingest.md` |
@@ -597,6 +598,20 @@ n-gram 倒排，亚秒级正则搜索。否决原因：在已 checkout 的工作
 ### 否决：文件分数取 Chunk 分之和
 
 同一组题上，50 块时求和的文件级 Recall@10 是 0.563，200 块时降到 0.479。分数随候选数大幅摆动，说明它奖励的是命中次数而不是相关性。
+
+### 否决：测试代码与实现代码同权
+
+实测（train 10 仓库，450 题）：测试方法本身就是一段复现，和 issue 用词最像。elasticsearch 文件级前 10 里 74% 是测试文件。同权时文件级 Recall@10 与 BM25 基线持平（0.386）。
+
+降权系数在 train 上扫过 1.0 / 0.75 / 0.5 / 0.35 / 0.25 / 0.1 / 0：文件级 Recall@10 依次为 0.386 / 0.439 / 0.452 / 0.452 / 0.454 / 0.454 / 0.454。取 0.5——进入平台的最温和的值，测试代码仍可被召回。
+
+### 否决：排除测试代码
+
+增益与 0.5 降权几乎相同，但 agent 修复时拿不到测试。
+
+### 否决：文件分数只取最高 Chunk 分
+
+大文件吃亏：pandas 的答案集中在 `frame.py`、`generic.py`，答案文件中位数 117 个 Chunk，排进前 10 的文件只有 29 个。加入整文件 BM25 做 RRF 融合后，train 文件级 Recall@10 从 0.452 升到 0.474。
 
 ### 否决：评测时关掉过滤规则
 

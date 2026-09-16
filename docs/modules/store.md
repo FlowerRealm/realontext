@@ -67,7 +67,7 @@ Roaring bitmap 开销：每分支约 100 KB，可忽略。
 | 表 | 键 | 值 | 作用域 |
 |---|---|---|---|
 | `chunks` | chunk_ord（chunk_hash 唯一） | content, embedding, symbol_path | 全局去重 |
-| `parsed` | (blob_sha, lang) | — | 已切过的标记，切出零块的 blob 也记 |
+| `parsed` | ord（(blob_sha, lang) 唯一） | — | 已切过的标记，切出零块的 blob 也记；ord 是 `lexical/` 整文件文档的编号 |
 | `blob_chunks` | (blob_sha, lang) | [(chunk_ord, start_line, end_line)] | 切块缓存 |
 | `files` | file_ord（(path, blob_sha) 唯一） | path, blob_sha | 全局去重 |
 | `branch_manifest` | (repo, branch) | roaring bitmap\<file_ord\> | 每分支 |

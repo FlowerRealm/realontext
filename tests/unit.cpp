@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "ingest/filter.h"
 #include "lexical/lexical.h"
 #include "lexical/tokenizer.h"
 #include "parse/chunk.h"
@@ -137,6 +138,12 @@ namespace N { export function h() {} }
     expect(lexical::terms("Why does the ConfigParser crash") ==
                std::vector<std::string>{"configparser", "config", "parser", "crash"},
            "terms drop stopwords");
+
+    expect(ingest::is_test("server/src/internalClusterTest/java/org/Foo.java"), "gradle test source set");
+    expect(ingest::is_test("pkg/labels/regexp_test.go"), "go test file");
+    expect(ingest::is_test("pandas/tests/frame/test_api.py"), "python tests dir");
+    expect(ingest::is_test("src/FooTests.java") && ingest::is_test("a/b.spec.ts"), "java and ts test names");
+    expect(!ingest::is_test("src/latest/contest.go") && !ingest::is_test("src/Attestation.java"), "latest is not a test");
 
     if (failures)
         std::fprintf(stderr, "%d failure(s)\n", failures);

@@ -35,12 +35,12 @@ target_link_libraries(lexical PUBLIC store)
 
 add_library(match STATIC src/match/match.cpp)
 target_include_directories(match PUBLIC src)
-target_link_libraries(match PUBLIC lexical store)
+target_link_libraries(match PUBLIC lexical store ingest)
 
 add_executable(realontext src/main.cpp)
 target_link_libraries(realontext PRIVATE ingest match nlohmann_json::nlohmann_json)
 
 enable_testing()
 add_executable(unit tests/unit.cpp)
-target_link_libraries(unit PRIVATE parse lexical)
+target_link_libraries(unit PRIVATE parse lexical ingest)
 add_test(NAME unit COMMAND unit)

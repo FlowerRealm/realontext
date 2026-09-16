@@ -20,14 +20,19 @@ Status sync(store::Db& db);
 // Query terms: every whole word and sub-word, stopwords removed, first occurrence order.
 std::vector<std::string> terms(std::string_view query);
 
-// Chunks in BM25 order, best first, across every branch. IDF is corpus-wide
+// Two document units over the same text: a chunk, and a whole file (one parsed
+// blob, the concatenation of its chunks). Chunks locate; files carry evidence
+// spread over many chunks of a large file.
+enum class Unit { Chunk, File };
+
+// Documents in BM25 order, best first, across every branch. IDF is corpus-wide
 // (docs/modules/lexical.md); branch visibility is match/'s concern.
 class Ranking {
 public:
-    static Result<Ranking> search(store::Db& db, std::string_view query);
+    static Result<Ranking> search(store::Db& db, std::string_view query, Unit unit);
 
     struct Hit {
-        uint32_t chunk;
+        uint32_t id;  // chunk ordinal, or parsed-document ordinal
         double score; // higher is better
     };
     // A hit, or nullopt when exhausted.

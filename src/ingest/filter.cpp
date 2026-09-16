@@ -1,6 +1,7 @@
 #include "ingest/filter.h"
 
 #include <array>
+#include <string>
 
 namespace ingest {
 
@@ -35,7 +36,68 @@ bool skip_file(std::string_view name)
            name == "id_rsa" || name == "credentials";
 }
 
+bool lower(char c) { return c >= 'a' && c <= 'z'; }
+bool upper(char c) { return c >= 'A' && c <= 'Z'; }
+bool digit(char c) { return c >= '0' && c <= '9'; }
+
+std::string ascii_lower(std::string_view s)
+{
+    std::string out(s);
+    for (char& c : out)
+        if (upper(c))
+            c = static_cast<char>(c | 0x20);
+    return out;
+}
+
+constexpr std::array test_dirs = {
+    std::string_view("test"),     std::string_view("tests"),    std::string_view("testing"),
+    std::string_view("__tests__"), std::string_view("testdata"), std::string_view("spec"),
+    std::string_view("specs"),    std::string_view("fixtures"), std::string_view("e2e"),
+    std::string_view("benchmark"), std::string_view("benchmarks"),
+};
+
+// A camel-case word ending the name: fooTest, integTests. Not "latest".
+bool camel_suffix(std::string_view s, std::string_view word)
+{
+    return s.size() > word.size() && ends_with(s, word) &&
+           (lower(s[s.size() - word.size() - 1]) || digit(s[s.size() - word.size() - 1]));
+}
+
+bool test_dir(std::string_view d)
+{
+    std::string l = ascii_lower(d);
+    for (auto t : test_dirs)
+        if (l == t)
+            return true;
+    // testFixtures, test_utils, test-support
+    if (starts_with(d, "test") && d.size() > 4 && (upper(d[4]) || d[4] == '_' || d[4] == '-'))
+        return true;
+    return camel_suffix(d, "Test") || camel_suffix(d, "Tests");
+}
+
+bool test_file(std::string_view name)
+{
+    size_t dot = name.rfind('.');
+    if (dot == std::string_view::npos || dot == 0)
+        return false;
+    std::string_view stem = name.substr(0, dot);
+    return starts_with(stem, "test_") || starts_with(stem, "gtest_") || stem == "conftest" ||
+           ends_with(stem, "_test") || ends_with(stem, "_tests") || ends_with(stem, "_unittest") ||
+           ends_with(stem, ".test") || ends_with(stem, ".spec") ||
+           camel_suffix(stem, "Test") || camel_suffix(stem, "Tests") || camel_suffix(stem, "IT") ||
+           camel_suffix(stem, "TestCase");
+}
+
 } // namespace
+
+bool is_test(std::string_view path)
+{
+    size_t start = 0;
+    for (size_t slash; (slash = path.find('/', start)) != std::string_view::npos; start = slash + 1)
+        if (test_dir(path.substr(start, slash - start)))
+            return true;
+    return test_file(path.substr(start));
+}
 
 bool indexable(std::string_view path)
 {

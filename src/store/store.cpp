@@ -24,12 +24,14 @@ CREATE TABLE IF NOT EXISTS chunks (
 );
 
 -- (blob, lang) pairs already sent through parse/. A blob that yields no chunks
--- is still recorded here, or every branch would parse it again.
+-- is still recorded here, or every branch would parse it again. The ordinal is
+-- the whole-file document id for lexical/.
 CREATE TABLE IF NOT EXISTS parsed (
+    ord  INTEGER PRIMARY KEY,
     blob BLOB NOT NULL,
     lang INTEGER NOT NULL,
-    PRIMARY KEY (blob, lang)
-) WITHOUT ROWID;
+    UNIQUE (blob, lang)
+);
 
 CREATE TABLE IF NOT EXISTS blob_chunks (
     blob       BLOB NOT NULL,
@@ -295,11 +297,15 @@ Result<Resolver> Resolver::make(Db& db, std::string_view branch)
                                "SELECT f.ord, f.path, bc.lang, bc.start_line, bc.end_line "
                                "FROM blob_chunks bc JOIN files f ON f.blob = bc.blob "
                                "WHERE bc.chunk = ?1 ORDER BY f.path, bc.start_line");
+    auto doc = Stmt::prepare(db.handle(), "SELECT f.ord, f.path, p.lang FROM parsed p JOIN files f ON f.blob = p.blob "
+                                          "WHERE p.ord = ?1 ORDER BY f.path");
     if (!info)
         return Err{info.error()};
     if (!where)
         return Err{where.error()};
-    return Resolver(std::move(*files), std::move(*info), std::move(*where));
+    if (!doc)
+        return Err{doc.error()};
+    return Resolver(std::move(*files), std::move(*info), std::move(*where), std::move(*doc));
 }
 
 Result<ChunkInfo> Resolver::resolve(uint32_t chunk)
@@ -323,6 +329,23 @@ Result<ChunkInfo> Resolver::resolve(uint32_t chunk)
     }
     if (rc != SQLITE_DONE)
         return Err{"resolve: " + where_.error()};
+    return out;
+}
+
+Result<std::vector<std::string>> Resolver::paths(uint32_t parsed)
+{
+    doc_.reset();
+    doc_.bind(1, static_cast<int64_t>(parsed));
+    std::vector<std::string> out;
+    int rc;
+    while ((rc = doc_.step()) == SQLITE_ROW) {
+        std::string_view path = doc_.text(1);
+        if (files_.contains(static_cast<uint32_t>(doc_.int64(0))) &&
+            static_cast<int64_t>(parse::lang_of(path)) == doc_.int64(2))
+            out.emplace_back(path);
+    }
+    if (rc != SQLITE_DONE)
+        return Err{"resolve file: " + doc_.error()};
     return out;
 }
 
