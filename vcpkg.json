@@ -1,0 +1,13 @@
+{
+  "name": "realontext",
+  "version-string": "0.0.0",
+  "builtin-baseline": "1577f17ee57f42a0ef6d75bbb82cb37d0b76d7e8",
+  "dependencies": [
+    "blake3",
+    "libgit2",
+    "nlohmann-json",
+    "roaring",
+    { "name": "sqlite3", "features": ["fts5"] },
+    "tree-sitter"
+  ]
+}

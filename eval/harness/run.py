@@ -217,10 +217,15 @@ def _run_query(snap, row, which):
     gterms = sorted({t.lower() for t in grep_terms(query)})
     bterms = sorted(set(bm25_terms(query)))
     vocab = sorted(set(gterms) | set(bterms))
-    cands = baselines.candidate_files(snap.root, vocab) if vocab else []
-    stats = baselines.scan(snap.root, cands, vocab, by_file)
+    stats = None
+    if {"grep", "bm25", "vector"} & set(which):
+        cands = baselines.candidate_files(snap.root, vocab) if vocab else []
+        stats = baselines.scan(snap.root, cands, vocab, by_file)
 
     out = {}
+    if "realontext" in which:
+        from . import realontext
+        out["realontext"] = realontext.query(row)
     if "grep" in which:
         out["grep"] = baselines.grep_baseline(snap.root, paths, query, by_file,
                                               stats=stats, corpus_files=paths)
@@ -289,6 +294,10 @@ def cmd_run(args):
         ceilings, failed = [], []
         gt_funcs_total = gt_funcs_unreachable = 0
         gt_files_total = gt_files_unreachable = 0
+        ro_funcs_unmapped = 0
+        if "realontext" in which:
+            from . import realontext
+            realontext.index(repo, rows)
         for i, row in enumerate(rows, 1):
             log("[run] %s %d/%d pr=%d" % (repo, i, len(rows), row["pr"]))
             try:
@@ -300,6 +309,11 @@ def cmd_run(args):
                     gt = row.get("gt_functions") or []
                     gt_funcs_total += len(gt)
                     gt_funcs_unreachable += sum(1 for q in gt if q not in qnames)
+                    # The system names functions with its own chunker. A ground-truth
+                    # name it never produces is a normalisation gap on its side.
+                    if "realontext" in which:
+                        names = realontext.function_names(row)
+                        ro_funcs_unmapped += sum(1 for q in gt if q not in names)
                     # Same rule one level up. An answer file the corpus does not
                     # hold caps file recall for every system at once, and no
                     # metric shows it — the ripgrep defaults that hid dotted and
@@ -331,6 +345,8 @@ def cmd_run(args):
             "gt_files_total": gt_files_total,
             "gt_files_unreachable": gt_files_unreachable,
         }
+        if "realontext" in which:
+            payload["realontext_gt_funcs_unmapped"] = ro_funcs_unmapped
         if ceilings:
             payload["vector_pool_ceiling"] = sum(ceilings) / len(ceilings)
         out = os.path.join(RESULTS, slug(repo) + ".json")
@@ -363,6 +379,7 @@ def cmd_report(args):
 
     unreachable = total_gt = 0
     f_unreachable = f_total = 0
+    ro_unmapped = ro_total = 0
     failed = 0
     for payload in rows:
         if payload.get("vector_pool_ceiling") is not None:
@@ -372,6 +389,9 @@ def cmd_report(args):
         f_unreachable += payload.get("gt_files_unreachable", 0)
         f_total += payload.get("gt_files_total", 0)
         failed += len(payload.get("failed_queries") or [])
+        if "realontext_gt_funcs_unmapped" in payload:
+            ro_unmapped += payload["realontext_gt_funcs_unmapped"]
+            ro_total += payload.get("gt_funcs_total", 0)
         for name, m in payload["systems"].items():
             systems.setdefault(name, []).append(m)
 
@@ -422,6 +442,9 @@ def cmd_report(args):
     stats["gt_funcs_unreachable"] = "%d/%d (%.1f%%)" % (unreachable, total_gt, 100 * rate)
     stats["gt_files_unreachable"] = "%d/%d (%.1f%%)" % (f_unreachable, f_total, 100 * f_rate)
     stats["failed_queries"] = "%d/%d (%.1f%%)" % (failed, attempted, 100 * fail_rate)
+    if ro_total:
+        stats["realontext_gt_funcs_unmapped"] = "%d/%d (%.1f%%)" % (
+            ro_unmapped, ro_total, 100.0 * ro_unmapped / ro_total)
     if ceilings:
         stats["vector_pool_ceiling"] = sum(ceilings) / len(ceilings)
     md = scoremod.markdown_report(meta, stats, merged)
