@@ -65,7 +65,7 @@ export VCPKG_ROOT=~/vcpkg
 cmake --preset default && cmake --build build && ctest --preset default
 ```
 
-当前是阶段 1（`docs/roadmap.md`）：只有 CLI，还没有 MCP。
+阶段 1 已完成（`docs/roadmap.md`）：只有 CLI，还没有 MCP。
 
 ```bash
 realontext index --db repo.db --git repo.git            # 索引镜像的全部分支

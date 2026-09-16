@@ -2,19 +2,19 @@
 
 ## 阶段与模块的对应
 
-| 阶段 | 模块 | 内容 |
-|---|---|---|
-| 0 | — | 建自建测试集，建 ripgrep / BM25 基线 |
-| 1 | `ingest/` `parse/` `store/` `lexical/` | 拉取、切块、内容寻址去重、BM25 召回 |
-| 2 | `model/` | 嵌入接入、限流重试、索引指纹 |
-| 3 | `vector/` `match/` `serve/` | 向量召回、分支过滤、MCP 可用 |
-| 4 | `match/` | 向量与 BM25 融合 |
-| 5 | `match/` | 重排 |
-| 6 | **`curate/`** | **策展：预算、保真、去冗** |
-| 7 | `lsp/` | 符号扩散 |
-| 8 | `playbook/` | 知识库 |
-| 9 | `ingest/` `model/` | 提交历史 |
-| 10 | `serve/` `store/` | 多用户与运维 |
+| 阶段 | 模块 | 内容 | 状态 |
+|---|---|---|---|
+| 0 | — | 建自建测试集，建 ripgrep / BM25 基线 | 完成 |
+| 1 | `ingest/` `parse/` `store/` `lexical/` | 拉取、切块、内容寻址去重、BM25 召回 | 完成 |
+| 2 | `model/` | 嵌入接入、限流重试、索引指纹 | |
+| 3 | `vector/` `match/` `serve/` | 向量召回、分支过滤、MCP 可用 | |
+| 4 | `match/` | 向量与 BM25 融合 | |
+| 5 | `match/` | 重排 | |
+| 6 | **`curate/`** | **策展：预算、保真、去冗** | |
+| 7 | `lsp/` | 符号扩散 | |
+| 8 | `playbook/` | 知识库 | |
+| 9 | `ingest/` `model/` | 提交历史 | |
+| 10 | `serve/` `store/` | 多用户与运维 | |
 
 模块依赖关系见 `01-overview.md`。
 
@@ -44,7 +44,7 @@
 
 ---
 
-## 阶段 1：拉取、内容寻址与 BM25 召回
+## 阶段 1：拉取、内容寻址与 BM25 召回（完成，2026-09-16）
 
 - libgit2 裸镜像拉取
 - `git for-each-ref` 枚举全部分支
@@ -52,13 +52,42 @@
 - **内容寻址去重**（blob_sha → chunk 缓存），分支位图按文件版本编号（`modules/store.md`）
 - SQLite FTS5 BM25，代码分词器（`modules/lexical.md`）
 - **base commit 注册为伪 Branch**，给评测提供 commit 级可见集（`modules/match.md`）
-- CLI：`index` / `query`。不做 MCP
+- 测试代码降权、整文件 BM25 与 Chunk 排名的 RRF 融合（`modules/match.md`）
+- CLI：`index` / `query` / `symbols`。不做 MCP
 
 去重前置的原因：它现在是成本基础设施，不是优化项。没有它，多分支索引在经济上不成立（$600 vs $31）。
 
 BM25 放在这一阶段的原因见 D21：它零成本，让 `store/` 的每张表在付费嵌入之前就有读者和分数。
 
 **跑 L1（train）。文件级与函数级 Recall@10 都必须超过 BM25 基线。输一项就停。**
+
+### 验收结果
+
+train（10 仓库，450 题，commit `6bc4907`）：**通过**。
+
+| 系统 | file_recall@10 | file_mrr | func_recall@10 | func_recall@50 | func_mrr |
+|---|---|---|---|---|---|
+| grep | 0.262 | 0.178 | 0.101 | 0.194 | 0.083 |
+| bm25 | 0.386 | 0.265 | 0.169 | 0.304 | 0.150 |
+| realontext | 0.474 | 0.343 | 0.242 | 0.398 | 0.188 |
+
+holdout 第 1 次（4 仓库，188 题，commit `965597b`，记录在 `../eval/holdout-log.md`）：
+
+| 系统 | file_recall@10 | file_mrr | func_recall@10 | func_recall@50 | func_mrr |
+|---|---|---|---|---|---|
+| grep | 0.144 | 0.111 | 0.086 | 0.131 | 0.062 |
+| bm25 | 0.252 | 0.169 | 0.205 | 0.307 | 0.155 |
+| realontext | 0.306 | 0.201 | 0.204 | 0.319 | 0.120 |
+
+`6bc4907` 在 `965597b` 之上只加了 Chunk 排名融合文件名次，没有在 holdout 上跑过。
+
+### 遗留到后续阶段
+
+- **函数级过拟合告警**：train 领先 BM25，holdout 持平、func_mrr 落后。阶段 3 报分时必须对照这一行
+- **词法的天花板**：train 上答案文件 43% 进前 10，15% 在 10–30 名，37% 在 30 名以后，6% 没召回。30 名以后基本是用词对不上，归阶段 3 向量召回；10–30 名归阶段 5 重排
+- **函数名对不上 4.3%**（`realontext_gt_funcs_unmapped`）：主要是 ctags 为匿名 namespace 与 lambda 生成的 `__anon…` 名字，任何独立实现都复现不了。测试集不改，记为已知偏差
+- **弱仓库**：pandas、duckdb 文件级仍低于或接近 BM25，大文件证据分散的问题只缓解、未解决
+- **没有 MCP**：agent 还接不上，阶段 3 交付
 
 ---
 
