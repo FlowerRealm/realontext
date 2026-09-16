@@ -15,7 +15,7 @@ import subprocess
 from .common import CACHE, ROOT, ensure_mirror, log, mirror_path, slug
 
 BIN = os.environ.get("REALONTEXT", os.path.join(os.path.dirname(ROOT), "build", "realontext"))
-K = 50
+K = 200
 
 
 def db_path(repo):

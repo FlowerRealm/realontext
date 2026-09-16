@@ -91,7 +91,7 @@ realontext client  --server http://host:port
 
 没有预算，`curate/` 没有优化目标；没有会话标识，`playbook/` 的跨调用去冗没有落点。
 
-它们反向约束下游：`match/` 必须为 `curate/` 预留选择空间，所以交出约 50 条而非 5 条。
+它们反向约束下游：`match/` 必须为 `curate/` 预留选择空间，所以交出约 200 条而非 5 条。
 
 ### `expand`
 

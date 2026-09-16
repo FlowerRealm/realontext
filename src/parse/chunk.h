@@ -10,7 +10,7 @@ namespace parse {
 
 // Function: one callable. Container: whatever a class, namespace, impl or the
 // file itself holds besides its functions. The file is a container without a
-// name, so top-level code and grammar-less files need no rule of their own.
+// name, so top-level code needs no rule of its own.
 enum class Kind : uint8_t { Function = 0, Container = 1 };
 
 struct Chunk {
@@ -22,6 +22,7 @@ struct Chunk {
 };
 
 // Chunks never overlap and together cover every non-blank line of `src`.
+// A file without a grammar yields no chunks: it is not indexed.
 // Pure: no I/O, no model, no storage (docs/modules/parse.md).
 std::vector<Chunk> chunk(Lang lang, std::string_view src);
 

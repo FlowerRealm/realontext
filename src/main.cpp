@@ -134,7 +134,7 @@ int cmd_query(const Args& a, store::Db& db)
     const std::string* branch = a.one("branch");
     if (!branch)
         return fail("--branch is required");
-    size_t k = a.one("k") ? std::stoul(*a.one("k")) : 50;
+    size_t k = a.one("k") ? std::stoul(*a.one("k")) : 200;
     std::string query(std::istreambuf_iterator<char>(std::cin), {});
 
     auto ranked = match::retrieve(db, *branch, query, k);

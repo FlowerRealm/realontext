@@ -116,6 +116,8 @@ function g() {}
 namespace N { export function h() {} }
 )", {"C::m", "f", "g", "N::h"}, "typescript");
 
+    expect(parse::chunk(Lang::None, "name: value\n").size() == 0, "files without a grammar are not indexed");
+
     // Coverage: every non-blank line belongs to exactly one chunk's content.
     std::string src = "#include <x>\nint a() { return 1; }\nint b;\nint c() { return 2; }\n";
     size_t bytes = 0;

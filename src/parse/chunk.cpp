@@ -297,17 +297,11 @@ TSParser* parser_for(Lang lang)
 
 std::vector<Chunk> chunk(Lang lang, std::string_view src)
 {
-    if (blank(src))
+    if (lang == Lang::None || blank(src))
         return {};
-    if (lang == Lang::None) {
-        uint32_t lines = 1;
-        for (size_t i = 0; i + 1 < src.size(); i++)
-            lines += src[i] == '\n';
-        return {Chunk{1, lines, Kind::Container, {}, std::string(src)}};
-    }
     TSTree* tree = ts_parser_parse_string(parser_for(lang), nullptr, src.data(), static_cast<uint32_t>(src.size()));
     if (!tree)
-        return chunk(Lang::None, src);
+        return {};
     std::vector<Chunk> out = Chunker(lang, src).run(ts_tree_root_node(tree));
     ts_tree_delete(tree);
     return out;

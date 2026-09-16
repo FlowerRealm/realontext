@@ -564,11 +564,12 @@ D5（API-only 无法微调）造成的差距也因此无法直接量化——没
 |---|---|---|
 | 分支位图 | 按文件版本 `(path, blob_sha)` 编号，不按 Chunk | `modules/store.md` |
 | 切块 | 方法一块，容器剩余部分一块，顶层代码合并，互不重叠 | `modules/parse.md` |
-| 无 grammar 的文件 | 整个文件一块 | `modules/parse.md` |
+| 无 grammar 的文件 | 不索引 | `modules/parse.md` |
 | 分词 | 驼峰、下划线拆分并保留原词 | `modules/lexical.md` |
 | query | 同一分词器，去停用词，全部词 OR | `modules/lexical.md` |
 | IDF | 全库统计 | `modules/lexical.md` |
 | 文件级排名 | 取最高 Chunk 分 | `modules/match.md` |
+| 候选数 | `match/` 交出 200 块 | `modules/match.md` |
 | 索引范围 | 全部 remote 分支，评测额外注册 base commit 为伪 Branch | `modules/match.md` |
 | 过滤规则 | 评测时照常生效 | `modules/ingest.md` |
 | 交付边界 | CLI `index` / `query`，MCP 在阶段 3 | `roadmap.md` |
@@ -588,6 +589,14 @@ n-gram 倒排，亚秒级正则搜索。否决原因：在已 checkout 的工作
 ### 否决：分支位图按 Chunk 编号
 
 `store.md` 最初的设计。Chunk 跨路径共享，按 Chunk 编号的位图回答得了「可不可见」，回答不了「在哪个文件」，检索结果输出不了路径。
+
+### 否决：无 grammar 的文件整个作为一块
+
+原意是让配置与文档也能被召回。实测（5 个中等 train 仓库，219 题）：issue 正文与 `.md`、`.yml` 用词最像，prometheus 50 题的文件级前 10 里 `.md` 占了 205 个位置。文件级 Recall@10 0.360，去掉非代码文件后 0.495。
+
+### 否决：文件分数取 Chunk 分之和
+
+同一组题上，50 块时求和的文件级 Recall@10 是 0.563，200 块时降到 0.479。分数随候选数大幅摆动，说明它奖励的是命中次数而不是相关性。
 
 ### 否决：评测时关掉过滤规则
 
