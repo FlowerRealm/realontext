@@ -21,12 +21,14 @@ SQLite 之上的内容寻址存储。不做检索决策。
 
 ```
 chunks          : chunk_ord   -> (chunk_hash, content, embedding, symbol_path)  全局去重
-blob_chunks     : blob_sha    -> [(chunk_ord, start_line, end_line)]            切块结果缓存
+blob_chunks     : (blob_sha, lang) -> [(chunk_ord, start_line, end_line)]       切块结果缓存
 files           : file_ord    -> (path, blob_sha)                               文件版本，全局去重
 branch_manifest : (repo, branch) -> roaring_bitmap<file_ord>
 ```
 
-索引新分支：遍历 tree，每个 `(path, blob_sha)` 查 `files`，每个 `blob_sha` 查 `blob_chunks`。只对没见过的 blob 送 `parse/` 切块、送 `model/` 嵌入。
+索引新分支：遍历 tree，每个 `(path, blob_sha)` 查 `files`，每个 `(blob_sha, lang)` 查是否切过。只对没切过的送 `parse/` 切块、送 `model/` 嵌入。
+
+切块缓存的键带语言：语言由扩展名决定，同一份字节在 `.ts` 与 `.tsx` 下切出来不一样。
 
 ### 位图按文件版本编号，不按 Chunk
 
@@ -65,7 +67,8 @@ Roaring bitmap 开销：每分支约 100 KB，可忽略。
 | 表 | 键 | 值 | 作用域 |
 |---|---|---|---|
 | `chunks` | chunk_ord（chunk_hash 唯一） | content, embedding, symbol_path | 全局去重 |
-| `blob_chunks` | blob_sha | [(chunk_ord, start_line, end_line)] | 切块缓存 |
+| `parsed` | (blob_sha, lang) | — | 已切过的标记，切出零块的 blob 也记 |
+| `blob_chunks` | (blob_sha, lang) | [(chunk_ord, start_line, end_line)] | 切块缓存 |
 | `files` | file_ord（(path, blob_sha) 唯一） | path, blob_sha | 全局去重 |
 | `branch_manifest` | (repo, branch) | roaring bitmap\<file_ord\> | 每分支 |
 | `chunk_fts` | rowid = chunk_ord | symbol_path, content | FTS5（`lexical/`） |

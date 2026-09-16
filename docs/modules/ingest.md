@@ -82,7 +82,7 @@ third_party/  vendor/  external/  node_modules/
 
 vendored 目录在大型项目里常占一半以上代码量。
 
-超过 1 MB 的 blob 同样不索引——到这个尺寸是数据，不是源码。
+超过 1 MB 的 blob 与二进制 blob（前 8000 字节含 NUL，git 自己的判据）同样不索引。
 
 **评测时同一套规则照常生效。** 测的是产品的真实行为；被过滤掉的 ground truth 文件计入 `gt_files_unreachable`，分数代价公开。
 

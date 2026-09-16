@@ -57,6 +57,21 @@ realontext client --server http://localhost:7777
 
 然后把客户端的 MCP 端点接到 Claude Code / Cursor / 任意 agent。
 
+### 构建
+
+```bash
+git clone https://github.com/microsoft/vcpkg ~/vcpkg && ~/vcpkg/bootstrap-vcpkg.sh
+export VCPKG_ROOT=~/vcpkg
+cmake --preset default && cmake --build build && ctest --preset default
+```
+
+当前是阶段 1（`docs/roadmap.md`）：只有 CLI，还没有 MCP。
+
+```bash
+realontext index --db repo.db --git repo.git            # 索引镜像的全部分支
+echo "为什么加载 yaml 会崩" | realontext query --db repo.db --branch main
+```
+
 团队模式下服务端部署一台，每个开发者跑自己的客户端——一份索引、一个 API key、一份知识库，成本不随人数增长。
 
 需要两个 API key：
