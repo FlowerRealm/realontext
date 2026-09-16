@@ -20,12 +20,25 @@ SQLite 之上的内容寻址存储。不做检索决策。
 分支之间大量内容相同。git 早就解决了——blob 按内容哈希存一份，tree 指过去。
 
 ```
-chunks          : chunk_hash  -> (content, embedding, symbols)   全局去重
-blob_chunks     : blob_sha    -> [chunk_hash]                    切块结果缓存
-branch_manifest : (repo, branch) -> roaring_bitmap<chunk_ordinal>
+chunks          : chunk_ord   -> (chunk_hash, content, embedding, symbol_path)  全局去重
+blob_chunks     : blob_sha    -> [(chunk_ord, start_line, end_line)]            切块结果缓存
+files           : file_ord    -> (path, blob_sha)                               文件版本，全局去重
+branch_manifest : (repo, branch) -> roaring_bitmap<file_ord>
 ```
 
-索引新分支：遍历 tree，每个 `blob_sha` 查 `blob_chunks`。只对没见过的 blob 送 `parse/` 切块、送 `model/` 嵌入。
+索引新分支：遍历 tree，每个 `(path, blob_sha)` 查 `files`，每个 `blob_sha` 查 `blob_chunks`。只对没见过的 blob 送 `parse/` 切块、送 `model/` 嵌入。
+
+### 位图按文件版本编号，不按 Chunk
+
+同一个 Chunk 可以出现在不同路径、不同分支。位图若按 Chunk 编号，检索结果拿不到路径。
+
+按 `(path, blob_sha)` 编号（Zoekt 的分支掩码模型），可见性判定和路径解析是同一次查找：
+
+```
+chunk_ord → blob_chunks 里含它的 blob → files 里指向这些 blob 的 file_ord → ∩ 分支位图
+```
+
+交集非空即可见，交集里的每个 file_ord 直接给出 `path`，`blob_chunks` 给出行号。行号跟着 blob 走而不跟着 Chunk 走：内容相同的 Chunk 在不同 blob 里行号不同。
 
 ```
 832,000 × 1024 × 1 byte = 850 MB   int8
@@ -51,9 +64,11 @@ Roaring bitmap 开销：每分支约 100 KB，可忽略。
 
 | 表 | 键 | 值 | 作用域 |
 |---|---|---|---|
-| `chunks` | chunk_hash | content, embedding, symbols | 全局去重 |
-| `blob_chunks` | blob_sha | [chunk_hash] | 切块缓存 |
-| `branch_manifest` | (repo, branch) | roaring bitmap | 每分支 |
+| `chunks` | chunk_ord（chunk_hash 唯一） | content, embedding, symbol_path | 全局去重 |
+| `blob_chunks` | blob_sha | [(chunk_ord, start_line, end_line)] | 切块缓存 |
+| `files` | file_ord（(path, blob_sha) 唯一） | path, blob_sha | 全局去重 |
+| `branch_manifest` | (repo, branch) | roaring bitmap\<file_ord\> | 每分支 |
+| `chunk_fts` | rowid = chunk_ord | symbol_path, content | FTS5（`lexical/`） |
 | `commits` | commit_sha | summary, embedding | 全局去重 |
 | `commit_refs` | (repo, branch) | roaring bitmap | 每分支 |
 | `bullets` | bullet_id | content, counters, embedding | 全局（`playbook/`） |
@@ -75,14 +90,16 @@ Roaring bitmap 开销：每分支约 100 KB，可忽略。
 
 ## 垃圾回收
 
-没有任何活跃分支引用的 Chunk 可回收：
+没有任何活跃分支引用的文件版本可回收，blob 与 Chunk 跟着引用计数走：
 
 ```
-live = OR(所有 branch bitmap)
-dead = ALL ANDNOT live
+live_files  = OR(所有 branch bitmap)
+dead_files  = ALL ANDNOT live_files
+live_blobs  = live_files 指向的 blob
+dead_chunks = 不被任何 live_blob 引用的 Chunk
 ```
 
-两个位运算，与 `git gc` 同思路。
+前两步是位运算，与 `git gc` 同思路。
 
 HNSW 增量删除产生碎片，GC 时通知 `vector/` 重建。
 
@@ -94,4 +111,4 @@ SQLite WAL 模式。单写多读——索引作业是唯一写者，查询全是
 
 ## 相关决策
 
-D7 · D8 · D13 · D14
+D7 · D8 · D13 · D14 · D21

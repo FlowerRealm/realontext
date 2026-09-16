@@ -548,6 +548,60 @@ D5（API-only 无法微调）造成的差距也因此无法直接量化——没
 
 ---
 
+## D21. 词法召回走 Augment Context Engine 的路线，提前到阶段 1
+
+阶段 1 交付 `ingest/` `parse/` `store/` `lexical/` 端到端可用的 BM25 召回，只有 CLI，直接进 eval 打分。词法是 `match/` 的一路召回，**不作为 grep 工具对外暴露**，agent 自带的 ripgrep 照用。
+
+### 理由
+
+**对标 Augment Context Engine。** 它的 MCP 只暴露 `codebase-retrieval`，词法信号收在检索内部，grep 留给 agent 自己。Sourcegraph Cody 在 2024 年走了同一条路：Enterprise 版撤掉嵌入，换成 Zoekt 搜索加 BM25 变体。
+
+**阶段 1 原本没有可测产物。** 切块和内容寻址对不对，要等阶段 3 付完嵌入费才有分数。BM25 零成本，让 `store/` 的每张表在花钱之前就有读者、有对照基线的数字。
+
+### 定下的设计
+
+| 项 | 决定 | 文档 |
+|---|---|---|
+| 分支位图 | 按文件版本 `(path, blob_sha)` 编号，不按 Chunk | `modules/store.md` |
+| 切块 | 方法一块，容器剩余部分一块，顶层代码合并，互不重叠 | `modules/parse.md` |
+| 无 grammar 的文件 | 整个文件一块 | `modules/parse.md` |
+| 分词 | 驼峰、下划线拆分并保留原词 | `modules/lexical.md` |
+| query | 同一分词器，去停用词，全部词 OR | `modules/lexical.md` |
+| IDF | 全库统计 | `modules/lexical.md` |
+| 文件级排名 | 取最高 Chunk 分 | `modules/match.md` |
+| 索引范围 | 全部 remote 分支，评测额外注册 base commit 为伪 Branch | `modules/match.md` |
+| 过滤规则 | 评测时照常生效 | `modules/ingest.md` |
+| 交付边界 | CLI `index` / `query`，MCP 在阶段 3 | `roadmap.md` |
+
+### 验收
+
+train 仓库上**文件级与函数级 Recall@10 都超过 BM25 基线**。输一项就停下查原因，不进阶段 2。
+
+### 否决：grep 作为 MCP 工具（Cursor Instant Grep / Zoekt 路线）
+
+n-gram 倒排，亚秒级正则搜索。否决原因：在已 checkout 的工作树上，它和 agent 自带的 ripgrep 没有区别。跨全部分支的 grep 有差异化，但那是一个新的产品功能，当前需求不支撑；而且它会和 FTS5 成为同一个问题的两套词法索引。
+
+### 否决：无状态 tree 扫描
+
+每次查询遍历 git tree 现场切块、匹配，不落盘。实现最薄，但大仓库单次查询要分钟级，`store/` 完全没被验证，阶段 3 要重写数据通路。
+
+### 否决：分支位图按 Chunk 编号
+
+`store.md` 最初的设计。Chunk 跨路径共享，按 Chunk 编号的位图回答得了「可不可见」，回答不了「在哪个文件」，检索结果输出不了路径。
+
+### 否决：评测时关掉过滤规则
+
+与基线看到同一份语料，对比更干净。否决原因：那测的不是产品配置。被过滤掉的 ground truth 计入 `gt_files_unreachable`，代价公开而不是藏起来。
+
+### 代价
+
+- **IDF 有偏差**：统计量是全部分支的并集，不是查询分支本身
+- **没有路径信号**：Zoekt 靠文件名命中加权，这一路当前没有
+- **查询理解仍是空白**（`open-questions.md` C1）：issue 里的自然语言对不上标识符时，BM25 无能为力
+- **拉不开差距**：Augment 把优势归于自训的检索模型，不是词法层。本决策只是补齐基础设施，差异化仍在重排与 `curate/`
+
+---
+
 ## 待定
 
 - 项目名称（`realontext` 是占位）

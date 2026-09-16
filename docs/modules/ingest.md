@@ -82,6 +82,10 @@ third_party/  vendor/  external/  node_modules/
 
 vendored 目录在大型项目里常占一半以上代码量。
 
+超过 1 MB 的 blob 同样不索引——到这个尺寸是数据，不是源码。
+
+**评测时同一套规则照常生效。** 测的是产品的真实行为；被过滤掉的 ground truth 文件计入 `gt_files_unreachable`，分数代价公开。
+
 ### 不发送（安全）
 
 ```

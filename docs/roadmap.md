@@ -5,10 +5,10 @@
 | 阶段 | 模块 | 内容 |
 |---|---|---|
 | 0 | — | 建自建测试集，建 ripgrep / BM25 基线 |
-| 1 | `ingest/` `parse/` `store/` | 拉取、切块、内容寻址去重 |
+| 1 | `ingest/` `parse/` `store/` `lexical/` | 拉取、切块、内容寻址去重、BM25 召回 |
 | 2 | `model/` | 嵌入接入、限流重试、索引指纹 |
 | 3 | `vector/` `match/` `serve/` | 向量召回、分支过滤、MCP 可用 |
-| 4 | `lexical/` | BM25 混合召回 |
+| 4 | `match/` | 向量与 BM25 融合 |
 | 5 | `match/` | 重排 |
 | 6 | **`curate/`** | **策展：预算、保真、去冗** |
 | 7 | `lsp/` | 符号扩散 |
@@ -44,14 +44,21 @@
 
 ---
 
-## 阶段 1：拉取与内容寻址
+## 阶段 1：拉取、内容寻址与 BM25 召回
 
 - libgit2 裸镜像拉取
 - `git for-each-ref` 枚举全部分支
 - tree-sitter 切块
-- **内容寻址去重**（blob_sha → chunk_hash 缓存）
+- **内容寻址去重**（blob_sha → chunk 缓存），分支位图按文件版本编号（`modules/store.md`）
+- SQLite FTS5 BM25，代码分词器（`modules/lexical.md`）
+- **base commit 注册为伪 Branch**，给评测提供 commit 级可见集（`modules/match.md`）
+- CLI：`index` / `query`。不做 MCP
 
 去重前置的原因：它现在是成本基础设施，不是优化项。没有它，多分支索引在经济上不成立（$600 vs $31）。
+
+BM25 放在这一阶段的原因见 D21：它零成本，让 `store/` 的每张表在付费嵌入之前就有读者和分数。
+
+**跑 L1（train）。文件级与函数级 Recall@10 都必须超过 BM25 基线。输一项就停。**
 
 ---
 
@@ -71,7 +78,6 @@
 
 - usearch 向量索引
 - roaring bitmap 分支过滤（过取 + 后过滤）
-- **base commit 注册为伪 Branch**，给评测提供 commit 级可见集（`modules/match.md`）。缺这个装置，L1 跑不了
 - MCP server，暴露 `codebase-retrieval`
 
 **跑 L1。此时应该打得过 ripgrep 和 BM25 两条基线。打不过就停。**
@@ -82,7 +88,6 @@
 
 ## 阶段 4：混合召回
 
-- SQLite FTS5 BM25
 - 向量与 BM25 结果融合
 
 ---

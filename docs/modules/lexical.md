@@ -28,9 +28,7 @@
 
 这些都是精确字面量，嵌入向量会把它们抹平成「大致关于错误处理」。
 
-## 代码的分词问题
-
-**这是本模块最大的未解决项。**
+## 代码分词
 
 自然语言分词器对代码是错的：
 
@@ -39,9 +37,26 @@ ConfigParser::parse   应该切成 config / parser / parse
 max_retry_interval_ms 应该切成 max / retry / interval / ms
 ```
 
-需要自定义 tokenizer：驼峰拆分、下划线拆分、保留原形。FTS5 支持自定义 tokenizer，但具体规则未设计。
+自定义 FTS5 tokenizer（C 接口），规则是**拆分并保留原词**：
 
-不做这个，BM25 那一路对标识符查询基本失效。
+```
+ConfigParser          → configparser  config  parser
+max_retry_interval_ms → max_retry_interval_ms  max  retry  interval  ms
+```
+
+全部小写。原词保证整词查询精确命中，子词保证自然语言里的 `parser` 能对上标识符。
+
+query 走同一个 tokenizer，去掉停用词后全部词 OR 起来，交给 `bm25()` 的 IDF 决定权重。不做改写、不选词。
+
+分词器不与 `../../eval/harness/tokenize.py` 共享任何代码或词表（`../benchmark.md` BM25 基线的隔离要求）。
+
+## 索引单位与排序
+
+文档单位是 **Chunk**，两列：`symbol_path`、`content`。`bm25()` 给 `symbol_path` 更高的列权重——命中定义名比命中函数体里的一次调用更说明问题。
+
+**IDF 按全库统计**，不按分支。FTS5 的统计量覆盖整张表，也就是全部分支的并集。分支之间高度重合，偏差小，记为已知误差。按分支统计需要自己实现排序函数并维护 BM25，复杂度不由这个误差支撑。
+
+**路径不是召回信号。** Chunk 跨路径共享，路径放不进 Chunk 的列。要用文件名信号，得给 `files` 单独建索引再融合，当前不做。
 
 ## 与查询理解的关系
 
@@ -53,4 +68,4 @@ max_retry_interval_ms 应该切成 max / retry / interval / ms
 
 ## 相关决策
 
-无独立条目。
+D21
