@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <string_view>
 
 #include <sqlite3.h>
@@ -58,6 +59,35 @@ private:
         void operator()(sqlite3_stmt* s) const { sqlite3_finalize(s); }
     };
     std::unique_ptr<sqlite3_stmt, Finalize> stmt_;
+};
+
+// Rolls back unless commit() ran. Every early return leaves the database untouched.
+class Transaction {
+public:
+    explicit Transaction(sqlite3* db) : db_(db) {}
+    ~Transaction()
+    {
+        if (open_)
+            sqlite3_exec(db_, "ROLLBACK", nullptr, nullptr, nullptr);
+    }
+    Status begin()
+    {
+        if (sqlite3_exec(db_, "BEGIN IMMEDIATE", nullptr, nullptr, nullptr) != SQLITE_OK)
+            return Err{std::string("begin: ") + sqlite3_errmsg(db_)};
+        open_ = true;
+        return ok;
+    }
+    Status commit()
+    {
+        if (sqlite3_exec(db_, "COMMIT", nullptr, nullptr, nullptr) != SQLITE_OK)
+            return Err{std::string("commit: ") + sqlite3_errmsg(db_)};
+        open_ = false;
+        return ok;
+    }
+
+private:
+    sqlite3* db_;
+    bool open_ = false;
 };
 
 } // namespace store

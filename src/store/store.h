@@ -18,6 +18,11 @@ struct sqlite3;
 
 namespace store {
 
+// Everything that turns a blob into the text model/ embeds: parse/ chunking,
+// the grammar pins in cmake/grammars.cmake, embed_text(). Bump it when any of
+// them changes. A database holding vectors of another version refuses to open.
+inline constexpr int64_t input_version = 1;
+
 // One SQLite file per Project (D13). Tables: docs/modules/store.md.
 class Db {
 public:

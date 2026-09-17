@@ -1,5 +1,6 @@
-// realontext CLI. Stage 1: index branches, query one of them (docs/roadmap.md).
+// realontext CLI. Stages 1–2: index branches, embed their chunks, query one of them (docs/roadmap.md).
 #include <chrono>
+#include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <iterator>
@@ -12,6 +13,8 @@
 #include "ingest/git.h"
 #include "lexical/lexical.h"
 #include "match/match.h"
+#include "model/model.h"
+#include "store/embed.h"
 #include "store/store.h"
 
 namespace {
@@ -19,7 +22,11 @@ namespace {
 constexpr const char* usage = R"(usage:
   realontext index   --db FILE --git MIRROR [--rev REV --as BRANCH]...
                      without --rev: every branch of the mirror
-  realontext query   --db FILE --branch BRANCH [--k N]   query on stdin, JSON on stdout
+  realontext embed   --db FILE [--endpoint URL] [--model NAME] [--task TASK] [--dim N]
+                     [--max-bytes N] [--batch-bytes N] [--jobs N] [--rpm N] [--tpm N] [--dry-run 1]
+                     key from JINA_API_KEY; interrupt and rerun to resume
+  realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector]
+                     query on stdin, JSON on stdout
   realontext symbols --db FILE --branch BRANCH           function names, one per line
 )";
 
@@ -52,6 +59,18 @@ bool parse_args(int argc, char** argv, Args& a)
         a.opts[key.substr(2)].push_back(argv[i + 1]);
     }
     return true;
+}
+
+size_t number(const Args& a, const std::string& key, size_t fallback)
+{
+    const std::string* v = a.one(key);
+    return v ? std::stoul(*v) : fallback;
+}
+
+std::string key_from_env()
+{
+    const char* k = std::getenv("JINA_API_KEY");
+    return k ? k : "";
 }
 
 int fail(const std::string& msg)
@@ -129,15 +148,70 @@ int cmd_index(const Args& a, store::Db& db)
     return 0;
 }
 
+int cmd_embed(const Args& a, store::Db& db)
+{
+    auto str = [&](const char* key, const char* fallback) { return a.one(key) ? *a.one(key) : std::string(fallback); };
+    store::Fingerprint fp{{str("endpoint", "https://api.jina.ai/v1/embeddings"), str("model", "jina-embeddings-v4"),
+                           str("task", "code"), static_cast<uint32_t>(number(a, "dim", 1024))},
+                          number(a, "max-bytes", 16384)};
+    if (a.one("dry-run")) {
+        auto p = store::pending(db, fp.max_bytes);
+        if (!p)
+            return fail(p.error());
+        std::fprintf(stderr, "[embed] pending chunks=%zu bytes=%zu est_tokens=%.0f\n", p->chunks, p->bytes,
+                     static_cast<double>(p->bytes) / model::bytes_per_token);
+        return 0;
+    }
+
+    model::Limiter limiter(static_cast<double>(number(a, "rpm", 100)), static_cast<double>(number(a, "tpm", 100000)),
+                           model::Clock::real());
+    model::Embedder embedder(fp.embedding, key_from_env(), model::http_post(), limiter, model::Clock::real());
+    auto started = std::chrono::steady_clock::now();
+    auto last = started;
+    auto done = store::embed(db, fp, embedder, {number(a, "batch-bytes", 65536), number(a, "jobs", 4)},
+                             [&](const store::EmbedProgress& p, size_t total) {
+                                 auto now = std::chrono::steady_clock::now();
+                                 if (now - last < std::chrono::seconds(10) && p.chunks < total)
+                                     return;
+                                 last = now;
+                                 double secs = std::chrono::duration<double>(now - started).count();
+                                 std::fprintf(stderr, "[embed] %zu/%zu chunks tokens=%llu %.0f tok/s %.0fs\n",
+                                              p.chunks, total, static_cast<unsigned long long>(p.tokens),
+                                              static_cast<double>(p.tokens) / secs, secs);
+                             });
+    if (!done)
+        return fail(done.error());
+    return 0;
+}
+
+Result<match::Ranked> rank(const Args& a, store::Db& db, const std::string& branch, const std::string& query,
+                           size_t k)
+{
+    std::string route = a.one("route") ? *a.one("route") : "lexical";
+    if (route == "lexical")
+        return match::retrieve(db, branch, query, k);
+    if (route != "vector")
+        return Err{"--route is lexical or vector"};
+    auto fp = store::pinned(db);
+    if (!fp)
+        return Err{fp.error()};
+    model::Limiter limiter(1e9, 1e12, model::Clock::real()); // one request
+    model::Embedder embedder(fp->embedding, key_from_env(), model::http_post(), limiter, model::Clock::real());
+    auto v = embedder.embed({query}, model::Role::Query);
+    if (!v)
+        return Err{v.error()};
+    return match::nearest(db, branch, v->data, k);
+}
+
 int cmd_query(const Args& a, store::Db& db)
 {
     const std::string* branch = a.one("branch");
     if (!branch)
         return fail("--branch is required");
-    size_t k = a.one("k") ? std::stoul(*a.one("k")) : 200;
+    size_t k = number(a, "k", 200);
     std::string query(std::istreambuf_iterator<char>(std::cin), {});
 
-    auto ranked = match::retrieve(db, *branch, query, k);
+    auto ranked = rank(a, db, *branch, query, k);
     if (!ranked)
         return fail(ranked.error());
 
@@ -177,7 +251,7 @@ int cmd_symbols(const Args& a, store::Db& db)
 int main(int argc, char** argv)
 {
     Args a;
-    if (!parse_args(argc, argv, a) || (a.cmd != "index" && a.cmd != "query" && a.cmd != "symbols")) {
+    if (!parse_args(argc, argv, a) || (a.cmd != "index" && a.cmd != "embed" && a.cmd != "query" && a.cmd != "symbols")) {
         std::fputs(usage, stderr);
         return 2;
     }
@@ -186,6 +260,8 @@ int main(int argc, char** argv)
         return fail(db.error());
     if (a.cmd == "index")
         return cmd_index(a, *db);
+    if (a.cmd == "embed")
+        return cmd_embed(a, *db);
     if (a.cmd == "query")
         return cmd_query(a, *db);
     return cmd_symbols(a, *db);

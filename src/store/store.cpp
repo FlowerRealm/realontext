@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS chunks (
     content     TEXT NOT NULL,
     embedding   BLOB
 );
+-- Chunks model/ has not embedded yet: the embedding job's queue.
+CREATE INDEX IF NOT EXISTS chunks_pending ON chunks (ord) WHERE embedding IS NULL;
 
 -- (blob, lang) pairs already sent through parse/. A blob that yields no chunks
 -- is still recorded here, or every branch would parse it again. The ordinal is
@@ -78,35 +80,6 @@ std::array<unsigned char, BLAKE3_OUT_LEN> chunk_hash(parse::Lang lang, const par
 
 Err sql_error(sqlite3* db, const std::string& what) { return Err{what + ": " + sqlite3_errmsg(db)}; }
 
-// Rolls back unless commit() ran. Every early return leaves the database untouched.
-class Transaction {
-public:
-    explicit Transaction(sqlite3* db) : db_(db) {}
-    ~Transaction()
-    {
-        if (open_)
-            sqlite3_exec(db_, "ROLLBACK", nullptr, nullptr, nullptr);
-    }
-    Status begin()
-    {
-        if (sqlite3_exec(db_, "BEGIN IMMEDIATE", nullptr, nullptr, nullptr) != SQLITE_OK)
-            return sql_error(db_, "begin");
-        open_ = true;
-        return ok;
-    }
-    Status commit()
-    {
-        if (sqlite3_exec(db_, "COMMIT", nullptr, nullptr, nullptr) != SQLITE_OK)
-            return sql_error(db_, "commit");
-        open_ = false;
-        return ok;
-    }
-
-private:
-    sqlite3* db_;
-    bool open_ = false;
-};
-
 // Find a row by key, inserting it when absent. Returns (rowid, inserted).
 // Both statements get the same binds; SQLite ignores parameters a statement lacks.
 struct Upsert {
@@ -160,6 +133,12 @@ Result<Db> Db::open(const std::string& path)
     sqlite3_busy_timeout(raw, 60000);
     if (auto s = db.exec(schema); !s)
         return Err{s.error()};
+    auto stored = meta_int(db, "embed.input_version");
+    if (!stored)
+        return Err{stored.error()};
+    if (*stored != 0 && *stored != input_version)
+        return Err{path + " holds embeddings of input version " + std::to_string(*stored) + ", this binary produces " +
+                   std::to_string(input_version) + ": the vectors would not be comparable (D8). Index into a new database"};
     return db;
 }
 

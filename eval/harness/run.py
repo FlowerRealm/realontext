@@ -226,6 +226,9 @@ def _run_query(snap, row, which):
     if "realontext" in which:
         from . import realontext
         out["realontext"] = realontext.query(row)
+    if "realontext-vector" in which:
+        from . import realontext
+        out["realontext-vector"] = realontext.query(row, route="vector")
     if "grep" in which:
         out["grep"] = baselines.grep_baseline(snap.root, paths, query, by_file,
                                               stats=stats, corpus_files=paths)
@@ -295,9 +298,11 @@ def cmd_run(args):
         gt_funcs_total = gt_funcs_unreachable = 0
         gt_files_total = gt_files_unreachable = 0
         ro_funcs_unmapped = 0
-        if "realontext" in which:
+        if {"realontext", "realontext-vector"} & set(which):
             from . import realontext
             realontext.index(repo, rows)
+        if "realontext-vector" in which:
+            realontext.embed(repo)
         for i, row in enumerate(rows, 1):
             log("[run] %s %d/%d pr=%d" % (repo, i, len(rows), row["pr"]))
             try:
@@ -311,7 +316,7 @@ def cmd_run(args):
                     gt_funcs_unreachable += sum(1 for q in gt if q not in qnames)
                     # The system names functions with its own chunker. A ground-truth
                     # name it never produces is a normalisation gap on its side.
-                    if "realontext" in which:
+                    if {"realontext", "realontext-vector"} & set(which):
                         names = realontext.function_names(row)
                         ro_funcs_unmapped += sum(1 for q in gt if q not in names)
                     # Same rule one level up. An answer file the corpus does not
@@ -345,7 +350,7 @@ def cmd_run(args):
             "gt_files_total": gt_files_total,
             "gt_files_unreachable": gt_files_unreachable,
         }
-        if "realontext" in which:
+        if {"realontext", "realontext-vector"} & set(which):
             payload["realontext_gt_funcs_unmapped"] = ro_funcs_unmapped
         if ceilings:
             payload["vector_pool_ceiling"] = sum(ceilings) / len(ceilings)

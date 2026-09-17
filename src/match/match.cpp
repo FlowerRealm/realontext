@@ -7,6 +7,7 @@
 
 #include "ingest/filter.h"
 #include "lexical/lexical.h"
+#include "store/embed.h"
 
 namespace match {
 
@@ -148,6 +149,48 @@ Result<Ranked> retrieve(store::Db& db, std::string_view branch, std::string_view
     }
     std::stable_sort(out.chunks.begin(), out.chunks.end(),
                      [](const Candidate& a, const Candidate& b) { return a.score > b.score; });
+    return out;
+}
+
+Result<Ranked> nearest(store::Db& db, std::string_view branch, std::span<const float> query, size_t k)
+{
+    auto missing = store::unembedded(db);
+    if (!missing)
+        return Err{missing.error()};
+    if (*missing)
+        return Err{std::to_string(*missing) + " chunks have no embedding: run realontext embed"};
+    auto resolver = store::Resolver::make(db, branch);
+    if (!resolver)
+        return Err{resolver.error()};
+
+    std::vector<std::pair<float, uint32_t>> scored;
+    auto scan = store::each_vector(db, static_cast<uint32_t>(query.size()), [&](uint32_t chunk, std::span<const float> v) {
+        float dot = 0;
+        for (size_t i = 0; i < v.size(); i++)
+            dot += v[i] * query[i];
+        scored.emplace_back(dot, chunk);
+    });
+    if (!scan)
+        return Err{scan.error()};
+    std::sort(scored.begin(), scored.end(), [](const auto& a, const auto& b) {
+        return a.first != b.first ? a.first > b.first : a.second < b.second;
+    });
+
+    Ranked out;
+    std::unordered_map<std::string, size_t> seen;
+    for (const auto& [score, chunk] : scored) {
+        if (out.chunks.size() == k)
+            break;
+        auto info = resolver->resolve(chunk);
+        if (!info)
+            return Err{info.error()};
+        if (info->where.empty())
+            continue;
+        for (const store::Location& l : info->where)
+            if (seen.emplace(l.path, out.files.size()).second)
+                out.files.push_back({l.path, score});
+        out.chunks.push_back({chunk, score, std::move(*info)});
+    }
     return out;
 }
 

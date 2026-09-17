@@ -7,9 +7,15 @@ function names it scores are the ones realontext itself produced.
 Every query's base commit is registered as a pseudo branch in one database per
 repository (docs/modules/match.md), all of them before the first query runs:
 IDF is corpus-wide, so indexing between queries would let query order move scores.
+
+`realontext-vector` is the same database ranked by exact cosine over embedded
+chunks (D22). Embedding runs after indexing; REALONTEXT_EMBED carries the embed
+flags (endpoint, model, limits), REALONTEXT_DB_TAG keeps databases embedded
+under different fingerprints apart.
 """
 import json
 import os
+import shlex
 import subprocess
 
 from .common import CACHE, ROOT, ensure_mirror, log, mirror_path, slug
@@ -21,7 +27,8 @@ K = 200
 def db_path(repo):
     d = os.path.join(CACHE, "realontext")
     os.makedirs(d, exist_ok=True)
-    return os.path.join(d, slug(repo) + ".db")
+    tag = os.environ.get("REALONTEXT_DB_TAG")
+    return os.path.join(d, slug(repo) + ("." + tag if tag else "") + ".db")
 
 
 def branch(row):
@@ -55,9 +62,16 @@ def index(repo, rows):
         log("[realontext] %s %d/%d %s" % (repo, i, len(rows), p.stderr.strip().splitlines()[0]))
 
 
-def query(row):
-    p = _run(["query", "--db", db_path(row["repo"]), "--branch", branch(row), "--k", str(K)],
-             stdin=row["query"])
+def embed(repo):
+    """Embeds whatever indexing left pending. Progress goes straight to stderr: it runs for a while."""
+    args = ["embed", "--db", db_path(repo)] + shlex.split(os.environ.get("REALONTEXT_EMBED", ""))
+    if subprocess.run([BIN] + args).returncode != 0:
+        raise RuntimeError("realontext embed %s failed" % repo)
+
+
+def query(row, route="lexical"):
+    p = _run(["query", "--db", db_path(row["repo"]), "--branch", branch(row), "--k", str(K),
+              "--route", route], stdin=row["query"])
     if p.returncode != 0:
         raise RuntimeError("realontext query: " + p.stderr[-500:])
     out = json.loads(p.stdout)
