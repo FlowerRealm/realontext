@@ -6,6 +6,7 @@
 
 #include "result.h"
 #include "store/store.h"
+#include "vector/vector.h"
 
 namespace match {
 
@@ -43,5 +44,12 @@ Result<Ranked> retrieve(store::Db& db, std::string_view branch, std::string_view
 // stored vector. An exact scan: slow on large corpora, and the reference an ANN
 // index in vector/ is measured against. Files rank by their best chunk; up to k per side.
 Result<Ranked> nearest(store::Db& db, std::string_view branch, std::span<const float> query, size_t k);
+
+// The same ranking through vector/'s index. Over-fetches by growing k and
+// asking again until both sides hold k visible chunks or the index runs out
+// (D24): a hot function's many versions can fill the head of the ranking while
+// only one of them is visible, so no fixed multiple is enough.
+Result<Ranked> nearest_ann(store::Db& db, std::string_view branch, const vector::Index& index,
+                           std::span<const float> query, size_t k);
 
 } // namespace match

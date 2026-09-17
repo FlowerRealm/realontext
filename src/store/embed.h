@@ -40,6 +40,14 @@ Result<Pending> pending(Db& db, size_t max_bytes);
 // Chunks without a vector. Nonzero means a vector ranking would silently skip them.
 Result<size_t> unembedded(Db& db);
 
+// What a vector index built right now would cover. vector/ records it and
+// compares later: an index built before more chunks were embedded drops them.
+struct Embedded {
+    size_t chunks = 0;
+    uint32_t last = 0; // highest embedded chunk id
+};
+Result<Embedded> embedded(Db& db);
+
 struct EmbedOptions {
     size_t batch_bytes; // one request carries at least this much input, unless the queue runs out
     size_t jobs;        // concurrent requests

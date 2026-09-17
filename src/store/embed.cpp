@@ -174,6 +174,16 @@ Result<size_t> unembedded(Db& db)
     return static_cast<size_t>(s->int64(0));
 }
 
+Result<Embedded> embedded(Db& db)
+{
+    auto s = Stmt::prepare(db.handle(), "SELECT count(*), coalesce(max(ord), 0) FROM chunks WHERE embedding IS NOT NULL");
+    if (!s)
+        return Err{s.error()};
+    if (s->step() != SQLITE_ROW)
+        return Err{"embedded: " + s->error()};
+    return Embedded{static_cast<size_t>(s->int64(0)), static_cast<uint32_t>(s->int64(1))};
+}
+
 Result<EmbedProgress> embed(Db& db, const Fingerprint& fp, model::Embedder& embedder, const EmbedOptions& opt,
                             const std::function<void(const EmbedProgress&, size_t total)>& progress)
 {

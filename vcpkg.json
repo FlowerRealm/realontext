@@ -9,6 +9,7 @@
     "nlohmann-json",
     "roaring",
     { "name": "sqlite3", "features": ["fts5"] },
-    "tree-sitter"
+    "tree-sitter",
+    "usearch"
   ]
 }

@@ -1,4 +1,5 @@
-// realontext CLI. Stages 1–2: index branches, embed their chunks, query one of them (docs/roadmap.md).
+// realontext CLI. Stages 1–3: index branches, embed their chunks, build the ANN
+// index, query one branch (docs/roadmap.md).
 #include <chrono>
 #include <cstdlib>
 #include <cstdio>
@@ -16,6 +17,7 @@
 #include "model/model.h"
 #include "store/embed.h"
 #include "store/store.h"
+#include "vector/vector.h"
 
 namespace {
 
@@ -25,7 +27,9 @@ constexpr const char* usage = R"(usage:
   realontext embed   --db FILE [--endpoint URL] [--model NAME] [--task TASK] [--dim N]
                      [--max-bytes N] [--batch-bytes N] [--jobs N] [--rpm N] [--tpm N] [--dry-run 1]
                      key from JINA_API_KEY; interrupt and rerun to resume
-  realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector]
+  realontext build-index --db FILE [--connectivity N] [--expansion-add N] [--ef N]
+                     [--scalar f32|f16|bf16|i8]      rebuilds from the stored vectors
+  realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector|ann] [--ef N]
                      query on stdin, JSON on stdout
   realontext symbols --db FILE --branch BRANCH           function names, one per line
 )";
@@ -184,14 +188,35 @@ int cmd_embed(const Args& a, store::Db& db)
     return 0;
 }
 
-Result<match::Ranked> rank(const Args& a, store::Db& db, const std::string& branch, const std::string& query,
-                           size_t k)
+int cmd_build_index(const Args& a, store::Db& db)
 {
-    std::string route = a.one("route") ? *a.one("route") : "lexical";
-    if (route == "lexical")
-        return match::retrieve(db, branch, query, k);
-    if (route != "vector")
-        return Err{"--route is lexical or vector"};
+    auto fp = store::pinned(db);
+    if (!fp)
+        return fail(fp.error());
+    vector::Params params{number(a, "connectivity", 16), number(a, "expansion-add", 128),
+                          number(a, "ef", 64), a.one("scalar") ? *a.one("scalar") : "f32"};
+
+    auto started = std::chrono::steady_clock::now();
+    auto last = started;
+    auto built = vector::build(db, fp->embedding.dim, params, *a.one("db"), [&](size_t added, size_t total) {
+        auto now = std::chrono::steady_clock::now();
+        if (now - last < std::chrono::seconds(10) && added < total)
+            return;
+        last = now;
+        std::fprintf(stderr, "[build-index] %zu/%zu vectors %.0fs\n", added, total,
+                     std::chrono::duration<double>(now - started).count());
+    });
+    if (!built)
+        return fail(built.error());
+    std::fprintf(stderr, "[build-index] %zu vectors M=%zu ef_construction=%zu %s %.1f MB %.1fs\n", built->vectors,
+                 params.connectivity, params.expansion_add, params.scalar.c_str(),
+                 static_cast<double>(built->bytes) / 1e6,
+                 std::chrono::duration<double>(std::chrono::steady_clock::now() - started).count());
+    return 0;
+}
+
+Result<std::vector<float>> embed_query(store::Db& db, const std::string& query)
+{
     auto fp = store::pinned(db);
     if (!fp)
         return Err{fp.error()};
@@ -200,7 +225,26 @@ Result<match::Ranked> rank(const Args& a, store::Db& db, const std::string& bran
     auto v = embedder.embed({query}, model::Role::Query);
     if (!v)
         return Err{v.error()};
-    return match::nearest(db, branch, v->data, k);
+    return std::move(v->data);
+}
+
+Result<match::Ranked> rank(const Args& a, store::Db& db, const std::string& branch, const std::string& query,
+                           size_t k)
+{
+    std::string route = a.one("route") ? *a.one("route") : "lexical";
+    if (route == "lexical")
+        return match::retrieve(db, branch, query, k);
+    if (route != "vector" && route != "ann")
+        return Err{"--route is lexical, vector or ann"};
+    auto v = embed_query(db, query);
+    if (!v)
+        return Err{v.error()};
+    if (route == "vector")
+        return match::nearest(db, branch, *v, k);
+    auto index = vector::Index::open(db, *a.one("db"), number(a, "ef", 64));
+    if (!index)
+        return Err{index.error()};
+    return match::nearest_ann(db, branch, *index, *v, k);
 }
 
 int cmd_query(const Args& a, store::Db& db)
@@ -255,7 +299,8 @@ int cmd_symbols(const Args& a, store::Db& db)
 int main(int argc, char** argv)
 {
     Args a;
-    if (!parse_args(argc, argv, a) || (a.cmd != "index" && a.cmd != "embed" && a.cmd != "query" && a.cmd != "symbols")) {
+    if (!parse_args(argc, argv, a) || (a.cmd != "index" && a.cmd != "embed" && a.cmd != "build-index" &&
+                                       a.cmd != "query" && a.cmd != "symbols")) {
         std::fputs(usage, stderr);
         return 2;
     }
@@ -266,6 +311,8 @@ int main(int argc, char** argv)
         return cmd_index(a, *db);
     if (a.cmd == "embed")
         return cmd_embed(a, *db);
+    if (a.cmd == "build-index")
+        return cmd_build_index(a, *db);
     if (a.cmd == "query")
         return cmd_query(a, *db);
     return cmd_symbols(a, *db);

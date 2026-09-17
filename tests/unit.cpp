@@ -15,6 +15,7 @@
 #include "model/model.h"
 #include "parse/chunk.h"
 #include "store/embed.h"
+#include "vector/vector.h"
 
 #include <nlohmann/json.hpp>
 
@@ -85,6 +86,35 @@ model::Response fake_provider(const model::Request& r)
         data.push_back({{"index", i++}, {"embedding", v}});
     }
     return {200, nlohmann::json{{"data", data}, {"usage", {{"total_tokens", 10 * i}}}}.dump()};
+}
+
+// The ANN index over a database store/ has finished embedding. It is a derived
+// cache, so what matters is that it agrees with the exact scan and that a
+// database embedded further refuses to be searched through a stale one (D24).
+void ann(store::Db& db, const std::string& path, const store::Fingerprint& fp, model::Embedder& embedder)
+{
+    const std::string index = vector::index_path(path);
+    std::filesystem::remove(index);
+    auto built = vector::build(db, fp.embedding.dim, {}, path, [](size_t, size_t) {});
+    expect(built && built->vectors == 4 && std::filesystem::exists(index), "the index holds every stored vector");
+
+    std::vector<float> query{0, 1, 0};
+    auto opened = vector::Index::open(db, path, 64);
+    expect(opened && opened->size() == 4 && opened->dim() == fp.embedding.dim, "the index opens against its database");
+    auto ranked = match::nearest_ann(db, "main", *opened, query, 2);
+    expect(ranked && ranked->code.chunks.size() == 2 && ranked->code.chunks[0].info.symbol == "beta" &&
+               ranked->tests.chunks.size() == 1 && ranked->tests.chunks[0].info.symbol == "test_beta",
+           "the ANN route ranks like the exact scan");
+
+    std::string more = "int delta() { return 4; }\n";
+    auto grown = store::index_branch(db, "main", Oid{8}, {{"y.c", Oid{3}}},
+                                     [&](const Oid&) { return Result<std::string>(more); });
+    expect(grown && grown->new_chunks == 1, "one more chunk to embed");
+    expect(bool(store::embed(db, fp, embedder, {1, 1}, [](const store::EmbedProgress&, size_t) {})), "embed it");
+    auto stale = vector::Index::open(db, path, 64);
+    expect(!stale && stale.error().find("build-index") != std::string::npos,
+           "an index built before the last embedding is refused, not silently short");
+    std::filesystem::remove(index);
 }
 
 void embedding()
@@ -183,6 +213,8 @@ void embedding()
                ranked->code.files.size() == 1 && ranked->code.files[0].path == "x.c" &&
                ranked->tests.chunks.size() == 1 && ranked->tests.chunks[0].info.symbol == "test_beta",
            "nearest chunks per side, files by best chunk");
+
+    ann(*db, path.string(), fp, working);
 
     expect(bool(store::set_meta_int(*db, "embed.input_version", store::input_version + 1)), "bump stored version");
     db = Err{"closed"};

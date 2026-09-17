@@ -16,6 +16,13 @@ namespace {
 // Reciprocal Rank Fusion constant, the value from the original RRF paper.
 constexpr double rrf_k = 60.0;
 
+// How far the ANN over-fetches before branch filtering. Grows until both sides
+// are full rather than over-fetching by a fixed multiple, which no single value
+// gets right (D24).
+constexpr size_t ann_first = 1000;
+constexpr size_t ann_growth = 4;
+constexpr size_t ann_last = ann_first * ann_growth * ann_growth;
+
 // Keeps only the locations belonging to `side`. False when none is left.
 bool keep_side(store::ChunkInfo& info, Side side)
 {
@@ -125,6 +132,45 @@ Result<Group> lexical_group(store::Db& db, store::Resolver& resolver, std::strin
     return out;
 }
 
+// Every chunk must have a vector, or a vector ranking skips some without saying so.
+Status all_embedded(store::Db& db)
+{
+    auto missing = store::unembedded(db);
+    if (!missing)
+        return Err{missing.error()};
+    if (*missing)
+        return Err{std::to_string(*missing) + " chunks have no embedding: run realontext embed"};
+    return ok;
+}
+
+// Walks a best-first ranking, admitting each chunk into whichever sides it has
+// locations on, until both sides hold k. `full` reports whether both did.
+Result<Ranked> admit(store::Resolver& resolver, const std::vector<std::pair<float, uint32_t>>& scored, size_t k,
+                     bool& full)
+{
+    Ranked out;
+    std::unordered_set<std::string> seen; // a path is on one side only
+    for (const auto& [score, chunk] : scored) {
+        if (out.code.chunks.size() == k && out.tests.chunks.size() == k)
+            break;
+        auto info = resolver.resolve(chunk);
+        if (!info)
+            return Err{info.error()};
+        for (Side side : {Side::Code, Side::Tests}) {
+            Group& g = side == Side::Code ? out.code : out.tests;
+            store::ChunkInfo mine = *info;
+            if (g.chunks.size() == k || !keep_side(mine, side))
+                continue;
+            for (const store::Location& l : mine.where)
+                if (seen.insert(l.path).second)
+                    g.files.push_back({l.path, score});
+            g.chunks.push_back({chunk, score, std::move(mine)});
+        }
+    }
+    full = out.code.chunks.size() == k && out.tests.chunks.size() == k;
+    return out;
+}
+
 } // namespace
 
 Result<Ranked> retrieve(store::Db& db, std::string_view branch, std::string_view query, size_t k)
@@ -143,11 +189,8 @@ Result<Ranked> retrieve(store::Db& db, std::string_view branch, std::string_view
 
 Result<Ranked> nearest(store::Db& db, std::string_view branch, std::span<const float> query, size_t k)
 {
-    auto missing = store::unembedded(db);
-    if (!missing)
-        return Err{missing.error()};
-    if (*missing)
-        return Err{std::to_string(*missing) + " chunks have no embedding: run realontext embed"};
+    if (auto s = all_embedded(db); !s)
+        return Err{s.error()};
     auto resolver = store::Resolver::make(db, branch);
     if (!resolver)
         return Err{resolver.error()};
@@ -165,24 +208,38 @@ Result<Ranked> nearest(store::Db& db, std::string_view branch, std::span<const f
         return a.first != b.first ? a.first > b.first : a.second < b.second;
     });
 
+    bool full = false;
+    return admit(*resolver, scored, k, full);
+}
+
+Result<Ranked> nearest_ann(store::Db& db, std::string_view branch, const vector::Index& index,
+                           std::span<const float> query, size_t k)
+{
+    if (auto s = all_embedded(db); !s)
+        return Err{s.error()};
+    auto resolver = store::Resolver::make(db, branch);
+    if (!resolver)
+        return Err{resolver.error()};
+
     Ranked out;
-    std::unordered_set<std::string> seen; // a path is on one side only
-    for (const auto& [score, chunk] : scored) {
-        if (out.code.chunks.size() == k && out.tests.chunks.size() == k)
+    for (size_t wanted = ann_first; wanted <= ann_last; wanted *= ann_growth) {
+        auto hits = index.search(query, wanted);
+        if (!hits)
+            return Err{hits.error()};
+        std::vector<std::pair<float, uint32_t>> scored;
+        scored.reserve(hits->size());
+        for (const vector::Hit& h : *hits)
+            scored.emplace_back(h.score, h.chunk);
+
+        bool full = false;
+        auto ranked = admit(*resolver, scored, k, full);
+        if (!ranked)
+            return Err{ranked.error()};
+        out = std::move(*ranked);
+        // Both sides full, or the index has nothing more to give: asking for a
+        // larger k would return the same hits.
+        if (full || hits->size() < wanted)
             break;
-        auto info = resolver->resolve(chunk);
-        if (!info)
-            return Err{info.error()};
-        for (Side side : {Side::Code, Side::Tests}) {
-            Group& g = side == Side::Code ? out.code : out.tests;
-            store::ChunkInfo mine = *info;
-            if (g.chunks.size() == k || !keep_side(mine, side))
-                continue;
-            for (const store::Location& l : mine.where)
-                if (seen.insert(l.path).second)
-                    g.files.push_back({l.path, score});
-            g.chunks.push_back({chunk, score, std::move(mine)});
-        }
     }
     return out;
 }
