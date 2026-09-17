@@ -74,7 +74,8 @@ def query(row, route="lexical"):
               "--route", route], stdin=row["query"])
     if p.returncode != 0:
         raise RuntimeError("realontext query: " + p.stderr[-500:])
-    out = json.loads(p.stdout)
+    # Ground truth is where the fix went: the code group. Tests rank apart (D23).
+    out = json.loads(p.stdout)["code"]
     files = [f["path"] for f in out["files"]]
     funcs, seen = [], set()
     for c in out["chunks"]:

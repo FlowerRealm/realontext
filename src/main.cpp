@@ -215,21 +215,25 @@ int cmd_query(const Args& a, store::Db& db)
     if (!ranked)
         return fail(ranked.error());
 
-    nlohmann::json chunks = nlohmann::json::array();
-    for (const match::Candidate& c : ranked->chunks) {
-        nlohmann::json where = nlohmann::json::array();
-        for (const store::Location& l : c.info.where)
-            where.push_back({{"path", l.path}, {"start_line", l.start_line}, {"end_line", l.end_line}});
-        chunks.push_back({{"chunk", c.chunk},
-                          {"score", c.score},
-                          {"kind", c.info.kind == parse::Kind::Function ? "function" : "container"},
-                          {"symbol", c.info.symbol},
-                          {"locations", std::move(where)}});
-    }
-    nlohmann::json files = nlohmann::json::array();
-    for (const match::File& f : ranked->files)
-        files.push_back({{"path", f.path}, {"score", f.score}});
-    std::cout << nlohmann::json{{"chunks", std::move(chunks)}, {"files", std::move(files)}}.dump() << "\n";
+    auto group = [](const match::Group& g) {
+        nlohmann::json chunks = nlohmann::json::array();
+        for (const match::Candidate& c : g.chunks) {
+            nlohmann::json where = nlohmann::json::array();
+            for (const store::Location& l : c.info.where)
+                where.push_back({{"path", l.path}, {"start_line", l.start_line}, {"end_line", l.end_line}});
+            chunks.push_back({{"chunk", c.chunk},
+                              {"score", c.score},
+                              {"kind", c.info.kind == parse::Kind::Function ? "function" : "container"},
+                              {"symbol", c.info.symbol},
+                              {"locations", std::move(where)}});
+        }
+        nlohmann::json files = nlohmann::json::array();
+        for (const match::File& f : g.files)
+            files.push_back({{"path", f.path}, {"score", f.score}});
+        return nlohmann::json{{"chunks", std::move(chunks)}, {"files", std::move(files)}};
+    };
+    // code: where the change likely goes. tests: what exercises it, and did not catch the fault.
+    std::cout << nlohmann::json{{"code", group(ranked->code)}, {"tests", group(ranked->tests)}}.dump() << "\n";
     return 0;
 }
 

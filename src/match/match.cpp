@@ -2,8 +2,8 @@
 
 #include <algorithm>
 #include <functional>
-#include <queue>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "ingest/filter.h"
 #include "lexical/lexical.h"
@@ -13,48 +13,35 @@ namespace match {
 
 namespace {
 
-// Test code stays retrievable but ranks below implementation: a task
-// description asks where behaviour lives, and a test that reproduces the
-// behaviour shares its vocabulary almost word for word.
-constexpr double test_weight = 0.5;
-
 // Reciprocal Rank Fusion constant, the value from the original RRF paper.
 constexpr double rrf_k = 60.0;
 
-bool all_tests(const std::vector<std::string>& paths)
+// Keeps only the locations belonging to `side`. False when none is left.
+bool keep_side(store::ChunkInfo& info, Side side)
 {
-    return std::all_of(paths.begin(), paths.end(), [](const std::string& p) { return ingest::is_test(p); });
+    std::erase_if(info.where, [&](const store::Location& l) { return ingest::is_test(l.path) != (side == Side::Tests); });
+    return !info.where.empty();
 }
 
-// Reads a best-first ranking and keeps the k best by adjusted score, where
-// adjusted = raw × weight and weight ≤ 1. Once k are kept and the next raw
-// score is no higher than the k-th adjusted one, nothing further can enter.
-// `admit` returns the adjusted score, or nullopt for a document not on the branch.
+// Reads a best-first ranking until k items are admitted. `admit` returns
+// nullopt for a document with nothing on the branch and side.
 template <class Item>
 Result<std::vector<Item>> best(lexical::Ranking& ranking, size_t k,
                                const std::function<Result<std::optional<Item>>(const lexical::Ranking::Hit&)>& admit)
 {
     std::vector<Item> kept;
-    std::priority_queue<double, std::vector<double>, std::greater<>> floor; // k best adjusted scores
-    for (;;) {
+    while (kept.size() < k) {
         auto hit = ranking.next();
         if (!hit)
             return Err{hit.error()};
-        if (!*hit || (floor.size() == k && (*hit)->score <= floor.top()))
+        if (!*hit)
             break;
         auto item = admit(**hit);
         if (!item)
             return Err{item.error()};
-        if (!*item)
-            continue;
-        floor.push((*item)->score);
-        if (floor.size() > k)
-            floor.pop();
-        kept.push_back(std::move(**item));
+        if (*item)
+            kept.push_back(std::move(**item));
     }
-    std::stable_sort(kept.begin(), kept.end(), [](const Item& a, const Item& b) { return a.score > b.score; });
-    if (kept.size() > k)
-        kept.resize(k);
     return kept;
 }
 
@@ -63,21 +50,8 @@ struct Document {
     double score;
 };
 
-std::vector<std::string> paths_of(const store::ChunkInfo& info)
+Result<Group> lexical_group(store::Db& db, store::Resolver& resolver, std::string_view query, size_t k, Side side)
 {
-    std::vector<std::string> out;
-    for (const store::Location& l : info.where)
-        out.push_back(l.path);
-    return out;
-}
-
-} // namespace
-
-Result<Ranked> retrieve(store::Db& db, std::string_view branch, std::string_view query, size_t k)
-{
-    auto resolver = store::Resolver::make(db, branch);
-    if (!resolver)
-        return Err{resolver.error()};
     auto chunk_ranking = lexical::Ranking::search(db, query, lexical::Unit::Chunk);
     if (!chunk_ranking)
         return Err{chunk_ranking.error()};
@@ -86,25 +60,24 @@ Result<Ranked> retrieve(store::Db& db, std::string_view branch, std::string_view
         return Err{file_ranking.error()};
 
     auto chunks = best<Candidate>(*chunk_ranking, k, [&](const lexical::Ranking::Hit& h) -> Result<std::optional<Candidate>> {
-        auto info = resolver->resolve(h.id);
+        auto info = resolver.resolve(h.id);
         if (!info)
             return Err{info.error()};
-        if (info->where.empty())
+        if (!keep_side(*info, side))
             return std::optional<Candidate>();
-        double w = all_tests(paths_of(*info)) ? test_weight : 1.0;
-        return std::optional<Candidate>(Candidate{h.id, h.score * w, std::move(*info)});
+        return std::optional<Candidate>(Candidate{h.id, h.score, std::move(*info)});
     });
     if (!chunks)
         return Err{chunks.error()};
 
     auto documents = best<Document>(*file_ranking, k, [&](const lexical::Ranking::Hit& h) -> Result<std::optional<Document>> {
-        auto paths = resolver->paths(h.id);
+        auto paths = resolver.paths(h.id);
         if (!paths)
             return Err{paths.error()};
+        std::erase_if(*paths, [&](const std::string& p) { return ingest::is_test(p) != (side == Side::Tests); });
         if (paths->empty())
             return std::optional<Document>();
-        double w = all_tests(*paths) ? test_weight : 1.0;
-        return std::optional<Document>(Document{std::move(*paths), h.score * w});
+        return std::optional<Document>(Document{std::move(*paths), h.score});
     });
     if (!documents)
         return Err{documents.error()};
@@ -127,15 +100,15 @@ Result<Ranked> retrieve(store::Db& db, std::string_view branch, std::string_view
         for (size_t i = 0; i < list->size(); i++)
             fused[(*list)[i]] += 1.0 / (rrf_k + static_cast<double>(i + 1));
 
-    Ranked out;
+    Group out;
     for (auto& [path, score] : fused)
         out.files.push_back({path, score});
     std::sort(out.files.begin(), out.files.end(), [](const File& a, const File& b) {
         return a.score != b.score ? a.score > b.score : a.path < b.path;
     });
 
-    // A chunk in a highly ranked file is more likely the one to change: fuse each
-    // chunk's own rank with the rank of the best file it occurs in.
+    // A chunk in a highly ranked file is more likely the one that matters: fuse
+    // each chunk's own rank with the rank of the best file it occurs in.
     std::unordered_map<std::string, size_t> file_rank;
     for (size_t i = 0; i < out.files.size(); i++)
         file_rank.emplace(out.files[i].path, i);
@@ -150,6 +123,22 @@ Result<Ranked> retrieve(store::Db& db, std::string_view branch, std::string_view
     std::stable_sort(out.chunks.begin(), out.chunks.end(),
                      [](const Candidate& a, const Candidate& b) { return a.score > b.score; });
     return out;
+}
+
+} // namespace
+
+Result<Ranked> retrieve(store::Db& db, std::string_view branch, std::string_view query, size_t k)
+{
+    auto resolver = store::Resolver::make(db, branch);
+    if (!resolver)
+        return Err{resolver.error()};
+    auto code = lexical_group(db, *resolver, query, k, Side::Code);
+    if (!code)
+        return Err{code.error()};
+    auto tests = lexical_group(db, *resolver, query, k, Side::Tests);
+    if (!tests)
+        return Err{tests.error()};
+    return Ranked{std::move(*code), std::move(*tests)};
 }
 
 Result<Ranked> nearest(store::Db& db, std::string_view branch, std::span<const float> query, size_t k)
@@ -177,19 +166,23 @@ Result<Ranked> nearest(store::Db& db, std::string_view branch, std::span<const f
     });
 
     Ranked out;
-    std::unordered_map<std::string, size_t> seen;
+    std::unordered_set<std::string> seen; // a path is on one side only
     for (const auto& [score, chunk] : scored) {
-        if (out.chunks.size() == k)
+        if (out.code.chunks.size() == k && out.tests.chunks.size() == k)
             break;
         auto info = resolver->resolve(chunk);
         if (!info)
             return Err{info.error()};
-        if (info->where.empty())
-            continue;
-        for (const store::Location& l : info->where)
-            if (seen.emplace(l.path, out.files.size()).second)
-                out.files.push_back({l.path, score});
-        out.chunks.push_back({chunk, score, std::move(*info)});
+        for (Side side : {Side::Code, Side::Tests}) {
+            Group& g = side == Side::Code ? out.code : out.tests;
+            store::ChunkInfo mine = *info;
+            if (g.chunks.size() == k || !keep_side(mine, side))
+                continue;
+            for (const store::Location& l : mine.where)
+                if (seen.insert(l.path).second)
+                    g.files.push_back({l.path, score});
+            g.chunks.push_back({chunk, score, std::move(mine)});
+        }
     }
     return out;
 }

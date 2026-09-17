@@ -140,10 +140,18 @@ void embedding()
     std::filesystem::remove(path);
     auto db = store::Db::open(path.string());
     expect(bool(db), "open database");
-    Oid blob{1};
+    expect(bool(lexical::attach(*db)), "attach lexical index");
     std::string src = "int alpha() { return 1; }\nint beta() { return 2; }\nint gamma() { return 3; }\n";
-    auto indexed = store::index_branch(*db, "main", Oid{9}, {{"x.c", blob}}, [&](const Oid&) { return Result<std::string>(src); });
-    expect(indexed && indexed->chunks == 3, "three chunks to embed");
+    std::string test_src = "int test_beta() { return beta() == 2; }\n";
+    auto indexed = store::index_branch(*db, "main", Oid{9}, {{"x.c", Oid{1}}, {"tests/t.c", Oid{2}}},
+                                       [&](const Oid& id) { return Result<std::string>(id[0] == 1 ? src : test_src); });
+    expect(indexed && indexed->chunks == 4, "four chunks to embed");
+    expect(bool(lexical::sync(*db)), "sync lexical index");
+    auto words = match::retrieve(*db, "main", "beta", 10);
+    expect(words && words->code.chunks.size() == 1 && words->code.chunks[0].info.symbol == "beta" &&
+               words->tests.chunks.size() == 1 && words->tests.chunks[0].info.symbol == "test_beta" &&
+               words->tests.files[0].path == "tests/t.c",
+           "lexical ranking returns code and tests as separate groups");
 
     store::Fingerprint fp{config, 1024};
     store::Fingerprint other = fp;
@@ -160,20 +168,21 @@ void embedding()
     };
     model::Embedder broken(config, "", second_fails, open, ec.clock());
     auto partial = store::embed(*db, fp, broken, {1, 1}, [](const store::EmbedProgress&, size_t) {});
-    expect(!partial && *store::unembedded(*db) == 2, "a failed run keeps what it was paid for");
+    expect(!partial && *store::unembedded(*db) == 3, "a failed run keeps what it was paid for");
 
     model::Embedder working(config, "", fake_provider, open, ec.clock());
     auto resumed = store::embed(*db, fp, working, {1, 2}, [](const store::EmbedProgress&, size_t) {});
-    expect(resumed && resumed->chunks == 2 && resumed->tokens == 20, "rerun embeds only what is pending");
+    expect(resumed && resumed->chunks == 3 && resumed->tokens == 30, "rerun embeds only what is pending");
 
     auto mixed = store::embed(*db, other, working, {1, 1}, [](const store::EmbedProgress&, size_t) {});
     expect(!mixed && mixed.error().find("embed.model") == 0, "a different model is refused by name");
 
     std::vector<float> query{0, 1, 0};
     auto ranked = match::nearest(*db, "main", query, 2);
-    expect(ranked && ranked->chunks.size() == 2 && ranked->chunks[0].info.symbol == "beta" &&
-               ranked->files.size() == 1 && ranked->files[0].path == "x.c",
-           "nearest chunk first, files by best chunk");
+    expect(ranked && ranked->code.chunks.size() == 2 && ranked->code.chunks[0].info.symbol == "beta" &&
+               ranked->code.files.size() == 1 && ranked->code.files[0].path == "x.c" &&
+               ranked->tests.chunks.size() == 1 && ranked->tests.chunks[0].info.symbol == "test_beta",
+           "nearest chunks per side, files by best chunk");
 
     expect(bool(store::set_meta_int(*db, "embed.input_version", store::input_version + 1)), "bump stored version");
     db = Err{"closed"};
