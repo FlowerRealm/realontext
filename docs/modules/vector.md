@@ -45,9 +45,11 @@ ANN 取 top-k（k = 1000，不够则 4000、16000）
 
 ## HNSW 参数
 
-`M` / `efConstruction` / `efSearch` **全部未选定**。
+`M = 16`、`efConstruction = 128`、存储精度 **f32**（实测，D24）。
 
-影响召回率与内存，需要在自建测试集的 L1 上扫参。**扫参不重嵌**，从已存的向量重建索引即可，零额外成本。见 [`../open-questions.md`](../open-questions.md) C5。
+**`efSearch` 不是一个独立旋钮**：usearch 的搜索用 `max(efSearch, wanted)`，而本模块的 `wanted` 是过取量（起步 1000），所以任何低于过取量的 `efSearch` 完全不起作用。过取量就是搜索扩展量。`--ef` 保留为下限，默认 64，实际被 1000 顶掉。
+
+扫参数据见 D24。**扫参不重嵌**，从已存的向量重建索引即可，零额外成本。见 [`../open-questions.md`](../open-questions.md) C5。
 
 ## 索引是派生缓存（D24）
 

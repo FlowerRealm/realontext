@@ -126,6 +126,8 @@ Result<Index> Index::open(store::Db& db, std::string_view db_path, size_t expans
         return Err{path + " was built from " + std::to_string(*chunks) + " vectors, the database now holds " +
                    std::to_string(covers->chunks) + ": rerun realontext build-index"};
 
+    if (!std::filesystem::exists(path))
+        return Err{path + " is gone: rerun realontext build-index"};
     auto made = index_dense_t::make(path.c_str());
     if (!made)
         return Err{"reading " + path + ": " + made.error.what()};

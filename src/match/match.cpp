@@ -143,15 +143,19 @@ Status all_embedded(store::Db& db)
     return ok;
 }
 
+bool both_full(const Ranked& r, size_t k)
+{
+    return r.code.chunks.size() == k && r.tests.chunks.size() == k;
+}
+
 // Walks a best-first ranking, admitting each chunk into whichever sides it has
-// locations on, until both sides hold k. `full` reports whether both did.
-Result<Ranked> admit(store::Resolver& resolver, const std::vector<std::pair<float, uint32_t>>& scored, size_t k,
-                     bool& full)
+// locations on, until both sides hold k.
+Result<Ranked> admit(store::Resolver& resolver, const std::vector<std::pair<float, uint32_t>>& scored, size_t k)
 {
     Ranked out;
     std::unordered_set<std::string> seen; // a path is on one side only
     for (const auto& [score, chunk] : scored) {
-        if (out.code.chunks.size() == k && out.tests.chunks.size() == k)
+        if (both_full(out, k))
             break;
         auto info = resolver.resolve(chunk);
         if (!info)
@@ -167,7 +171,6 @@ Result<Ranked> admit(store::Resolver& resolver, const std::vector<std::pair<floa
             g.chunks.push_back({chunk, score, std::move(mine)});
         }
     }
-    full = out.code.chunks.size() == k && out.tests.chunks.size() == k;
     return out;
 }
 
@@ -208,8 +211,7 @@ Result<Ranked> nearest(store::Db& db, std::string_view branch, std::span<const f
         return a.first != b.first ? a.first > b.first : a.second < b.second;
     });
 
-    bool full = false;
-    return admit(*resolver, scored, k, full);
+    return admit(*resolver, scored, k);
 }
 
 Result<Ranked> nearest_ann(store::Db& db, std::string_view branch, const vector::Index& index,
@@ -231,14 +233,13 @@ Result<Ranked> nearest_ann(store::Db& db, std::string_view branch, const vector:
         for (const vector::Hit& h : *hits)
             scored.emplace_back(h.score, h.chunk);
 
-        bool full = false;
-        auto ranked = admit(*resolver, scored, k, full);
+        auto ranked = admit(*resolver, scored, k);
         if (!ranked)
             return Err{ranked.error()};
         out = std::move(*ranked);
         // Both sides full, or the index has nothing more to give: asking for a
         // larger k would return the same hits.
-        if (full || hits->size() < wanted)
+        if (both_full(out, k) || hits->size() < wanted)
             break;
     }
     return out;
