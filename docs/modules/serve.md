@@ -164,4 +164,4 @@ MCP 面向 agent（stdio 或 localhost HTTP）。
 
 ## 相关决策
 
-D11 · D12 · D16 · D17 · D18
+D11 · D12 · D16 · D17 · D18 · D25（阶段 3 的实现范围）
