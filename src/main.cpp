@@ -6,6 +6,7 @@
 #include <iostream>
 #include <iterator>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -16,6 +17,7 @@
 #include "match/match.h"
 #include "model/model.h"
 #include "store/embed.h"
+#include "serve/mcp.h"
 #include "store/store.h"
 #include "vector/vector.h"
 
@@ -31,6 +33,8 @@ constexpr const char* usage = R"(usage:
                      [--scalar f32|f16|bf16|i8]      rebuilds from the stored vectors
   realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector|ann] [--ef N]
                      query on stdin, JSON on stdout
+  realontext mcp     --db FILE --branch BRANCH [--route lexical|ann] [--k N] [--ef N]
+                     [--full-text N]                 MCP over stdio, one JSON object per line
   realontext symbols --db FILE --branch BRANCH           function names, one per line
 )";
 
@@ -215,47 +219,67 @@ int cmd_build_index(const Args& a, store::Db& db)
     return 0;
 }
 
-Result<std::vector<float>> embed_query(store::Db& db, const std::string& query)
-{
-    auto fp = store::pinned(db);
-    if (!fp)
-        return Err{fp.error()};
-    model::Limiter limiter(1e9, 1e12, model::Clock::real()); // one request
-    model::Embedder embedder(fp->embedding, key_from_env(), model::http_post(), limiter, model::Clock::real());
-    auto v = embedder.embed({query}, model::Role::Query);
-    if (!v)
-        return Err{v.error()};
-    return std::move(v->data);
-}
+// Ranking one query the way --route asks for. Holds the embedder and the ANN
+// index, so a server that answers many queries loads them once.
+class Route {
+public:
+    static Result<Route> make(const Args& a, store::Db& db, std::string branch, size_t k)
+    {
+        Route r(db, std::move(branch), k, a.one("route") ? *a.one("route") : "lexical");
+        if (r.route_ == "lexical")
+            return r;
+        if (r.route_ != "vector" && r.route_ != "ann")
+            return Err{"--route is lexical, vector or ann"};
+        auto fp = store::pinned(db);
+        if (!fp)
+            return Err{fp.error()};
+        r.limiter_ = std::make_unique<model::Limiter>(1e9, 1e12, model::Clock::real()); // the query, alone
+        r.embedder_ = std::make_unique<model::Embedder>(fp->embedding, key_from_env(), model::http_post(),
+                                                        *r.limiter_, model::Clock::real());
+        if (r.route_ == "ann") {
+            auto index = vector::Index::open(db, *a.one("db"), number(a, "ef", 64));
+            if (!index)
+                return Err{index.error()};
+            r.index_ = std::make_unique<vector::Index>(std::move(*index));
+        }
+        return r;
+    }
 
-Result<match::Ranked> rank(const Args& a, store::Db& db, const std::string& branch, const std::string& query,
-                           size_t k)
-{
-    std::string route = a.one("route") ? *a.one("route") : "lexical";
-    if (route == "lexical")
-        return match::retrieve(db, branch, query, k);
-    if (route != "vector" && route != "ann")
-        return Err{"--route is lexical, vector or ann"};
-    auto v = embed_query(db, query);
-    if (!v)
-        return Err{v.error()};
-    if (route == "vector")
-        return match::nearest(db, branch, *v, k);
-    auto index = vector::Index::open(db, *a.one("db"), number(a, "ef", 64));
-    if (!index)
-        return Err{index.error()};
-    return match::nearest_ann(db, branch, *index, *v, k);
-}
+    Result<match::Ranked> operator()(const std::string& query) const
+    {
+        if (route_ == "lexical")
+            return match::retrieve(db_, branch_, query, k_);
+        auto v = embedder_->embed({query}, model::Role::Query);
+        if (!v)
+            return Err{v.error()};
+        if (route_ == "vector")
+            return match::nearest(db_, branch_, v->data, k_);
+        return match::nearest_ann(db_, branch_, *index_, v->data, k_);
+    }
+
+private:
+    Route(store::Db& db, std::string branch, size_t k, std::string route)
+        : db_(db), branch_(std::move(branch)), k_(k), route_(std::move(route)) {}
+    store::Db& db_;
+    std::string branch_;
+    size_t k_;
+    std::string route_;
+    std::unique_ptr<model::Limiter> limiter_;
+    std::unique_ptr<model::Embedder> embedder_;
+    std::unique_ptr<vector::Index> index_;
+};
 
 int cmd_query(const Args& a, store::Db& db)
 {
     const std::string* branch = a.one("branch");
     if (!branch)
         return fail("--branch is required");
-    size_t k = number(a, "k", 200);
     std::string query(std::istreambuf_iterator<char>(std::cin), {});
 
-    auto ranked = rank(a, db, *branch, query, k);
+    auto route = Route::make(a, db, *branch, number(a, "k", 200));
+    if (!route)
+        return fail(route.error());
+    auto ranked = (*route)(query);
     if (!ranked)
         return fail(ranked.error());
 
@@ -281,6 +305,23 @@ int cmd_query(const Args& a, store::Db& db)
     return 0;
 }
 
+int cmd_mcp(const Args& a, store::Db& db)
+{
+    const std::string* branch = a.one("branch");
+    if (!branch)
+        return fail("--branch is required");
+    auto route = Route::make(a, db, *branch, number(a, "k", 200));
+    if (!route)
+        return fail(route.error());
+    serve::Options opt{*branch, number(a, "full-text", 20)};
+    std::fprintf(stderr, "[mcp] %s branch=%s route=%s\n", a.one("db")->c_str(), branch->c_str(),
+                 a.one("route") ? a.one("route")->c_str() : "lexical");
+    serve::Retrieve retrieve = [&](const std::string& query) { return (*route)(query); };
+    if (auto s = serve::mcp(db, opt, retrieve, std::cin, std::cout); !s)
+        return fail(s.error());
+    return 0;
+}
+
 int cmd_symbols(const Args& a, store::Db& db)
 {
     const std::string* branch = a.one("branch");
@@ -300,7 +341,7 @@ int main(int argc, char** argv)
 {
     Args a;
     if (!parse_args(argc, argv, a) || (a.cmd != "index" && a.cmd != "embed" && a.cmd != "build-index" &&
-                                       a.cmd != "query" && a.cmd != "symbols")) {
+                                       a.cmd != "query" && a.cmd != "mcp" && a.cmd != "symbols")) {
         std::fputs(usage, stderr);
         return 2;
     }
@@ -315,5 +356,7 @@ int main(int argc, char** argv)
         return cmd_build_index(a, *db);
     if (a.cmd == "query")
         return cmd_query(a, *db);
+    if (a.cmd == "mcp")
+        return cmd_mcp(a, *db);
     return cmd_symbols(a, *db);
 }

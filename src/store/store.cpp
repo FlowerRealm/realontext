@@ -328,6 +328,17 @@ Result<std::vector<std::string>> Resolver::paths(uint32_t parsed)
     return out;
 }
 
+Result<std::string> chunk_text(Db& db, uint32_t chunk)
+{
+    auto s = Stmt::prepare(db.handle(), "SELECT content FROM chunks WHERE ord = ?1");
+    if (!s)
+        return Err{s.error()};
+    s->bind(1, static_cast<int64_t>(chunk));
+    if (s->step() != SQLITE_ROW)
+        return Err{"no chunk " + std::to_string(chunk)};
+    return std::string(s->text(0));
+}
+
 Result<std::vector<std::string>> function_names(Db& db, std::string_view branch)
 {
     auto files = branch_files(db, branch);

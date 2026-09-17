@@ -87,6 +87,10 @@ private:
     Stmt info_, where_, doc_;
 };
 
+// A chunk's stored text. serve/ hands it back verbatim until curate/ is the one
+// deciding fidelity.
+Result<std::string> chunk_text(Db& db, uint32_t chunk);
+
 // Every function chunk on the branch as path::symbol.
 Result<std::vector<std::string>> function_names(Db& db, std::string_view branch);
 

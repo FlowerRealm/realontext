@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <filesystem>
 #include <set>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -14,6 +15,7 @@
 #include "match/match.h"
 #include "model/model.h"
 #include "parse/chunk.h"
+#include "serve/mcp.h"
 #include "store/embed.h"
 #include "vector/vector.h"
 
@@ -117,6 +119,66 @@ void ann(store::Db& db, const std::string& path, const store::Fingerprint& fp, m
     std::filesystem::remove(index);
 }
 
+// The MCP transport with a stub ranking: what is tested here is the protocol
+// shape an agent depends on, not the retrieval behind it.
+void mcp(store::Db& db)
+{
+    match::Ranked stub;
+    stub.code.chunks.push_back({1, 0.5, {parse::Kind::Function, "beta", {{"x.c", 2, 2}}}});
+    stub.code.files.push_back({"x.c", 0.5});
+    serve::Retrieve retrieve = [&](const std::string& query) -> Result<match::Ranked> {
+        if (query == "boom")
+            return Err{"no vector index has been built"};
+        return stub;
+    };
+
+    std::istringstream in(
+        R"({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26"}})"
+        "\n"
+        R"({"jsonrpc":"2.0","method":"notifications/initialized"})"
+        "\n"
+        R"({"jsonrpc":"2.0","id":2,"method":"tools/list"})"
+        "\n"
+        R"({"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"codebase-retrieval","arguments":{"query":"beta"}}})"
+        "\n"
+        R"({"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"codebase-retrieval","arguments":{}}})"
+        "\n"
+        R"({"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"codebase-retrieval","arguments":{"query":"boom"}}})"
+        "\n"
+        R"({"jsonrpc":"2.0","id":6,"method":"resources/list"})"
+        "\n"
+        "not json\n");
+    std::ostringstream out;
+    expect(bool(serve::mcp(db, {"main", 1}, retrieve, in, out)), "the transport runs to end of input");
+
+    std::vector<nlohmann::json> replies;
+    std::istringstream lines(out.str());
+    for (std::string line; std::getline(lines, line);)
+        replies.push_back(nlohmann::json::parse(line));
+    expect(replies.size() == 7, "a notification draws no reply, everything else draws one");
+    expect(replies[0]["result"]["protocolVersion"] == "2025-03-26" &&
+               replies[0]["result"]["capabilities"].contains("tools"),
+           "initialize answers in the version the client asked for");
+    expect(replies[1]["result"]["tools"].size() == 1 &&
+               replies[1]["result"]["tools"][0]["name"] == "codebase-retrieval" &&
+               replies[1]["result"]["tools"][0]["inputSchema"]["required"] == nlohmann::json::array({"query"}),
+           "one tool, query its only required argument");
+
+    const auto& called = replies[2]["result"];
+    const auto& first = called["structuredContent"]["code"]["chunks"][0];
+    expect(first["symbol"] == "beta" && first["text"] == *store::chunk_text(db, 1) &&
+               called["content"][0]["type"] == "text",
+           "a candidate that fits carries its source");
+    expect(called["structuredContent"]["tests"]["chunks"].empty(), "the groups stay apart on the wire");
+    expect(replies[3]["result"]["isError"] == true, "a call without a query is the tool's error");
+    expect(replies[4]["result"]["isError"] == true &&
+               replies[4]["result"]["content"][0]["text"] == "no vector index has been built",
+           "a failed retrieval reaches the agent as text, not a dropped connection");
+    expect(replies[5]["error"]["code"] == -32601, "an unknown method is method-not-found");
+    expect(replies[6]["error"]["code"] == -32700 && replies[6]["id"].is_null(),
+           "a line that is not JSON is answered, and the loop survives it");
+}
+
 void embedding()
 {
     FakeClock fc;
@@ -215,6 +277,7 @@ void embedding()
            "nearest chunks per side, files by best chunk");
 
     ann(*db, path.string(), fp, working);
+    mcp(*db);
 
     expect(bool(store::set_meta_int(*db, "embed.input_version", store::input_version + 1)), "bump stored version");
     db = Err{"closed"};

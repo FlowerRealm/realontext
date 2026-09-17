@@ -47,10 +47,14 @@ add_library(match STATIC src/match/match.cpp)
 target_include_directories(match PUBLIC src)
 target_link_libraries(match PUBLIC lexical store ingest vector)
 
+add_library(serve STATIC src/serve/mcp.cpp)
+target_include_directories(serve PUBLIC src)
+target_link_libraries(serve PUBLIC match PRIVATE nlohmann_json::nlohmann_json)
+
 add_executable(realontext src/main.cpp)
-target_link_libraries(realontext PRIVATE ingest match vector nlohmann_json::nlohmann_json)
+target_link_libraries(realontext PRIVATE ingest match vector serve nlohmann_json::nlohmann_json)
 
 enable_testing()
 add_executable(unit tests/unit.cpp)
-target_link_libraries(unit PRIVATE parse lexical ingest match vector)
+target_link_libraries(unit PRIVATE parse lexical ingest match vector serve nlohmann_json::nlohmann_json)
 add_test(NAME unit COMMAND unit)

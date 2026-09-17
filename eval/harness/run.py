@@ -12,6 +12,10 @@ from .common import (DATASETS, RESULTS, ROOT, log, parse_repos, read_jsonl,
 from .snapshot import Snapshot
 from .tokenize import bm25_terms, grep_terms
 
+# The systems that are realontext itself: one lexical, one exact-cosine, one
+# through vector/'s index. They share the indexing and function-name steps.
+ROSYS = {"realontext", "realontext-vector", "realontext-ann"}
+
 
 def _repos(args):
     rows = parse_repos()
@@ -229,6 +233,9 @@ def _run_query(snap, row, which):
     if "realontext-vector" in which:
         from . import realontext
         out["realontext-vector"] = realontext.query(row, route="vector")
+    if "realontext-ann" in which:
+        from . import realontext
+        out["realontext-ann"] = realontext.query(row, route="ann")
     if "grep" in which:
         out["grep"] = baselines.grep_baseline(snap.root, paths, query, by_file,
                                               stats=stats, corpus_files=paths)
@@ -298,11 +305,13 @@ def cmd_run(args):
         gt_funcs_total = gt_funcs_unreachable = 0
         gt_files_total = gt_files_unreachable = 0
         ro_funcs_unmapped = 0
-        if {"realontext", "realontext-vector"} & set(which):
+        if ROSYS & set(which):
             from . import realontext
             realontext.index(repo, rows)
-        if "realontext-vector" in which:
+        if {"realontext-vector", "realontext-ann"} & set(which):
             realontext.embed(repo)
+        if "realontext-ann" in which:
+            realontext.build_index(repo)
         for i, row in enumerate(rows, 1):
             log("[run] %s %d/%d pr=%d" % (repo, i, len(rows), row["pr"]))
             try:
@@ -316,7 +325,7 @@ def cmd_run(args):
                     gt_funcs_unreachable += sum(1 for q in gt if q not in qnames)
                     # The system names functions with its own chunker. A ground-truth
                     # name it never produces is a normalisation gap on its side.
-                    if {"realontext", "realontext-vector"} & set(which):
+                    if ROSYS & set(which):
                         names = realontext.function_names(row)
                         ro_funcs_unmapped += sum(1 for q in gt if q not in names)
                     # Same rule one level up. An answer file the corpus does not
@@ -350,7 +359,7 @@ def cmd_run(args):
             "gt_files_total": gt_files_total,
             "gt_files_unreachable": gt_files_unreachable,
         }
-        if {"realontext", "realontext-vector"} & set(which):
+        if ROSYS & set(which):
             payload["realontext_gt_funcs_unmapped"] = ro_funcs_unmapped
         if ceilings:
             payload["vector_pool_ceiling"] = sum(ceilings) / len(ceilings)

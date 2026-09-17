@@ -12,6 +12,11 @@ IDF is corpus-wide, so indexing between queries would let query order move score
 chunks (D22). Embedding runs after indexing; REALONTEXT_EMBED carries the embed
 flags (endpoint, model, limits), REALONTEXT_DB_TAG keeps databases embedded
 under different fingerprints apart.
+
+`realontext-ann` is that same database through vector/'s index (D24), so the
+gap between the two is what the approximation costs. REALONTEXT_ANN carries the
+index flags; the same string reaches both build-index and query, which each
+read the ones they know.
 """
 import json
 import os
@@ -69,9 +74,17 @@ def embed(repo):
         raise RuntimeError("realontext embed %s failed" % repo)
 
 
+def build_index(repo):
+    """Rebuilds the ANN index from the vectors already stored. Seconds, not hours."""
+    args = ["build-index", "--db", db_path(repo)] + shlex.split(os.environ.get("REALONTEXT_ANN", ""))
+    if subprocess.run([BIN] + args).returncode != 0:
+        raise RuntimeError("realontext build-index %s failed" % repo)
+
+
 def query(row, route="lexical"):
+    extra = shlex.split(os.environ.get("REALONTEXT_ANN", "")) if route == "ann" else []
     p = _run(["query", "--db", db_path(row["repo"]), "--branch", branch(row), "--k", str(K),
-              "--route", route], stdin=row["query"])
+              "--route", route] + extra, stdin=row["query"])
     if p.returncode != 0:
         raise RuntimeError("realontext query: " + p.stderr[-500:])
     # Ground truth is where the fix went: the code group. Tests rank apart (D23).
