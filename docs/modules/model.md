@@ -199,11 +199,13 @@ Haiku 4.5 跑同样回填约 $137（Batch 减半后 $69），贵约 15 倍。摘
 
 ### 强制约束
 
-`store/` 的索引元数据记录四项：
+`store/` 的 `meta` 表记录六项（D22）：
 
 ```
-provider / model / task / dim
+endpoint / model / task / dim / max_bytes / input_version
 ```
+
+前四项是向量从哪来，后两项是 Chunk 怎么变成输入文本。只记前四项的话，改了切块方案指纹照样放行。
 
 启动时与本模块配置比对，**任何一项不一致则拒绝启动**，明确报错要求全量重嵌。
 
@@ -279,4 +281,4 @@ schedule: "0 1-4,6-10 * * 1-5"   # UTC
 
 ## 相关决策
 
-D5（全部走 API）· D6（Provider 选型）· D7（维度 1024）· D8（索引指纹）
+D5（全部走 API）· D6（Provider 选型）· D7（维度 1024）· D8（索引指纹）· D22（嵌入输入）

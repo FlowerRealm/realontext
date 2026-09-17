@@ -147,7 +147,7 @@ Salesforce 的方案，SWE-Bench-Lite Acc@10 达 82.12%，是 issue localization
 
 ## D8. 索引带 provider 指纹，拒绝混用
 
-索引元数据记录四项：`provider` / `model` / `task` / `dim`。
+索引元数据记录四项：`provider` / `model` / `task` / `dim`。D22 扩成六项：`endpoint` / `model` / `task` / `dim` / `max_bytes` / `input_version`。
 
 启动时与配置比对，任何一项不一致则**拒绝启动**，明确报错要求全量重嵌。
 
@@ -638,6 +638,73 @@ FTS5 内置 bm25() 固定 k1 = 1.2、b = 0.75。实现带参数的排序函数�
 - **没有路径信号**：Zoekt 靠文件名命中加权，这一路当前没有
 - **查询理解仍是空白**（`open-questions.md` C1）：issue 里的自然语言对不上标识符时，BM25 无能为力
 - **拉不开差距**：Augment 把优势归于自训的检索模型，不是词法层。本决策只是补齐基础设施，差异化仍在重排与 `curate/`
+
+---
+
+## D22. 嵌入输入：切块不动，输入截断，fp32 落盘，阶段 2 带读者
+
+阶段 2 交付 `model/` 嵌入客户端、`realontext embed`，以及一个精确余弦扫描的向量读者。
+
+### 实测：成本估算低了 5 倍
+
+对 14 个仓库的阶段 1 索引数 Chunk 原文（零成本）：
+
+| | Chunk | 原文 | 约 token（3.5 字节 / token） | Jina v4 费用 | 付费档耗时 |
+|---|---|---|---|---|---|
+| train 10 仓库 | 137 万 | 1.81 GB | 5.2 亿 | 约 $9.3 | 约 4.3 小时 |
+| holdout 4 仓库 | 56 万 | 0.62 GB | 1.8 亿 | 约 $3.1 | 约 1.5 小时 |
+
+`benchmark.md` 原估 1.3 亿 token、$2.3。钱集中在大块上：28 KB（约 8K token）以上的 Chunk 在 vscode 占字节 41%、ClickHouse 34%、vuejs 40%，最大一块 760 KB。一个几万 token 的块压成一个向量，语义已经糊了。
+
+### 定下的设计
+
+| 项 | 决定 |
+|---|---|
+| 嵌入输入 | `symbol_path + "\n" + content`，按字节截断到 `max_bytes`（默认 16384），不切断 UTF-8 序列 |
+| 输入不带路径 | Chunk 被所有持有同样内容的路径共享，它的向量也必须共享 |
+| 切块 | 不改。`chunk_hash`、BM25、阶段 1 的分数全部有效 |
+| 指纹 | `endpoint` / `model` / `task` / `dim` / `max_bytes` / `input_version`，存 `meta` 表的 `embed.*` 键。库里还没有向量时跟随请求改写（写错 endpoint 不锁库），有了向量后任何一项不同就拒绝 |
+| `input_version` | 编译期常量（`store/store.h`）。切块、grammar 版本、`embed_text()` 任一改动就加一。库里记录的版本与二进制不同，拒绝打开数据库 |
+| 队列 | `chunks WHERE embedding IS NULL`，配部分索引。没有单独的队列表：中断后重跑即续跑 |
+| 写入 | 每个响应一个事务，崩溃只丢在途请求。失败时先写完已返回的结果再退出 |
+| 精度 | fp32，L2 归一化后落盘。量化档（C7）在 `vector/` 从它派生 |
+| 读者 | `query --route vector`：全量精确余弦扫描，再按分支后过滤。慢，但它是阶段 3 ANN 索引的召回真值 |
+| 限流 | RPM、TPM 双令牌桶，每桶至多攒一分钟额度。按「字节 / 3」预扣，响应的 `usage.total_tokens` 多退少补 |
+| 重试 | 429、5xx、传输失败：指数退避加 jitter，遵守 `Retry-After`，最多 8 次。其余状态码第一次就失败，坏 key 不重试几个小时 |
+| 成本输出 | `embed --dry-run` 只报待嵌入块数、字节、估计 token，不报美元（D10） |
+| 开发用 provider | `eval/embed_server.py`：本地 Jina 兼容服务，跑开放权重 `jina-code-embeddings-1.5b`，Matryoshka 截到 1024 维。C++ 走同一条代码路径，只换 `--endpoint`；endpoint 在指纹里，本地向量与正式 API 的向量不会混用 |
+
+### 否决：给大块再切
+
+改切块等于改 `chunk_hash`，阶段 1 的 BM25 分数要重跑，D21 验证过的切块规则要重新论证。截断只影响嵌入这一路，而且截断掉不掉分可以在本地免费扫 `max_bytes` 测出来。
+
+### 否决：按 token 截断
+
+C++ 侧没有 provider 的分词器，每家的分词器也不同。字节截断确定、零依赖，指纹里记一个数就能复现。
+
+### 否决：int8 落盘
+
+精度丢了买不回来。train 全量 fp32 约 5.6 GB（int8 约 1.4 GB），在可接受范围。`benchmark.md` 原定「正式验收直接存 int8」作废。
+
+### 否决：阶段 2 不带读者
+
+与 D21 同理：嵌入付完费要等阶段 3 才有分数，错了也发现不了。精确扫描几十行代码，嵌入一完成就能跑 L1。
+
+### 否决：本地跑 llama.cpp GGUF 或 MLX
+
+官方 `jina-code-embeddings-1.5b-GGUF` 的 README 写明 llama.cpp 固定输出 896 维，截不出 1024。MLX 没有这个模型的移植，`mlx-embeddings` 不支持该架构且默认均值池化。选 PyTorch MPS，**bf16**（fp16 attention 在 MPS 上溢出成 NaN，pytorch#96602），显式 `padding_side="left"`（末 token 池化依赖它）。
+
+### 未验证
+
+- Jina v4 API 是否接受字符串数组作 `input`，`task` 是否为 `code.query` / `code.passage`：官方模型页只写了 `code`。拿到 key 后的第一个请求验证
+- `max_bytes = 16384` 是否合适：在 tokio 上用本地模型扫 8K / 16K / 32K 定
+- 本地模型的吞吐：没有可信的公开数字，先小批量试跑实测
+
+### 代价
+
+- 截断丢掉大块尾部的语义，这部分只能靠 BM25 那一路
+- fp32 占盘是 int8 的 4 倍
+- 本地模型不是 D6 选的 v4，它的分数只说明管线对不对、向量这一路大致值多少
 
 ---
 

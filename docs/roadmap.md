@@ -6,7 +6,7 @@
 |---|---|---|---|
 | 0 | — | 建自建测试集，建 ripgrep / BM25 基线 | 完成 |
 | 1 | `ingest/` `parse/` `store/` `lexical/` | 拉取、切块、内容寻址去重、BM25 召回 | 完成 |
-| 2 | `model/` | 嵌入接入、限流重试、索引指纹 | |
+| 2 | `model/` | 嵌入接入、限流重试、索引指纹、精确向量读者 | 进行中 |
 | 3 | `vector/` `match/` `serve/` | 向量召回、分支过滤、MCP 可用 | |
 | 4 | `match/` | 向量与 BM25 融合 | |
 | 5 | `match/` | 重排 | |
@@ -93,13 +93,25 @@ holdout 第 1 次（4 仓库，188 题，commit `965597b`，记录在 `../eval/h
 
 ## 阶段 2：嵌入接入
 
-- Jina API 客户端
-- 双令牌桶限流（RPM + TPM）
-- 指数退避重试，失败队列持久化
-- 运行时 token 计数器
-- **索引指纹写入与校验**（provider / model / task / dim）
+设计见 D22。
+
+- Jina API 客户端（`model/`），libcurl
+- 双令牌桶限流（RPM + TPM），预扣后按实际计费 token 结算
+- 指数退避重试；失败不需要持久化队列，`embedding IS NULL` 就是队列
+- 运行时 token 计数器（`embed` 的进度输出）
+- **索引指纹写入与校验**（endpoint / model / task / dim / max_bytes / input_version）
+- 嵌入输入按字节截断，切块不动
+- **精确余弦扫描读者**（`query --route vector`）：付费之后当场有分数，也是阶段 3 ANN 的召回真值
+- 本地 Jina 兼容服务（`eval/embed_server.py`）：没有 key 时用开放权重模型跑通整条管线
 
 指纹校验必须在这一阶段做掉，不能等到真要切 provider 时再补——那时候已经有脏索引了。
+
+**验收**：
+
+1. 单元测试：限流、重试分类、响应解析、指纹各项拒绝、失败后续跑、精确排序
+2. 本地模型在小 train 仓库（先 tokio）上跑通 `index → embed → query --route vector`；中途 kill 后续跑，待嵌入数归零
+3. 纯向量 L1 与 grep / bm25 并列报分，扫 `max_bytes` 定默认值。本阶段不要求打过 BM25，那是阶段 3 的门槛
+4. 拿到 key 后：先验证 Jina v4 的请求格式（D22 未验证项），再付费嵌入
 
 ---
 
@@ -111,7 +123,7 @@ holdout 第 1 次（4 仓库，188 题，commit `965597b`，记录在 `../eval/h
 
 **跑 L1。此时应该打得过 ripgrep 和 BM25 两条基线。打不过就停。**
 
-嵌入成本约 $2.3，付费档约 1 小时（`benchmark.md` 成本节）。这份嵌入后面阶段 4–7 全部复用，不需要重付——除非改切块方案。
+train 嵌入成本约 $9.3、付费档约 4.3 小时（实测，`benchmark.md` 成本节）。这份嵌入后面阶段 4–7 全部复用，不需要重付——除非改切块方案或 `max_bytes`。
 
 ---
 

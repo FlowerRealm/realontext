@@ -75,7 +75,7 @@ Roaring bitmap 开销：每分支约 100 KB，可忽略。
 | `commits` | commit_sha | summary, embedding | 全局去重 |
 | `commit_refs` | (repo, branch) | roaring bitmap | 每分支 |
 | `bullets` | bullet_id | content, counters, embedding | 全局（`playbook/`） |
-| `index_meta` | — | provider, model, task, dim | 全局 |
+| `meta` | key | `embed.*` 六项指纹；`lexical/` 的同步水位 | 全局 |
 
 **符号关系不在表中。** 不预计算也不持久化，查询时由 `lsp/` 现问（D15）。
 
@@ -87,7 +87,11 @@ Roaring bitmap 开销：每分支约 100 KB，可忽略。
 
 ## 索引指纹
 
-`index_meta` 记录 `model/` 的四项配置。启动时比对，**任何一项不一致则拒绝启动**（D8）。
+`meta` 表的 `embed.*` 记录六项指纹（D22）。库里还没有向量时跟随请求改写；有了向量后，请求的配置任何一项不一致就拒绝嵌入（D8）。`input_version` 与二进制不同时，数据库直接拒绝打开。
+
+## 嵌入队列
+
+待嵌入的 Chunk 就是 `embedding IS NULL` 的行，由部分索引 `chunks_pending` 支撑。没有单独的队列表，中断后重跑 `realontext embed` 即续跑。
 
 理由见 [`model.md`](model.md) Provider 指纹与切换。
 
@@ -114,4 +118,4 @@ SQLite WAL 模式。单写多读——索引作业是唯一写者，查询全是
 
 ## 相关决策
 
-D7 · D8 · D13 · D14 · D21
+D7 · D8 · D13 · D14 · D21 · D22
