@@ -29,12 +29,12 @@ constexpr const char* usage = R"(usage:
   realontext embed   --db FILE [--endpoint URL] [--model NAME] [--task TASK] [--dim N]
                      [--max-bytes N] [--batch-bytes N] [--jobs N] [--rpm N] [--tpm N] [--dry-run 1]
                      key from JINA_API_KEY; interrupt and rerun to resume
-  realontext build-index --db FILE [--connectivity N] [--expansion-add N] [--ef N]
+  realontext build-index --db FILE [--connectivity N] [--expansion-add N]
                      [--scalar f32|f16|bf16|i8]      rebuilds from the stored vectors
-  realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector|ann] [--ef N]
+  realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector|ann]
                      query on stdin, JSON on stdout
-  realontext mcp     --db FILE --branch BRANCH [--route lexical|ann] [--k N] [--ef N]
-                     [--full-text N]                 MCP over stdio, one JSON object per line
+  realontext mcp     --db FILE --branch BRANCH [--route lexical|ann] [--k N] [--full-text N]
+                     MCP over stdio, one JSON object per line
   realontext symbols --db FILE --branch BRANCH           function names, one per line
 )";
 
@@ -198,7 +198,7 @@ int cmd_build_index(const Args& a, store::Db& db)
     if (!fp)
         return fail(fp.error());
     vector::Params params{number(a, "connectivity", 16), number(a, "expansion-add", 128),
-                          number(a, "ef", 64), a.one("scalar") ? *a.one("scalar") : "f32"};
+                          a.one("scalar") ? *a.one("scalar") : "f32"};
 
     auto started = std::chrono::steady_clock::now();
     auto last = started;
@@ -237,7 +237,7 @@ public:
         r.embedder_ = std::make_unique<model::Embedder>(fp->embedding, key_from_env(), model::http_post(),
                                                         *r.limiter_, model::Clock::real());
         if (r.route_ == "ann") {
-            auto index = vector::Index::open(db, *a.one("db"), number(a, "ef", 64));
+            auto index = vector::Index::open(db, *a.one("db"));
             if (!index)
                 return Err{index.error()};
             r.index_ = std::make_unique<vector::Index>(std::move(*index));

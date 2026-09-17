@@ -39,15 +39,15 @@ ANN 取 top-k（k = 1000，不够则 4000、16000）
 
 维度 **1024**（D7）。理由是 Jina v4 与 voyage-code-4 的交集，切换 Provider 时存储布局不变。
 
-存储精度 **int8**。850 MB 对 83 万 Chunk。
+落盘精度 **fp32**（D22），索引精度也取 **f32**（D24 实测）。
 
-**量化档位尚未定死**——fp32 / int8 / 更激进的方案对召回率的影响需要用自建测试集实测。开发期语料存 fp32，量化档可本地免费扫；正式验收直接存 int8。见 [`../open-questions.md`](../open-questions.md) C7 与 [`../benchmark.md`](../benchmark.md) 存储策略。
+i8 索引小 3.2–3.6 倍、建索引快一倍，`recall@10` 几乎不变，但名次指标掉 9–16%（file_mrr 0.451 对 0.533）——量化重洗了近似并列的候选，而 `curate/` 在预算内吃的正是名次。i8 留给索引装不下的场合：1024 维 140 万块，f32 约 5.6 GB、i8 约 1.4 GB，那个规模上要重测。见 [`../open-questions.md`](../open-questions.md) C7。
 
 ## HNSW 参数
 
 `M = 16`、`efConstruction = 128`、存储精度 **f32**（实测，D24）。
 
-**`efSearch` 不是一个独立旋钮**：usearch 的搜索用 `max(efSearch, wanted)`，而本模块的 `wanted` 是过取量（起步 1000），所以任何低于过取量的 `efSearch` 完全不起作用。过取量就是搜索扩展量。`--ef` 保留为下限，默认 64，实际被 1000 顶掉。
+**`efSearch` 这个旋钮不存在，已删掉**：usearch 的搜索用 `max(efSearch, wanted)`，而本模块的 `wanted` 是过取量（起步 1000），任何低于过取量的值不起作用；实测高于过取量也买不到增益，调到 16000 反而掉分（D24）。过取量就是搜索扩展量。
 
 扫参数据见 D24。**扫参不重嵌**，从已存的向量重建索引即可，零额外成本。见 [`../open-questions.md`](../open-questions.md) C5。
 

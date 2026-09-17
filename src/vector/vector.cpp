@@ -67,8 +67,7 @@ Result<BuildStats> build(store::Db& db, uint32_t dim, const Params& params, std:
         return Err{"no chunk has an embedding yet: run realontext embed"};
 
     auto made = index_dense_t::make(metric_punned_t(dim, metric, *scalar),
-                                    index_dense_config_t(params.connectivity, params.expansion_add,
-                                                         params.expansion_search));
+                                    index_dense_config_t(params.connectivity, params.expansion_add));
     if (!made)
         return Err{std::string("usearch: ") + made.error.what()};
     index_dense_t index = std::move(made.index);
@@ -107,7 +106,7 @@ Result<BuildStats> build(store::Db& db, uint32_t dim, const Params& params, std:
     return BuildStats{added, std::filesystem::file_size(path, ec)};
 }
 
-Result<Index> Index::open(store::Db& db, std::string_view db_path, size_t expansion_search)
+Result<Index> Index::open(store::Db& db, std::string_view db_path)
 {
     auto chunks = store::meta_int(db, built_chunks);
     if (!chunks)
@@ -132,7 +131,6 @@ Result<Index> Index::open(store::Db& db, std::string_view db_path, size_t expans
     if (!made)
         return Err{"reading " + path + ": " + made.error.what()};
     auto impl = std::make_unique<Impl>(Impl{std::move(made.index)});
-    impl->index.change_expansion_search(expansion_search);
 
     auto pinned = store::pinned(db);
     if (!pinned)

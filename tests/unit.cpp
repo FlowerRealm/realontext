@@ -101,7 +101,7 @@ void ann(store::Db& db, const std::string& path, const store::Fingerprint& fp, m
     expect(built && built->vectors == 4 && std::filesystem::exists(index), "the index holds every stored vector");
 
     std::vector<float> query{0, 1, 0};
-    auto opened = vector::Index::open(db, path, 64);
+    auto opened = vector::Index::open(db, path);
     expect(opened && opened->size() == 4 && opened->dim() == fp.embedding.dim, "the index opens against its database");
     auto ranked = match::nearest_ann(db, "main", *opened, query, 2);
     expect(ranked && ranked->code.chunks.size() == 2 && ranked->code.chunks[0].info.symbol == "beta" &&
@@ -113,7 +113,7 @@ void ann(store::Db& db, const std::string& path, const store::Fingerprint& fp, m
                                      [&](const Oid&) { return Result<std::string>(more); });
     expect(grown && grown->new_chunks == 1, "one more chunk to embed");
     expect(bool(store::embed(db, fp, embedder, {1, 1}, [](const store::EmbedProgress&, size_t) {})), "embed it");
-    auto stale = vector::Index::open(db, path, 64);
+    auto stale = vector::Index::open(db, path);
     expect(!stale && stale.error().find("build-index") != std::string::npos,
            "an index built before the last embedding is refused, not silently short");
     std::filesystem::remove(index);

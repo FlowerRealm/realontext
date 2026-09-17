@@ -20,11 +20,12 @@ namespace vector {
 
 // What the graph costs to build and how well it recalls. Every field is a sweep
 // target (open-questions C5, C7); a sweep rebuilds the index and never re-embeds.
+// No efSearch: usearch searches with max(efSearch, wanted), and match/'s
+// over-fetch is what sets `wanted`, so the knob measured as inert (D24).
 struct Params {
-    size_t connectivity = 16;     // HNSW M
-    size_t expansion_add = 128;   // efConstruction
-    size_t expansion_search = 64; // efSearch
-    std::string scalar = "f32";   // index precision: f32, f16, bf16 or i8
+    size_t connectivity = 16;   // HNSW M
+    size_t expansion_add = 128; // efConstruction
+    std::string scalar = "f32"; // index precision: f32, f16, bf16 or i8
 };
 
 // The index belonging to a database: `<db path>.usearch`.
@@ -50,7 +51,7 @@ class Index {
 public:
     // Fails when no index was built, when the file is gone, or when the database
     // has been embedded further since: a stale index silently drops chunks.
-    static Result<Index> open(store::Db& db, std::string_view db_path, size_t expansion_search);
+    static Result<Index> open(store::Db& db, std::string_view db_path);
     ~Index();
     Index(Index&&) noexcept;
     Index& operator=(Index&&) noexcept;
