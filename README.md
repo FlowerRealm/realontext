@@ -65,12 +65,19 @@ export VCPKG_ROOT=~/vcpkg
 cmake --preset default && cmake --build build && ctest --preset default
 ```
 
-阶段 1 已完成（`docs/roadmap.md`）：只有 CLI，还没有 MCP。
+当前进度见 `docs/roadmap.md`：阶段 1 完成，阶段 2 进行中。只有 CLI，还没有 MCP。
 
 ```bash
-realontext index --db repo.db --git repo.git            # 索引镜像的全部分支
-echo "为什么加载 yaml 会崩" | realontext query --db repo.db --branch main
+realontext index --db repo.db --git repo.git            # 索引镜像的全部分支，免费
+realontext embed --db repo.db --dry-run 1               # 待嵌入的块数、字节、估计 token
+JINA_API_KEY=... realontext embed --db repo.db          # 嵌入，随时中断，重跑即续跑
+echo "为什么加载 yaml 会崩" | realontext query --db repo.db --branch main                 # 词法
+echo "为什么加载 yaml 会崩" | realontext query --db repo.db --branch main --route vector  # 向量
 ```
+
+`query` 的结果分两组：`code` 是修复该改的地方，`tests` 是覆盖这块行为的测试（D23）。
+
+没有 API key 时，`eval/embed_server.py` 在本机提供同样接口的嵌入服务（开放权重模型，开发用），`embed` 加 `--endpoint http://127.0.0.1:8484/v1/embeddings --model jina-code-embeddings-0.5b --dim 896` 指过去。
 
 团队模式下服务端部署一台，每个开发者跑自己的客户端——一份索引、一个 API key、一份知识库，成本不随人数增长。
 
