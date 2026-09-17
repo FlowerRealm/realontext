@@ -672,7 +672,7 @@ FTS5 内置 bm25() 固定 k1 = 1.2、b = 0.75。实现带参数的排序函数�
 | 限流 | RPM、TPM 双令牌桶，每桶至多攒一分钟额度。按「字节 / 3」预扣，响应的 `usage.total_tokens` 多退少补 |
 | 重试 | 429、5xx、传输失败：指数退避加 jitter，遵守 `Retry-After`，最多 8 次。其余状态码第一次就失败，坏 key 不重试几个小时 |
 | 成本输出 | `embed --dry-run` 只报待嵌入块数、字节、估计 token，不报美元（D10） |
-| 开发用 provider | `eval/embed_server.py`：本地 Jina 兼容服务，跑开放权重 `jina-code-embeddings-1.5b`，Matryoshka 截到 1024 维。C++ 走同一条代码路径，只换 `--endpoint`；endpoint 在指纹里，本地向量与正式 API 的向量不会混用 |
+| 开发用 provider | `eval/embed_server.py`：本地 Jina 兼容服务，跑开放权重 `jina-code-embeddings-0.5b`，满维 896。它的代码检索平均分比 1.5b 只低 0.6 个点（78.41% 对 79.04%），参数少三倍；最高 896 维，给不出 D7 的 1024，开发期接受。C++ 走同一条代码路径，只换 `--endpoint`；endpoint 在指纹里，本地向量与正式 API 的向量不会混用 |
 
 ### 否决：给大块再切
 
@@ -699,6 +699,7 @@ C++ 侧没有 provider 的分词器，每家的分词器也不同。字节截断
 - Jina v4 API 是否接受字符串数组作 `input`，`task` 是否为 `code.query` / `code.passage`：官方模型页只写了 `code`。拿到 key 后的第一个请求验证
 - `max_bytes = 16384` 是否合适：在 tokio 上用本地模型扫 8K / 16K / 32K 定
 - 本地模型的吞吐：没有可信的公开数字，先小批量试跑实测
+- D6 的前提：Jina 官方对比里 `jina-embeddings-v4` 代码检索平均 74.11%，低于 `jina-code-embeddings-0.5b` 的 78.41%。拿到 key 后确认托管 API 是否提供 code-embeddings 系列，提供就重议 D6
 
 ### 代价
 
