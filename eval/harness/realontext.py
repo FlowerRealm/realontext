@@ -20,6 +20,11 @@ read the ones they know.
 
 `realontext-hybrid` is the lexical ranking and the index one fused by rank
 (D26): the same database, the same vectors, one more route through them.
+
+The `-rerank` systems are any of those ranked once more by a reranker reading
+the query and each candidate's text (D27). REALONTEXT_RERANK carries its flags
+(endpoint, model, pool depth, limits) and VOYAGE_API_KEY its key. Reranking is
+a switch, not a route, so each pair of rows differs by exactly that switch.
 """
 import json
 import os
@@ -84,8 +89,10 @@ def build_index(repo):
         raise RuntimeError("realontext build-index %s failed" % repo)
 
 
-def query(row, route="lexical"):
+def query(row, route="lexical", rerank=False):
     extra = shlex.split(os.environ.get("REALONTEXT_ANN", "")) if route in ("ann", "hybrid") else []
+    if rerank:
+        extra += ["--rerank", "1"] + shlex.split(os.environ.get("REALONTEXT_RERANK", ""))
     p = _run(["query", "--db", db_path(row["repo"]), "--branch", branch(row), "--k", str(K),
               "--route", route] + extra, stdin=row["query"])
     if p.returncode != 0:

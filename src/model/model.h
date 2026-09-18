@@ -95,6 +95,44 @@ private:
     Clock clock_;
 };
 
+// Where reranking happens. Not part of the index fingerprint: reranking stores
+// nothing, so nothing can be left behind in the wrong space (D27).
+struct Rerank {
+    std::string endpoint; // POST target speaking the Voyage rerank API shape
+    std::string model;
+};
+
+// One document's place in the reranked order: where it sat in the caller's
+// list, and what the model thought of it.
+struct Relevance {
+    size_t index;
+    double score;
+};
+
+// Parses a rerank response for `n` documents, best first. Every document must
+// come back exactly once: a response that scores a subset would silently drop
+// candidates from the ranking.
+Result<std::vector<Relevance>> parse_rerank(const std::string& body, size_t n);
+
+class Reranker {
+public:
+    Reranker(Rerank config, std::string key, Post post, Limiter& limiter, Clock clock)
+        : config_(std::move(config)), key_(std::move(key)), post_(std::move(post)), limiter_(limiter),
+          clock_(std::move(clock)) {}
+
+    // Best first. A failure is an error, never a quiet fall back to the order
+    // the caller came in with: that order and this one rank by different things,
+    // and nobody downstream could tell which one they got (D27).
+    Result<std::vector<Relevance>> rank(const std::string& query, const std::vector<std::string>& documents);
+
+private:
+    Rerank config_;
+    std::string key_;
+    Post post_;
+    Limiter& limiter_;
+    Clock clock_;
+};
+
 // Bytes per token assumed before the provider reports the real count. Low on
 // purpose: overestimating only slows the limiter, underestimating earns 429s.
 inline constexpr double bytes_per_token = 3.0;

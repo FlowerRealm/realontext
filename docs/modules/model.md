@@ -126,15 +126,17 @@ listwise 意味着所有候选一起评估再排序，优于 pairwise cross-enco
 
 **重排是查询侧最大的成本项**，因为它是唯一随查询次数线性增长的部分。若成本成为问题，Cohere 按次计价可预测性更好，且不会逼你为省钱调小召回数（那是错误的优化方向）。
 
-### 评测期改走 `voyage rerank-2.5`（D27）
+### 评测期改走 `voyage rerank-3`（D27）
 
-**Jina key 拿不到**，阶段 2 的付费嵌入卡的是同一件事。阶段 5 的重排改走 Voyage：真托管 API，免费额度覆盖一遍 L1，代码路径与将来接 v3.5 一致——换 endpoint 与响应解析，`Limiter`、重试分类、`Post` 全部复用。顺带验证 Voyage 的接入，嵌入备选 `voyage-code-4` 是同一家。
+**Jina key 拿不到**，阶段 2 的付费嵌入卡的是同一件事。阶段 5 的重排改走 Voyage：真托管 API，代码路径与将来接 v3.5 一致——换 endpoint 与响应解析，`Limiter`、重试分类、`Post` 全部复用。顺带验证 Voyage 的接入，嵌入备选 `voyage-code-4` 是同一家。
+
+**取 rerank-3 不取 rerank-2.5**：上面价格表里的 2 亿免费 token 只给 **rerank-3 系列**，2.5 那一代是 0。两个都实测可用。
 
 **生产选型不动**：`jina-reranker-v3.5` 仍是上面表里的选择。本节只记「key 的可得性是一个实际约束」。
 
 类型差别要记住，它改的是成本曲线：
 
-| | `jina-reranker-v3.5` | `voyage rerank-2.5` |
+| | `jina-reranker-v3.5` | `voyage rerank-3` |
 |---|---|---|
 | 类型 | listwise | cross-encoder（pairwise） |
 | 200 条候选 | 一次调用 | 200 次前向 |
@@ -142,7 +144,17 @@ listwise 意味着所有候选一起评估再排序，优于 pairwise cross-enco
 
 所以池深在 Voyage 上是一个真旋钮（D27 定起步 50），换回 listwise 时它基本免费。
 
-**实现前核对**：请求与响应形态、免费额度是否覆盖 rerank（上表的 2 亿 token 是嵌入那一代的口径）、单次请求的文档数上限与单文档截断行为。这几项与 D22 的「Jina v4 请求格式未验证」同一性质——没验证过的不写成结论。
+### Voyage rerank 实测（2026-09-18）
+
+```
+POST https://api.voyageai.com/v1/rerank
+{"query": ..., "documents": [...], "model": "rerank-3", "truncation": true}
+→ {"data": [{"index": i, "relevance_score": s}, ...], "usage": {"total_tokens": n}}
+```
+
+单次至多 1,000 个文档；计费 token = **query token × 文档数 + 文档 token 之和**，限流器按这个公式估算。上下文 32K。
+
+**免费档的限流会挡住跑分**：没绑支付方式的账号是 **3 RPM / 10K TPM**，一条 2.5 KB 的 query 配池深 10 就超过单分钟额度，重试耗尽后硬报错。绑支付方式后恢复标准限流，2 亿免费 token 仍然生效。
 
 ---
 

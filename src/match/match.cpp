@@ -16,9 +16,9 @@ namespace {
 // Reciprocal Rank Fusion constant, the value from the original RRF paper.
 constexpr double rrf_k = 60.0;
 
-// How much a route's ranks count against the other's. Equal weights: the two
-// routes each win on repos where the other is weak, and no sweep found a tilt
-// that beats the tie (D26).
+// How much a route's ranks count against the other's. The vector route is the
+// stronger of the two on this corpus, so equal weights let the weaker one drag
+// it down; 0.5 against 1.0 is where the sweep flattened out (D26).
 constexpr double lexical_weight = 0.5;
 constexpr double vector_weight = 1.0;
 
@@ -311,7 +311,67 @@ Result<Route> ann_route(store::Resolver& resolver, const vector::Index& index, s
     return out;
 }
 
+// Reranks one side in place. The documents are the same text the embedder saw,
+// cut at the reranker's own limit: one definition of "a chunk as text", and one
+// that no stored vector depends on.
+Status rerank_side(store::Db& db, std::string_view query, Group& group, const Reranking& r)
+{
+    size_t pool = std::min(r.pool, group.chunks.size());
+    if (pool == 0)
+        return ok;
+    std::vector<std::string> documents;
+    documents.reserve(pool);
+    for (size_t i = 0; i < pool; i++) {
+        auto text = store::chunk_text(db, group.chunks[i].chunk);
+        if (!text)
+            return Err{text.error()};
+        documents.push_back(store::embed_text(group.chunks[i].info.symbol, *text, r.max_bytes));
+    }
+
+    auto scored = r.model->rank(std::string(query), documents);
+    if (!scored)
+        return Err{scored.error()};
+
+    std::vector<Candidate> chunks;
+    chunks.reserve(group.chunks.size());
+    for (const model::Relevance& rel : *scored) {
+        chunks.push_back(std::move(group.chunks[rel.index]));
+        chunks.back().score = rel.score;
+    }
+    for (size_t i = pool; i < group.chunks.size(); i++) {
+        chunks.push_back(std::move(group.chunks[i]));
+        chunks.back().score = -static_cast<double>(i - pool + 1);
+    }
+    group.chunks = std::move(chunks);
+
+    // Files follow the chunks: the model read the text, the fuser only had
+    // ranks. Files no surviving candidate sits in keep their fused order behind
+    // them — dropping them would throw away recall the pool still holds.
+    std::vector<File> files;
+    files.reserve(group.files.size());
+    std::unordered_set<std::string> placed;
+    for (const Candidate& c : group.chunks)
+        for (const store::Location& l : c.info.where)
+            if (placed.insert(l.path).second)
+                files.push_back({l.path, c.score});
+    double floor = group.chunks.empty() ? 0.0 : group.chunks.back().score;
+    for (const File& f : group.files)
+        if (placed.insert(f.path).second)
+            files.push_back({f.path, floor - static_cast<double>(files.size() + 1)});
+    group.files = std::move(files);
+    return ok;
+}
+
 } // namespace
+
+Status rerank(store::Db& db, std::string_view query, Ranked& ranked, const Reranking& r)
+{
+    // One call per side: the two answer different questions, and a shared
+    // ranking would let the tests crowd out the code again (D23).
+    if (auto s = rerank_side(db, query, ranked.code, r); !s)
+        return s;
+    return rerank_side(db, query, ranked.tests, r);
+}
 
 Result<Ranked> retrieve(store::Db& db, std::string_view branch, std::string_view query, size_t k)
 {

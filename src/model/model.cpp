@@ -34,6 +34,27 @@ size_t header(char* data, size_t size, size_t n, void* out)
 
 bool retryable(long status) { return status == 0 || status == 429 || status >= 500; }
 
+// One retry policy for every endpoint: 429, 5xx and transport failures back off
+// and retry, anything else is the provider saying no. The caller settles the
+// token bucket once the response says what it really cost.
+Result<Response> send(const Post& post, const Request& r, double estimate, Limiter& limiter, const Clock& clock)
+{
+    thread_local std::mt19937 rng{std::random_device{}()};
+    Response last;
+    for (int i = 0; i < attempts; i++) {
+        limiter.acquire(estimate);
+        last = post(r);
+        if (last.status == 200)
+            return last;
+        if (!retryable(last.status))
+            break;
+        double cap = std::min(backoff_cap, std::ldexp(1.0, i));
+        double delay = std::max(last.retry_after, std::uniform_real_distribution<>(0, cap)(rng));
+        clock.sleep(std::chrono::duration<double>(delay));
+    }
+    return Err{"HTTP " + std::to_string(last.status) + ": " + last.body.substr(0, 300)};
+}
+
 } // namespace
 
 Post http_post()
@@ -153,25 +174,69 @@ Result<Vectors> Embedder::embed(const std::vector<std::string>& texts, Role role
     Request r{config_.endpoint, key_, req.dump(-1, ' ', false, nlohmann::json::error_handler_t::replace)};
     double estimate = bytes / bytes_per_token;
 
-    thread_local std::mt19937 rng{std::random_device{}()};
-    Response last;
-    for (int i = 0; i < attempts; i++) {
-        limiter_.acquire(estimate);
-        last = post_(r);
-        if (last.status == 200) {
-            auto v = parse(last.body, texts.size(), config_.dim);
-            if (v && v->tokens)
-                limiter_.settle(estimate, static_cast<double>(v->tokens));
-            return v;
-        }
-        if (!retryable(last.status))
-            break;
-        double cap = std::min(backoff_cap, std::ldexp(1.0, i));
-        double delay = std::max(last.retry_after, std::uniform_real_distribution<>(0, cap)(rng));
-        clock_.sleep(std::chrono::duration<double>(delay));
+    auto res = send(post_, r, estimate, limiter_, clock_);
+    if (!res)
+        return Err{"embeddings " + config_.endpoint + ": " + res.error()};
+    auto v = parse(res->body, texts.size(), config_.dim);
+    if (v && v->tokens)
+        limiter_.settle(estimate, static_cast<double>(v->tokens));
+    return v;
+}
+
+Result<std::vector<Relevance>> parse_rerank(const std::string& body, size_t n)
+{
+    auto doc = nlohmann::json::parse(body, nullptr, false);
+    if (doc.is_discarded() || !doc.contains("data") || !doc["data"].is_array())
+        return Err{"rerank response without data: " + body.substr(0, 300)};
+    const auto& data = doc["data"];
+    if (data.size() != n)
+        return Err{"rerank response scores " + std::to_string(data.size()) + " of " + std::to_string(n) +
+                   " documents"};
+    std::vector<Relevance> out;
+    out.reserve(n);
+    std::vector<bool> seen(n, false);
+    for (const auto& item : data) {
+        size_t i = item.value("index", n);
+        if (i >= n || seen[i] || !item.contains("relevance_score"))
+            return Err{"rerank response: bad entry at index " + std::to_string(i)};
+        seen[i] = true;
+        out.push_back({i, item["relevance_score"].get<double>()});
     }
-    return Err{"embeddings " + config_.endpoint + ": HTTP " + std::to_string(last.status) + ": " +
-               last.body.substr(0, 300)};
+    // The provider sorts, but the order is the whole product here, so it is
+    // rebuilt from the scores rather than assumed.
+    std::sort(out.begin(), out.end(), [](const Relevance& a, const Relevance& b) {
+        return a.score != b.score ? a.score > b.score : a.index < b.index;
+    });
+    return out;
+}
+
+Result<std::vector<Relevance>> Reranker::rank(const std::string& query, const std::vector<std::string>& documents)
+{
+    if (documents.empty())
+        return std::vector<Relevance>{};
+    nlohmann::json docs = nlohmann::json::array();
+    double bytes = 0;
+    for (const std::string& d : documents) {
+        docs.push_back(d);
+        bytes += static_cast<double>(d.size());
+    }
+    nlohmann::json req = {{"model", config_.model},
+                          {"query", query},
+                          {"documents", std::move(docs)},
+                          {"truncation", true}};
+    Request r{config_.endpoint, key_, req.dump(-1, ' ', false, nlohmann::json::error_handler_t::replace)};
+    // Billed as the query once per document plus the documents themselves, so
+    // the token bucket counts what the bill counts.
+    double estimate = (static_cast<double>(query.size()) * static_cast<double>(documents.size()) + bytes) /
+                      bytes_per_token;
+
+    auto res = send(post_, r, estimate, limiter_, clock_);
+    if (!res)
+        return Err{"rerank " + config_.endpoint + ": " + res.error()};
+    auto doc = nlohmann::json::parse(res->body, nullptr, false);
+    if (!doc.is_discarded() && doc.contains("usage"))
+        limiter_.settle(estimate, static_cast<double>(doc["usage"].value("total_tokens", uint64_t{0})));
+    return parse_rerank(res->body, documents.size());
 }
 
 } // namespace model

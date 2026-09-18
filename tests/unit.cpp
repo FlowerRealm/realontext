@@ -147,6 +147,94 @@ void ann(store::Db& db, const std::string& path, const store::Fingerprint& fp, m
     std::filesystem::remove(index);
 }
 
+// Reranking (D27). It reorders what a route assembled and nothing else: the
+// pool is the ceiling, candidates past it keep the fused order, and a provider
+// that fails is an error rather than a quiet fall back to that order.
+void reranking()
+{
+    expect(!model::parse_rerank(R"({"data":[{"index":0,"relevance_score":0.5}]})", 2),
+           "a response scoring fewer documents than were sent is an error");
+    expect(!model::parse_rerank(R"({"data":[{"index":0,"relevance_score":0.5},{"index":0,"relevance_score":0.1}]})", 2),
+           "a document scored twice is an error");
+    auto order = model::parse_rerank(
+        R"({"data":[{"index":0,"relevance_score":0.1},{"index":1,"relevance_score":0.9}],"usage":{"total_tokens":8}})", 2);
+    expect(order && order->size() == 2 && order->at(0).index == 1 && order->at(1).index == 0,
+           "the order comes from the scores, not from the provider's own sorting");
+
+    auto path = std::filesystem::temp_directory_path() / "realontext-rerank.db";
+    std::filesystem::remove(path);
+    auto db = store::Db::open(path.string());
+    expect(bool(db) && bool(lexical::attach(*db)), "open a database for reranking");
+    std::string a = "int alpha() { return 1; }\n";
+    std::string b = "int beta() { return 2; }\nint beta_two() { return 2; }\n";
+    std::string t = "int test_alpha() { return alpha() == 1; }\n";
+    auto indexed = store::index_branch(
+        *db, "main", Oid{9}, {{"a.c", Oid{1}}, {"b.c", Oid{2}}, {"tests/t.c", Oid{3}}},
+        [&](const Oid& id) { return Result<std::string>(id[0] == 1 ? a : id[0] == 2 ? b : t); });
+    expect(indexed && indexed->chunks == 4, "four chunks across two code files and a test");
+    expect(bool(lexical::sync(*db)), "sync lexical index");
+
+    auto fused = match::retrieve(*db, "main", "alpha beta beta_two", 10);
+    expect(fused && fused->code.chunks.size() == 3 && fused->code.files.size() == 2,
+           "three code candidates over two files before reranking");
+    std::vector<std::string> before;
+    for (const match::Candidate& c : fused->code.chunks)
+        before.push_back(c.info.symbol);
+
+    // Scores the last document sent best, so a reranked pool comes back exactly
+    // reversed and a ranking left alone is visible as one.
+    std::vector<nlohmann::json> requests;
+    model::Post reversing = [&](const model::Request& r) {
+        auto req = nlohmann::json::parse(r.body);
+        requests.push_back(req);
+        nlohmann::json data = nlohmann::json::array();
+        size_t n = req["documents"].size();
+        for (size_t i = 0; i < n; i++)
+            data.push_back({{"index", i}, {"relevance_score", double(i + 1) / double(n)}});
+        return model::Response{200, nlohmann::json{{"data", data}, {"usage", {{"total_tokens", 4 * n}}}}.dump()};
+    };
+    FakeClock fc;
+    model::Limiter open(1e9, 1e12, fc.clock());
+    model::Reranker reranker({"http://fake/v1/rerank", "r"}, "", reversing, open, fc.clock());
+
+    match::Ranked ranked = *fused;
+    match::Reranking config{&reranker, 2, 8};
+    expect(bool(match::rerank(*db, "alpha beta beta_two", ranked, config)), "rerank the ranking");
+    expect(requests.size() == 2 && requests[0]["query"] == "alpha beta beta_two" &&
+               requests[0]["documents"].size() == 2 && requests[1]["documents"].size() == 1,
+           "one call per side, each holding at most the pool");
+    expect(requests[0]["documents"][0].get<std::string>().size() <= 8,
+           "a document is cut at the reranker's own limit");
+
+    expect(ranked.code.chunks.size() == 3 && ranked.code.chunks[0].info.symbol == before[1] &&
+               ranked.code.chunks[1].info.symbol == before[0],
+           "the pool comes back in the model's order");
+    expect(ranked.code.chunks[2].info.symbol == before[2] && ranked.code.chunks[2].score < 0,
+           "a candidate past the pool keeps its place and says it was never read");
+    bool falling = true;
+    for (size_t i = 1; i < ranked.code.chunks.size(); i++)
+        falling = falling && ranked.code.chunks[i].score <= ranked.code.chunks[i - 1].score;
+    expect(falling, "scores never rise down the ranking");
+    expect(ranked.code.files.size() == 2 && ranked.code.files[0].path == ranked.code.chunks[0].info.where[0].path,
+           "files follow the reranked chunks");
+    expect(ranked.tests.chunks.size() == 1 && ranked.tests.chunks[0].info.symbol == "test_alpha",
+           "a side with one candidate is reranked, not skipped");
+
+    match::Ranked empty;
+    requests.clear();
+    expect(bool(match::rerank(*db, "alpha", empty, config)) && requests.empty(),
+           "nothing to rerank asks the provider nothing");
+
+    model::Post refusing = [](const model::Request&) { return model::Response{400, "bad request"}; };
+    model::Reranker failing({"http://fake/v1/rerank", "r"}, "", refusing, open, fc.clock());
+    match::Ranked doomed = *fused;
+    match::Reranking broken{&failing, 2, 8};
+    auto failed = match::rerank(*db, "alpha", doomed, broken);
+    expect(!failed && failed.error().find("rerank") != std::string::npos,
+           "a provider that refuses is an error, not the fused order handed back as if reranked");
+    std::filesystem::remove(path);
+}
+
 // The MCP transport with a stub ranking: what is tested here is the protocol
 // shape an agent depends on, not the retrieval behind it.
 void mcp(store::Db& db)
@@ -306,6 +394,7 @@ void embedding()
 
     ann(*db, path.string(), fp, working);
     mcp(*db);
+    reranking();
 
     expect(bool(store::set_meta_int(*db, "embed.input_version", store::input_version + 1)), "bump stored version");
     db = Err{"closed"};

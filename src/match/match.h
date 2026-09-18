@@ -4,6 +4,7 @@
 #include <string_view>
 #include <vector>
 
+#include "model/model.h"
 #include "result.h"
 #include "store/store.h"
 #include "vector/vector.h"
@@ -51,6 +52,27 @@ Result<Ranked> nearest(store::Db& db, std::string_view branch, std::span<const f
 // only one of them is visible, so no fixed multiple is enough.
 Result<Ranked> nearest_ann(store::Db& db, std::string_view branch, const vector::Index& index,
                            std::span<const float> query, size_t k);
+
+// Reordering what a route assembled, with the query and the candidates' own
+// text in front of the model (D27). Orthogonal to the routes: it applies to
+// whatever any of them produced, so it is a switch rather than a route name,
+// and the rerank delta on each route can be measured separately.
+struct Reranking {
+    model::Reranker* model;
+    size_t pool;      // candidates per side handed to the model
+    size_t max_bytes; // one document is cut here, on a UTF-8 boundary
+};
+
+// Reorders `ranked` in place. It can only reorder: what the pool already holds
+// is the ceiling, so the score report leads with the pool's recall.
+//
+// Candidates past the pool keep their fused order behind the reranked ones and
+// carry a negative score — the score stays non-increasing down the ranking, and
+// its sign says whether the model ever read that candidate. A failure is an
+// error; falling back to the fused order would hand back a differently ranked
+// list with nothing to say so. An error leaves `ranked` half-reordered — there
+// is no ranking to hand back either way.
+Status rerank(store::Db& db, std::string_view query, Ranked& ranked, const Reranking& r);
 
 // Both routes at once, fused by rank (D26). The lexical route finds the
 // identifiers and error strings a vector cannot place, the vector route the

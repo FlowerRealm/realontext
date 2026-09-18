@@ -310,7 +310,9 @@ hybrid 领先 ripgrep 基线 0.422、BM25 基线 0.248（file_recall@10）。两
 
 顺序是先接模型跑通单测、再接进 `match/`、最后扫参。中间隔一道逐位比对：开关关闭时三条旧路线的名次必须与阶段 4 完全相同。
 
-**模型改走 `voyage rerank-2.5`**，不是 `model.md` 选定的 `jina-reranker-v3.5`——Jina key 拿不到（阶段 2 验收 4 卡的是同一件事）。Voyage 是真托管 API、免费额度覆盖 L1，代码路径与将来接 v3.5 一致。代价是 cross-encoder 而非 listwise：200 条候选要 200 次前向，池深从此是成本旋钮。生产选型 D6 不动，见 D27。
+**模型改走 `voyage rerank-3`**，不是 `model.md` 选定的 `jina-reranker-v3.5`——Jina key 拿不到（阶段 2 验收 4 卡的是同一件事）。Voyage 是真托管 API，2 亿免费 token 覆盖 L1（那份额度只给 rerank-3 系列，2.5 是 0），代码路径与将来接 v3.5 一致。代价是 cross-encoder 而非 listwise：200 条候选要 200 次前向，池深从此是成本旋钮。生产选型 D6 不动，见 D27。
+
+**跑分前的前置**：Voyage 账号没绑支付方式时限流是 3 RPM / 10K TPM，单次请求就超额，一题都跑不完（实测，见 D27）。绑卡后回到标准限流，免费额度照旧。
 
 **验收**：
 

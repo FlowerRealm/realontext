@@ -12,12 +12,22 @@ from .common import (DATASETS, RESULTS, ROOT, log, parse_repos, read_jsonl,
 from .snapshot import Snapshot
 from .tokenize import bm25_terms, grep_terms
 
-# The systems that are realontext itself: one lexical, one exact-cosine, one
-# through vector/'s index, one fusing the lexical and the index. They share the
-# indexing and function-name steps.
-ROSYS = {"realontext", "realontext-vector", "realontext-ann", "realontext-hybrid"}
-VECSYS = {"realontext-vector", "realontext-ann", "realontext-hybrid"}
-ANNSYS = {"realontext-ann", "realontext-hybrid"}
+# The systems that are realontext itself: the route each takes, and whether the
+# result then goes through the reranker (D27). Reranking is orthogonal to the
+# route, so it doubles this table instead of adding routes — and the rerank
+# delta on each route is a subtraction between two rows of the same report.
+ROUTES = {
+    "realontext": ("lexical", False),
+    "realontext-vector": ("vector", False),
+    "realontext-ann": ("ann", False),
+    "realontext-hybrid": ("hybrid", False),
+    "realontext-rerank": ("lexical", True),
+    "realontext-ann-rerank": ("ann", True),
+    "realontext-hybrid-rerank": ("hybrid", True),
+}
+ROSYS = set(ROUTES)
+VECSYS = {name for name, (route, _) in ROUTES.items() if route != "lexical"}
+ANNSYS = {name for name, (route, _) in ROUTES.items() if route in ("ann", "hybrid")}
 
 
 def _repos(args):
@@ -230,18 +240,10 @@ def _run_query(snap, row, which):
         stats = baselines.scan(snap.root, cands, vocab, by_file)
 
     out = {}
-    if "realontext" in which:
+    for name in sorted(ROSYS & set(which)):
         from . import realontext
-        out["realontext"] = realontext.query(row)
-    if "realontext-vector" in which:
-        from . import realontext
-        out["realontext-vector"] = realontext.query(row, route="vector")
-    if "realontext-ann" in which:
-        from . import realontext
-        out["realontext-ann"] = realontext.query(row, route="ann")
-    if "realontext-hybrid" in which:
-        from . import realontext
-        out["realontext-hybrid"] = realontext.query(row, route="hybrid")
+        route, rerank = ROUTES[name]
+        out[name] = realontext.query(row, route=route, rerank=rerank)
     if "grep" in which:
         out["grep"] = baselines.grep_baseline(snap.root, paths, query, by_file,
                                               stats=stats, corpus_files=paths)

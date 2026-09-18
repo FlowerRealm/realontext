@@ -7,6 +7,7 @@
 #include <iterator>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -32,8 +33,11 @@ constexpr const char* usage = R"(usage:
   realontext build-index --db FILE [--connectivity N] [--expansion-add N]
                      [--scalar f32|f16|bf16|i8]      rebuilds from the stored vectors
   realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector|ann|hybrid]
-                     query on stdin, JSON on stdout
+                     [--rerank 1] [--rerank-endpoint URL] [--rerank-model NAME] [--rerank-pool N]
+                     [--rerank-max-bytes N] [--rerank-rpm N] [--rerank-tpm N]
+                     query on stdin, JSON on stdout; rerank key from VOYAGE_API_KEY
   realontext mcp     --db FILE --branch BRANCH [--route lexical|ann|hybrid] [--k N] [--full-text N]
+                     [--rerank 1] and the --rerank-* options of query
                      MCP over stdio, one JSON object per line
   realontext symbols --db FILE --branch BRANCH           function names, one per line
 )";
@@ -75,9 +79,9 @@ size_t number(const Args& a, const std::string& key, size_t fallback)
     return v ? std::stoul(*v) : fallback;
 }
 
-std::string key_from_env()
+std::string key_from_env(const char* name)
 {
-    const char* k = std::getenv("JINA_API_KEY");
+    const char* k = std::getenv(name);
     return k ? k : "";
 }
 
@@ -173,7 +177,8 @@ int cmd_embed(const Args& a, store::Db& db)
 
     model::Limiter limiter(static_cast<double>(number(a, "rpm", 100)), static_cast<double>(number(a, "tpm", 100000)),
                            model::Clock::real());
-    model::Embedder embedder(fp.embedding, key_from_env(), model::http_post(), limiter, model::Clock::real());
+    model::Embedder embedder(fp.embedding, key_from_env("JINA_API_KEY"), model::http_post(), limiter,
+                             model::Clock::real());
     auto started = std::chrono::steady_clock::now();
     auto last = started;
     auto done = store::embed(db, fp, embedder, {number(a, "batch-bytes", 65536), number(a, "jobs", 4)},
@@ -234,8 +239,8 @@ public:
         if (!fp)
             return Err{fp.error()};
         r.limiter_ = std::make_unique<model::Limiter>(1e9, 1e12, model::Clock::real()); // the query, alone
-        r.embedder_ = std::make_unique<model::Embedder>(fp->embedding, key_from_env(), model::http_post(),
-                                                        *r.limiter_, model::Clock::real());
+        r.embedder_ = std::make_unique<model::Embedder>(fp->embedding, key_from_env("JINA_API_KEY"),
+                                                        model::http_post(), *r.limiter_, model::Clock::real());
         if (r.route_ == "ann" || r.route_ == "hybrid") {
             auto index = vector::Index::open(db, *a.one("db"));
             if (!index)
@@ -245,7 +250,43 @@ public:
         return r;
     }
 
+    // Reranking is orthogonal to the route: any of them can be handed to the
+    // model, which is how the rerank delta on each is measured (D27).
+    Status with_rerank(const Args& a)
+    {
+        if (!a.one("rerank"))
+            return ok;
+        std::string key = key_from_env("VOYAGE_API_KEY");
+        if (key.empty())
+            return Err{"--rerank needs VOYAGE_API_KEY"};
+        model::Rerank config{a.one("rerank-endpoint") ? *a.one("rerank-endpoint")
+                                                      : "https://api.voyageai.com/v1/rerank",
+                             a.one("rerank-model") ? *a.one("rerank-model") : "rerank-3"};
+        rerank_limiter_ = std::make_unique<model::Limiter>(static_cast<double>(number(a, "rerank-rpm", 100)),
+                                                          static_cast<double>(number(a, "rerank-tpm", 2000000)),
+                                                          model::Clock::real());
+        reranker_ = std::make_unique<model::Reranker>(std::move(config), std::move(key), model::http_post(),
+                                                      *rerank_limiter_, model::Clock::real());
+        rerank_ = match::Reranking{reranker_.get(), number(a, "rerank-pool", 50),
+                                   number(a, "rerank-max-bytes", 16384)};
+        return ok;
+    }
+
     Result<match::Ranked> operator()(const std::string& query) const
+    {
+        auto ranked = retrieve(query);
+        if (!ranked || !rerank_)
+            return ranked;
+        if (auto s = match::rerank(db_, query, *ranked, *rerank_); !s)
+            return Err{s.error()};
+        return ranked;
+    }
+
+private:
+    Route(store::Db& db, std::string branch, size_t k, std::string route)
+        : db_(db), branch_(std::move(branch)), k_(k), route_(std::move(route)) {}
+
+    Result<match::Ranked> retrieve(const std::string& query) const
     {
         if (route_ == "lexical")
             return match::retrieve(db_, branch_, query, k_);
@@ -259,9 +300,6 @@ public:
         return match::hybrid(db_, branch_, query, *index_, v->data, k_);
     }
 
-private:
-    Route(store::Db& db, std::string branch, size_t k, std::string route)
-        : db_(db), branch_(std::move(branch)), k_(k), route_(std::move(route)) {}
     store::Db& db_;
     std::string branch_;
     size_t k_;
@@ -269,6 +307,9 @@ private:
     std::unique_ptr<model::Limiter> limiter_;
     std::unique_ptr<model::Embedder> embedder_;
     std::unique_ptr<vector::Index> index_;
+    std::unique_ptr<model::Limiter> rerank_limiter_;
+    std::unique_ptr<model::Reranker> reranker_;
+    std::optional<match::Reranking> rerank_;
 };
 
 int cmd_query(const Args& a, store::Db& db)
@@ -281,6 +322,8 @@ int cmd_query(const Args& a, store::Db& db)
     auto route = Route::make(a, db, *branch, number(a, "k", 200));
     if (!route)
         return fail(route.error());
+    if (auto s = route->with_rerank(a); !s)
+        return fail(s.error());
     auto ranked = (*route)(query);
     if (!ranked)
         return fail(ranked.error());
@@ -315,9 +358,11 @@ int cmd_mcp(const Args& a, store::Db& db)
     auto route = Route::make(a, db, *branch, number(a, "k", 200));
     if (!route)
         return fail(route.error());
+    if (auto s = route->with_rerank(a); !s)
+        return fail(s.error());
     serve::Options opt{*branch, number(a, "full-text", 20)};
-    std::fprintf(stderr, "[mcp] %s branch=%s route=%s\n", a.one("db")->c_str(), branch->c_str(),
-                 a.one("route") ? a.one("route")->c_str() : "lexical");
+    std::fprintf(stderr, "[mcp] %s branch=%s route=%s rerank=%s\n", a.one("db")->c_str(), branch->c_str(),
+                 a.one("route") ? a.one("route")->c_str() : "lexical", a.one("rerank") ? "on" : "off");
     serve::Retrieve retrieve = [&](const std::string& query) { return (*route)(query); };
     if (auto s = serve::mcp(db, opt, retrieve, std::cin, std::cout); !s)
         return fail(s.error());
