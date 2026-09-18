@@ -186,9 +186,11 @@ Result<Vectors> Embedder::embed(const std::vector<std::string>& texts, Role role
 Result<std::vector<Relevance>> parse_rerank(const std::string& body, size_t n)
 {
     auto doc = nlohmann::json::parse(body, nullptr, false);
-    if (doc.is_discarded() || !doc.contains("data") || !doc["data"].is_array())
-        return Err{"rerank response without data: " + body.substr(0, 300)};
-    const auto& data = doc["data"];
+    // Voyage calls the array "data", OpenRouter proxying it calls it "results".
+    const char* field = doc.is_discarded() ? nullptr : doc.contains("results") ? "results" : "data";
+    if (!field || !doc.contains(field) || !doc[field].is_array())
+        return Err{"rerank response without results: " + body.substr(0, 300)};
+    const auto& data = doc[field];
     if (data.size() != n)
         return Err{"rerank response scores " + std::to_string(data.size()) + " of " + std::to_string(n) +
                    " documents"};

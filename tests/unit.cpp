@@ -156,6 +156,10 @@ void reranking()
            "a response scoring fewer documents than were sent is an error");
     expect(!model::parse_rerank(R"({"data":[{"index":0,"relevance_score":0.5},{"index":0,"relevance_score":0.1}]})", 2),
            "a document scored twice is an error");
+    auto proxied = model::parse_rerank(
+        R"({"results":[{"index":0,"relevance_score":0.2,"document":{"text":"x"}}],"usage":{"total_tokens":3}})", 1);
+    expect(proxied && proxied->size() == 1 && proxied->at(0).index == 0,
+           "a proxy that names the array results is read like the provider's own data");
     auto order = model::parse_rerank(
         R"({"data":[{"index":0,"relevance_score":0.1},{"index":1,"relevance_score":0.9}],"usage":{"total_tokens":8}})", 2);
     expect(order && order->size() == 2 && order->at(0).index == 1 && order->at(1).index == 0,

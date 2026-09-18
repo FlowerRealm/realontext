@@ -35,7 +35,7 @@ constexpr const char* usage = R"(usage:
   realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector|ann|hybrid]
                      [--rerank 1] [--rerank-endpoint URL] [--rerank-model NAME] [--rerank-pool N]
                      [--rerank-max-bytes N] [--rerank-rpm N] [--rerank-tpm N]
-                     query on stdin, JSON on stdout; rerank key from VOYAGE_API_KEY
+                     query on stdin, JSON on stdout; rerank key from RERANK_API_KEY
   realontext mcp     --db FILE --branch BRANCH [--route lexical|ann|hybrid] [--k N] [--full-text N]
                      [--rerank 1] and the --rerank-* options of query
                      MCP over stdio, one JSON object per line
@@ -256,12 +256,12 @@ public:
     {
         if (!a.one("rerank"))
             return ok;
-        std::string key = key_from_env("VOYAGE_API_KEY");
+        std::string key = key_from_env("RERANK_API_KEY");
         if (key.empty())
-            return Err{"--rerank needs VOYAGE_API_KEY"};
+            return Err{"--rerank needs RERANK_API_KEY"};
         model::Rerank config{a.one("rerank-endpoint") ? *a.one("rerank-endpoint")
-                                                      : "https://api.voyageai.com/v1/rerank",
-                             a.one("rerank-model") ? *a.one("rerank-model") : "rerank-3"};
+                                                      : "https://openrouter.ai/api/v1/rerank",
+                             a.one("rerank-model") ? *a.one("rerank-model") : "voyageai/rerank-2.5-lite"};
         rerank_limiter_ = std::make_unique<model::Limiter>(static_cast<double>(number(a, "rerank-rpm", 100)),
                                                           static_cast<double>(number(a, "rerank-tpm", 2000000)),
                                                           model::Clock::real());

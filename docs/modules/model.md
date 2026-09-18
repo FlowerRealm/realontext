@@ -144,7 +144,21 @@ listwise 意味着所有候选一起评估再排序，优于 pairwise cross-enco
 
 所以池深在 Voyage 上是一个真旋钮（D27 定起步 50），换回 listwise 时它基本免费。
 
-### Voyage rerank 实测（2026-09-18）
+### 评测实际走的是 OpenRouter
+
+Voyage 直连 key 被限流卡死（见下），改从 **OpenRouter** 调 `voyageai/rerank-2.5-lite`：
+
+```
+POST https://openrouter.ai/api/v1/rerank      key: RERANK_API_KEY
+{"model": "voyageai/rerank-2.5-lite", "query": ..., "documents": [...]}
+→ {"results": [{"index": i, "relevance_score": s}], "usage": {"total_tokens": n, "cost": c}}
+```
+
+**响应把数组叫 `results`，Voyage 直连叫 `data`**，解析两种都吃。计费 $0.02/1M token，与 Voyage 自己的价一致，没有限流问题。
+
+**OpenRouter 上没有 rerank-3**，只有 2.5 系列，所以评测拿不到带免费额度的那一档。
+
+### Voyage 直连实测（2026-09-18）
 
 ```
 POST https://api.voyageai.com/v1/rerank
