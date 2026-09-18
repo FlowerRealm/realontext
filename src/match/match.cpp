@@ -334,15 +334,37 @@ Status rerank_side(store::Db& db, std::string_view query, Group& group, const Re
 
     std::vector<Candidate> chunks;
     chunks.reserve(group.chunks.size());
-    for (const model::Relevance& rel : *scored) {
-        chunks.push_back(std::move(group.chunks[rel.index]));
-        chunks.back().score = rel.score;
+    if (r.fuse) {
+        // RRF over the two rankings of the same pool: the rank the fuser gave a
+        // candidate and the rank the model gave it, k = 60 as everywhere else.
+        std::vector<std::pair<double, size_t>> by_score;
+        by_score.reserve(pool);
+        for (size_t j = 0; j < scored->size(); j++)
+            by_score.emplace_back(rrf(scored->at(j).index) + rrf(j), scored->at(j).index);
+        std::sort(by_score.begin(), by_score.end(), [](const auto& a, const auto& b) {
+            return a.first != b.first ? a.first > b.first : a.second < b.second;
+        });
+        for (const auto& [score, i] : by_score) {
+            chunks.push_back(std::move(group.chunks[i]));
+            chunks.back().score = score;
+        }
+    } else {
+        for (const model::Relevance& rel : *scored) {
+            chunks.push_back(std::move(group.chunks[rel.index]));
+            chunks.back().score = rel.score;
+        }
     }
+    // Below the pool's worst, whatever that was: this reranker scores a bad
+    // match negative, so a fixed negative floor would interleave with it.
+    double floor = chunks.empty() ? 0.0 : chunks.back().score;
     for (size_t i = pool; i < group.chunks.size(); i++) {
         chunks.push_back(std::move(group.chunks[i]));
-        chunks.back().score = -static_cast<double>(i - pool + 1);
+        chunks.back().score = floor - static_cast<double>(i - pool + 1);
     }
     group.chunks = std::move(chunks);
+
+    if (r.files == Reranking::Files::Keep)
+        return ok;
 
     // Files follow the chunks: the model read the text, the fuser only had
     // ranks. Files no surviving candidate sits in keep their fused order behind
@@ -354,10 +376,27 @@ Status rerank_side(store::Db& db, std::string_view query, Group& group, const Re
         for (const store::Location& l : c.info.where)
             if (placed.insert(l.path).second)
                 files.push_back({l.path, c.score});
-    double floor = group.chunks.empty() ? 0.0 : group.chunks.back().score;
+    double under = group.chunks.empty() ? 0.0 : group.chunks.back().score;
     for (const File& f : group.files)
         if (placed.insert(f.path).second)
-            files.push_back({f.path, floor - static_cast<double>(files.size() + 1)});
+            files.push_back({f.path, under - static_cast<double>(files.size() + 1)});
+
+    if (r.files == Reranking::Files::Fuse) {
+        // The order above and the fuser's own, as two rankings of the same
+        // files. A file whose evidence is spread thin over its chunks is what
+        // the whole-file ranking is there for, and no chunk's rank carries it.
+        std::unordered_map<std::string, double> score;
+        for (size_t i = 0; i < files.size(); i++)
+            score[files[i].path] += rrf(i);
+        for (size_t i = 0; i < group.files.size(); i++)
+            score[group.files[i].path] += rrf(i);
+        files.clear();
+        for (const auto& [path, s] : score)
+            files.push_back({path, s});
+        std::sort(files.begin(), files.end(), [](const File& a, const File& b) {
+            return a.score != b.score ? a.score > b.score : a.path < b.path;
+        });
+    }
     group.files = std::move(files);
     return ok;
 }

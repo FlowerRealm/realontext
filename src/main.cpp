@@ -3,6 +3,8 @@
 #include <chrono>
 #include <cstdlib>
 #include <cstdio>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <iterator>
 #include <map>
@@ -34,7 +36,9 @@ constexpr const char* usage = R"(usage:
                      [--scalar f32|f16|bf16|i8]      rebuilds from the stored vectors
   realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector|ann|hybrid]
                      [--rerank 1] [--rerank-endpoint URL] [--rerank-model NAME] [--rerank-pool N]
-                     [--rerank-max-bytes N] [--rerank-rpm N] [--rerank-tpm N]
+                     [--rerank-max-bytes N] [--rerank-mode replace|fuse]
+                     [--rerank-files derive|fuse|keep] [--rerank-cache DIR]
+                     [--rerank-rpm N] [--rerank-tpm N]
                      query on stdin, JSON on stdout; rerank key from RERANK_API_KEY
   realontext mcp     --db FILE --branch BRANCH [--route lexical|ann|hybrid] [--k N] [--full-text N]
                      [--rerank 1] and the --rerank-* options of query
@@ -83,6 +87,37 @@ std::string key_from_env(const char* name)
 {
     const char* k = std::getenv(name);
     return k ? k : "";
+}
+
+// A cache in front of a provider, keyed by the request itself. Sweeping a
+// parameter that changes only what the ranking does with the answers then pays
+// for the calls once. Eval only: in the product the same query never comes
+// twice, which is why D27 refuses to cache there.
+model::Post cached(std::string dir, model::Post post)
+{
+    std::filesystem::create_directories(dir);
+    return [dir = std::move(dir), post = std::move(post)](const model::Request& r) {
+        uint64_t h = 1469598103934665603ull;
+        for (char ch : r.url + "\n" + r.body) {
+            h ^= static_cast<unsigned char>(ch);
+            h *= 1099511628211ull;
+        }
+        char name[32];
+        std::snprintf(name, sizeof name, "%016llx.json", static_cast<unsigned long long>(h));
+        std::filesystem::path file = std::filesystem::path(dir) / name;
+        if (std::ifstream in{file}) {
+            auto doc = nlohmann::json::parse(in, nullptr, false);
+            // The request is stored too: a hash collision must miss, not answer
+            // one query with another query's ranking.
+            if (!doc.is_discarded() && doc.value("request", std::string()) == r.body)
+                return model::Response{doc.value("status", 0L), doc.value("body", std::string())};
+        }
+        model::Response out = post(r);
+        if (out.status == 200)
+            if (std::ofstream o{file})
+                o << nlohmann::json{{"request", r.body}, {"status", out.status}, {"body", out.body}}.dump();
+        return out;
+    };
 }
 
 int fail(const std::string& msg)
@@ -265,10 +300,23 @@ public:
         rerank_limiter_ = std::make_unique<model::Limiter>(static_cast<double>(number(a, "rerank-rpm", 100)),
                                                           static_cast<double>(number(a, "rerank-tpm", 2000000)),
                                                           model::Clock::real());
-        reranker_ = std::make_unique<model::Reranker>(std::move(config), std::move(key), model::http_post(),
+        model::Post post = model::http_post();
+        if (const std::string* dir = a.one("rerank-cache"))
+            post = cached(*dir, std::move(post));
+        reranker_ = std::make_unique<model::Reranker>(std::move(config), std::move(key), std::move(post),
                                                       *rerank_limiter_, model::Clock::real());
+        const std::string* mode = a.one("rerank-mode");
+        if (mode && *mode != "replace" && *mode != "fuse")
+            return Err{"--rerank-mode is replace or fuse"};
+        std::string files = a.one("rerank-files") ? *a.one("rerank-files") : "derive";
+        auto which = files == "derive"  ? match::Reranking::Files::Derive
+                     : files == "fuse"  ? match::Reranking::Files::Fuse
+                     : files == "keep"  ? match::Reranking::Files::Keep
+                                        : match::Reranking::Files::Derive;
+        if (files != "derive" && files != "fuse" && files != "keep")
+            return Err{"--rerank-files is derive, fuse or keep"};
         rerank_ = match::Reranking{reranker_.get(), number(a, "rerank-pool", 50),
-                                   number(a, "rerank-max-bytes", 16384)};
+                                   number(a, "rerank-max-bytes", 16384), mode && *mode == "fuse", which};
         return ok;
     }
 

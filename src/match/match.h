@@ -61,14 +61,25 @@ struct Reranking {
     model::Reranker* model;
     size_t pool;      // candidates per side handed to the model
     size_t max_bytes; // one document is cut here, on a UTF-8 boundary
+    // What to do with the order the fuser already had. Replacing it spends the
+    // set to buy the top: a candidate the fuser had inside k that the model
+    // ranks past k leaves the ranking entirely. Fusing keeps both as ranks,
+    // the way every other signal in this module is combined.
+    bool fuse = false;
+    // What happens to the file ranking afterwards. The model ranks chunks and
+    // never sees a file, so deriving one from its order invents an opinion it
+    // did not give; keeping the fuser's leaves the file ranking as it was.
+    enum class Files { Derive, Fuse, Keep };
+    Files files = Files::Derive;
 };
 
 // Reorders `ranked` in place. It can only reorder: what the pool already holds
 // is the ceiling, so the score report leads with the pool's recall.
 //
 // Candidates past the pool keep their fused order behind the reranked ones and
-// carry a negative score — the score stays non-increasing down the ranking, and
-// its sign says whether the model ever read that candidate. A failure is an
+// score below every reranked one, so the score stays non-increasing down the
+// ranking. Nothing reads the sign: a reranker may score a poor match negative
+// and that must not be confused with never having been read. A failure is an
 // error; falling back to the fused order would hand back a differently ranked
 // list with nothing to say so. An error leaves `ranked` half-reordered — there
 // is no ranking to hand back either way.

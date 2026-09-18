@@ -188,6 +188,8 @@ void reranking()
     // Scores the last document sent best, so a reranked pool comes back exactly
     // reversed and a ranking left alone is visible as one.
     std::vector<nlohmann::json> requests;
+    // Scores go negative on a poor match with some rerankers, so the pool's
+    // own floor is what the tail must sit under, not zero.
     model::Post reversing = [&](const model::Request& r) {
         auto req = nlohmann::json::parse(r.body);
         requests.push_back(req);
@@ -213,8 +215,9 @@ void reranking()
     expect(ranked.code.chunks.size() == 3 && ranked.code.chunks[0].info.symbol == before[1] &&
                ranked.code.chunks[1].info.symbol == before[0],
            "the pool comes back in the model's order");
-    expect(ranked.code.chunks[2].info.symbol == before[2] && ranked.code.chunks[2].score < 0,
-           "a candidate past the pool keeps its place and says it was never read");
+    expect(ranked.code.chunks[2].info.symbol == before[2] &&
+               ranked.code.chunks[2].score < ranked.code.chunks[1].score,
+           "a candidate past the pool keeps its place, below everything the model read");
     bool falling = true;
     for (size_t i = 1; i < ranked.code.chunks.size(); i++)
         falling = falling && ranked.code.chunks[i].score <= ranked.code.chunks[i - 1].score;
@@ -223,6 +226,20 @@ void reranking()
            "files follow the reranked chunks");
     expect(ranked.tests.chunks.size() == 1 && ranked.tests.chunks[0].info.symbol == "test_alpha",
            "a side with one candidate is reranked, not skipped");
+
+    // Fusing instead of replacing: the pool is ordered by both ranks, so a
+    // candidate the fuser had first does not fall out because the model
+    // disagreed once.
+    match::Ranked fused_mode = *fused;
+    match::Reranking both{&reranker, 2, 8, true};
+    requests.clear();
+    expect(bool(match::rerank(*db, "alpha beta beta_two", fused_mode, both)), "rerank by fusing the two ranks");
+    expect(fused_mode.code.chunks.size() == 3 && fused_mode.code.chunks[0].info.symbol == before[0] &&
+               fused_mode.code.chunks[1].info.symbol == before[1],
+           "with both ranks tied against each other the fuser's order breaks the tie");
+    expect(fused_mode.code.chunks[0].score == fused_mode.code.chunks[1].score &&
+               fused_mode.code.chunks[2].score < fused_mode.code.chunks[1].score,
+           "two ranks that mirror each other tie, and the tail stays below the pool");
 
     match::Ranked empty;
     requests.clear();
