@@ -13,8 +13,11 @@ from .snapshot import Snapshot
 from .tokenize import bm25_terms, grep_terms
 
 # The systems that are realontext itself: one lexical, one exact-cosine, one
-# through vector/'s index. They share the indexing and function-name steps.
-ROSYS = {"realontext", "realontext-vector", "realontext-ann"}
+# through vector/'s index, one fusing the lexical and the index. They share the
+# indexing and function-name steps.
+ROSYS = {"realontext", "realontext-vector", "realontext-ann", "realontext-hybrid"}
+VECSYS = {"realontext-vector", "realontext-ann", "realontext-hybrid"}
+ANNSYS = {"realontext-ann", "realontext-hybrid"}
 
 
 def _repos(args):
@@ -236,6 +239,9 @@ def _run_query(snap, row, which):
     if "realontext-ann" in which:
         from . import realontext
         out["realontext-ann"] = realontext.query(row, route="ann")
+    if "realontext-hybrid" in which:
+        from . import realontext
+        out["realontext-hybrid"] = realontext.query(row, route="hybrid")
     if "grep" in which:
         out["grep"] = baselines.grep_baseline(snap.root, paths, query, by_file,
                                               stats=stats, corpus_files=paths)
@@ -308,9 +314,9 @@ def cmd_run(args):
         if ROSYS & set(which):
             from . import realontext
             realontext.index(repo, rows)
-        if {"realontext-vector", "realontext-ann"} & set(which):
+        if VECSYS & set(which):
             realontext.embed(repo)
-        if "realontext-ann" in which:
+        if ANNSYS & set(which):
             realontext.build_index(repo)
         for i, row in enumerate(rows, 1):
             log("[run] %s %d/%d pr=%d" % (repo, i, len(rows), row["pr"]))

@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <filesystem>
 #include <set>
+#include <span>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -90,6 +91,31 @@ model::Response fake_provider(const model::Request& r)
     return {200, nlohmann::json{{"data", data}, {"usage", {{"total_tokens", 10 * i}}}}.dump()};
 }
 
+// Fusing the two routes (D26). What matters is that neither route can veto the
+// other's find, and that being found twice beats being found once.
+void hybrid(store::Db& db, const vector::Index& index, std::span<const float> beta)
+{
+    auto agree = match::hybrid(db, "main", "beta", index, beta, 3);
+    expect(agree && agree->code.chunks.size() == 3 && agree->code.chunks[0].info.symbol == "beta" &&
+               agree->tests.chunks.size() == 1 && agree->tests.chunks[0].info.symbol == "test_beta",
+           "a chunk both routes rank first stays first");
+    std::set<std::string> found;
+    for (const match::Candidate& c : agree->code.chunks)
+        found.insert(c.info.symbol);
+    expect(found == std::set<std::string>{"alpha", "beta", "gamma"},
+           "chunks only the vector route reached are in the fused ranking, not filtered out by the words");
+
+    // "gamma" is the lexical route's only hit and the vector route's last;
+    // "beta" is the vector route's first and no hit at all for the words.
+    auto disagree = match::hybrid(db, "main", "gamma", index, beta, 3);
+    expect(disagree && disagree->code.chunks.size() == 3 && disagree->code.chunks[0].info.symbol == "gamma" &&
+               disagree->code.chunks[1].info.symbol == "beta",
+           "two routes ranking a chunk beats one route ranking it first");
+    expect(disagree && disagree->tests.chunks.size() == 1 && disagree->tests.chunks[0].info.symbol == "test_beta" &&
+               disagree->tests.files.size() == 1 && disagree->tests.files[0].path == "tests/t.c",
+           "the sides stay apart through fusion");
+}
+
 // The ANN index over a database store/ has finished embedding. It is a derived
 // cache, so what matters is that it agrees with the exact scan and that a
 // database embedded further refuses to be searched through a stale one (D24).
@@ -107,6 +133,8 @@ void ann(store::Db& db, const std::string& path, const store::Fingerprint& fp, m
     expect(ranked && ranked->code.chunks.size() == 2 && ranked->code.chunks[0].info.symbol == "beta" &&
                ranked->tests.chunks.size() == 1 && ranked->tests.chunks[0].info.symbol == "test_beta",
            "the ANN route ranks like the exact scan");
+
+    hybrid(db, *opened, query);
 
     std::string more = "int delta() { return 4; }\n";
     auto grown = store::index_branch(db, "main", Oid{8}, {{"y.c", Oid{3}}},

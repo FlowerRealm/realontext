@@ -65,7 +65,7 @@ export VCPKG_ROOT=~/vcpkg
 cmake --preset default && cmake --build build && ctest --preset default
 ```
 
-当前进度见 `docs/roadmap.md`：阶段 1–3 完成。MCP 是 stdio 单进程一档（D25），客户端/服务端拆分还没做。
+当前进度见 `docs/roadmap.md`：阶段 1–4 完成。MCP 是 stdio 单进程一档（D25），客户端/服务端拆分还没做。
 
 ```bash
 realontext index --db repo.db --git repo.git            # 索引镜像的全部分支，免费
@@ -75,7 +75,8 @@ realontext build-index --db repo.db                      # 从已存的向量重
 echo "为什么加载 yaml 会崩" | realontext query --db repo.db --branch main                 # 词法
 echo "为什么加载 yaml 会崩" | realontext query --db repo.db --branch main --route vector  # 向量，精确扫描
 echo "为什么加载 yaml 会崩" | realontext query --db repo.db --branch main --route ann     # 向量，走索引
-realontext mcp --db repo.db --branch main --route ann   # MCP over stdio，接给 agent
+echo "为什么加载 yaml 会崩" | realontext query --db repo.db --branch main --route hybrid  # 两路融合，分最高（D26）
+realontext mcp --db repo.db --branch main --route hybrid  # MCP over stdio，接给 agent
 ```
 
 `query` 的结果分两组：`code` 是修复该改的地方，`tests` 是覆盖这块行为的测试（D23）。

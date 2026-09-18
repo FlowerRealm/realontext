@@ -31,9 +31,9 @@ constexpr const char* usage = R"(usage:
                      key from JINA_API_KEY; interrupt and rerun to resume
   realontext build-index --db FILE [--connectivity N] [--expansion-add N]
                      [--scalar f32|f16|bf16|i8]      rebuilds from the stored vectors
-  realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector|ann]
+  realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector|ann|hybrid]
                      query on stdin, JSON on stdout
-  realontext mcp     --db FILE --branch BRANCH [--route lexical|ann] [--k N] [--full-text N]
+  realontext mcp     --db FILE --branch BRANCH [--route lexical|ann|hybrid] [--k N] [--full-text N]
                      MCP over stdio, one JSON object per line
   realontext symbols --db FILE --branch BRANCH           function names, one per line
 )";
@@ -228,15 +228,15 @@ public:
         Route r(db, std::move(branch), k, a.one("route") ? *a.one("route") : "lexical");
         if (r.route_ == "lexical")
             return r;
-        if (r.route_ != "vector" && r.route_ != "ann")
-            return Err{"--route is lexical, vector or ann"};
+        if (r.route_ != "vector" && r.route_ != "ann" && r.route_ != "hybrid")
+            return Err{"--route is lexical, vector, ann or hybrid"};
         auto fp = store::pinned(db);
         if (!fp)
             return Err{fp.error()};
         r.limiter_ = std::make_unique<model::Limiter>(1e9, 1e12, model::Clock::real()); // the query, alone
         r.embedder_ = std::make_unique<model::Embedder>(fp->embedding, key_from_env(), model::http_post(),
                                                         *r.limiter_, model::Clock::real());
-        if (r.route_ == "ann") {
+        if (r.route_ == "ann" || r.route_ == "hybrid") {
             auto index = vector::Index::open(db, *a.one("db"));
             if (!index)
                 return Err{index.error()};
@@ -254,7 +254,9 @@ public:
             return Err{v.error()};
         if (route_ == "vector")
             return match::nearest(db_, branch_, v->data, k_);
-        return match::nearest_ann(db_, branch_, *index_, v->data, k_);
+        if (route_ == "ann")
+            return match::nearest_ann(db_, branch_, *index_, v->data, k_);
+        return match::hybrid(db_, branch_, query, *index_, v->data, k_);
     }
 
 private:

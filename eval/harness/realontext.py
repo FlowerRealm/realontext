@@ -17,6 +17,9 @@ under different fingerprints apart.
 gap between the two is what the approximation costs. REALONTEXT_ANN carries the
 index flags; the same string reaches both build-index and query, which each
 read the ones they know.
+
+`realontext-hybrid` is the lexical ranking and the index one fused by rank
+(D26): the same database, the same vectors, one more route through them.
 """
 import json
 import os
@@ -82,7 +85,7 @@ def build_index(repo):
 
 
 def query(row, route="lexical"):
-    extra = shlex.split(os.environ.get("REALONTEXT_ANN", "")) if route == "ann" else []
+    extra = shlex.split(os.environ.get("REALONTEXT_ANN", "")) if route in ("ann", "hybrid") else []
     p = _run(["query", "--db", db_path(row["repo"]), "--branch", branch(row), "--k", str(K),
               "--route", route] + extra, stdin=row["query"])
     if p.returncode != 0:

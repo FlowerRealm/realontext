@@ -12,7 +12,7 @@ namespace match {
 
 struct Candidate {
     uint32_t chunk;
-    double score;
+    double score; // fused rank score, comparable only within a Group
     store::ChunkInfo info; // info.where holds only locations on the queried branch
 };
 
@@ -51,5 +51,11 @@ Result<Ranked> nearest(store::Db& db, std::string_view branch, std::span<const f
 // only one of them is visible, so no fixed multiple is enough.
 Result<Ranked> nearest_ann(store::Db& db, std::string_view branch, const vector::Index& index,
                            std::span<const float> query, size_t k);
+
+// Both routes at once, fused by rank (D26). The lexical route finds the
+// identifiers and error strings a vector cannot place, the vector route the
+// code that never spells the query's words; each is blind where the other sees.
+Result<Ranked> hybrid(store::Db& db, std::string_view branch, std::string_view text, const vector::Index& index,
+                      std::span<const float> query, size_t k);
 
 } // namespace match
