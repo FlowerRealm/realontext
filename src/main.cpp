@@ -37,7 +37,8 @@ constexpr const char* usage = R"(usage:
   realontext query   --db FILE --branch BRANCH [--k N] [--route lexical|vector|ann|hybrid]
                      [--rerank 1] [--rerank-endpoint URL] [--rerank-model NAME] [--rerank-pool N]
                      [--rerank-max-bytes N] [--rerank-mode replace|fuse]
-                     [--rerank-files derive|fuse|keep] [--rerank-cache DIR]
+                     [--rerank-files derive|fuse|keep]
+                     [--rerank-sides both|code] [--rerank-cache DIR]
                      [--rerank-rpm N] [--rerank-tpm N]
                      query on stdin, JSON on stdout; rerank key from RERANK_API_KEY
   realontext mcp     --db FILE --branch BRANCH [--route lexical|ann|hybrid] [--k N] [--full-text N]
@@ -315,8 +316,12 @@ public:
                                         : match::Reranking::Files::Derive;
         if (files != "derive" && files != "fuse" && files != "keep")
             return Err{"--rerank-files is derive, fuse or keep"};
+        const std::string* sides = a.one("rerank-sides");
+        if (sides && *sides != "both" && *sides != "code")
+            return Err{"--rerank-sides is both or code"};
         rerank_ = match::Reranking{reranker_.get(), number(a, "rerank-pool", 50),
-                                   number(a, "rerank-max-bytes", 16384), mode && *mode == "fuse", which};
+                                   number(a, "rerank-max-bytes", 16384), mode && *mode == "fuse", which,
+                                   !sides || *sides == "both"};
         return ok;
     }
 

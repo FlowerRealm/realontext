@@ -409,6 +409,8 @@ Status rerank(store::Db& db, std::string_view query, Ranked& ranked, const Reran
     // ranking would let the tests crowd out the code again (D23).
     if (auto s = rerank_side(db, query, ranked.code, r); !s)
         return s;
+    if (!r.tests)
+        return ok;
     return rerank_side(db, query, ranked.tests, r);
 }
 

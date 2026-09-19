@@ -71,6 +71,9 @@ struct Reranking {
     // did not give; keeping the fuser's leaves the file ranking as it was.
     enum class Files { Derive, Fuse, Keep };
     Files files = Files::Derive;
+    // Both groups are reranked for a caller. The eval scores the code group
+    // only, so it turns the tests one off and halves a run that costs hours.
+    bool tests = true;
 };
 
 // Reorders `ranked` in place. It can only reorder: what the pool already holds
