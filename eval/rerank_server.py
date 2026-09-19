@@ -18,7 +18,7 @@ others in view, which is what D6 picked and what no reachable hosted API gave
 us. Its licence is non-commercial, same as the embedding weights next door:
 these scores say what the stage is worth, not what ships.
 
-    uv run eval/rerank_server.py [--port 8585] [--device mps]
+    uv run eval/rerank_server.py [--port 8585] [--device mps] [--context 20480]
 """
 import argparse
 import json
@@ -27,14 +27,26 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 MODEL = "jina-reranker-v3.5"
 
 
-def load(device):
+def load(device, context):
     import torch
     from transformers import AutoModel
     # bfloat16, not float16: fp16 attention on MPS overflows to NaN
     # (pytorch/pytorch#96602).
-    model = AutoModel.from_pretrained("jinaai/" + MODEL, dtype=torch.bfloat16, trust_remote_code=True)
+    model = AutoModel.from_pretrained("jinaai/" + MODEL, dtype=torch.bfloat16, trust_remote_code=True,
+                                      attn_implementation="sdpa")
     model.to(device)
     model.eval()
+    # The model splits a candidate list into forward passes by this number, and
+    # its own default is the 131,072 the weights were trained for: a pool of 50
+    # code chunks then lands in a single pass and peaks at 17 GB of unified
+    # memory, which on a 16 GB machine is swap, not speed. Lowering it bounds
+    # the pass; the ranking stays listwise and stays over the whole pool,
+    # because the model averages the query embedding across its passes and
+    # scores every candidate against that one vector. The model flushes a pass
+    # once the room left drops under its 8,192-token document limit, so a number
+    # under about 18,000 sends one document at a time and stops being listwise.
+    model._ensure_tokenizer()
+    model._tokenizer.model_max_length = context
     return model
 
 
@@ -102,9 +114,11 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--port", type=int, default=8585)
     p.add_argument("--device", default="mps")
+    p.add_argument("--context", type=int, default=20480,
+                   help="tokens per forward pass; bounds memory on a long candidate list")
     args = p.parse_args()
     from transformers import AutoTokenizer
-    model = load(args.device)
+    model = load(args.device, args.context)
     tokenizer = AutoTokenizer.from_pretrained("jinaai/" + MODEL, trust_remote_code=True)
     print("serving %s on http://127.0.0.1:%d/v1/rerank" % (MODEL, args.port), flush=True)
     HTTPServer(("127.0.0.1", args.port), handler(model, tokenizer)).serve_forever()

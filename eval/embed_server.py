@@ -2,8 +2,11 @@
 # requires-python = ">=3.11"
 # dependencies = [
 #     "torch>=2.7.1",
-#     "transformers>=4.53.0",
+#     # Under 5.x the nomic-bert remote code SweRankEmbed carries fails:
+#     # ModuleUtilsMixin.get_extended_attention_mask is gone.
+#     "transformers>=4.53.0,<5",
 #     "sentence-transformers>=5.0.0",
+#     "einops>=0.8.0",
 # ]
 # ///
 """Local stand-in for the Jina embeddings API, for development without a key.
@@ -26,8 +29,22 @@ import argparse
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-MODELS = ("jina-code-embeddings-0.5b", "jina-code-embeddings-1.5b")
-PROMPTS = {"code.query": "nl2code_query", "code.passage": "nl2code_document"}
+# Where each model lives and what it wants per role. Jina's code adapter names
+# both roles; SweRank prefixes the query and encodes code bare, so a role can
+# map to no prompt at all.
+REPO = {"jina-code-embeddings-0.5b": "jinaai/",
+        "jina-code-embeddings-1.5b": "jinaai/",
+        "SweRankEmbed-Small": "Salesforce/"}
+MODELS = tuple(REPO)
+PROMPTS = {
+    "jina-code-embeddings-0.5b": {"code.query": "nl2code_query", "code.passage": "nl2code_document"},
+    "jina-code-embeddings-1.5b": {"code.query": "nl2code_query", "code.passage": "nl2code_document"},
+    # SweRankEmbed is CodeRankEmbed fine-tuned on pull-request pairs: someone
+    # else's fine-tune, run here as inference only (D5 bars training, not this).
+    "SweRankEmbed-Small": {"code.query": "query", "code.passage": None},
+}
+# Only a Matryoshka-trained model may be asked for fewer dimensions than it has.
+SEQ = {"SweRankEmbed-Small": 8192}
 # Padded tokens per forward pass. Attention memory grows with the longest input
 # in a batch, so inputs are sorted by length and grouped under this budget.
 TOKEN_BUDGET = 16384
@@ -39,10 +56,14 @@ def load(name, device):
     # bfloat16, not float16: fp16 attention on MPS overflows to NaN
     # (pytorch/pytorch#96602). Last-token pooling reads the wrong token unless
     # padding is on the left, so it is set rather than left to the tokenizer.
-    m = SentenceTransformer("jinaai/" + name, device=device,
-                            model_kwargs={"torch_dtype": torch.bfloat16, "attn_implementation": "sdpa"},
-                            tokenizer_kwargs={"padding_side": "left"})
-    m.max_seq_length = 32768
+    kwargs = {"model_kwargs": {"torch_dtype": torch.bfloat16, "attn_implementation": "sdpa"}}
+    if name.startswith("jina"):
+        # Last-token pooling reads the wrong token unless padding is on the left.
+        kwargs["tokenizer_kwargs"] = {"padding_side": "left"}
+    else:
+        kwargs["trust_remote_code"] = True
+    m = SentenceTransformer(REPO[name] + name, device=device, **kwargs)
+    m.max_seq_length = SEQ.get(name, 32768)
     return m
 
 
@@ -50,15 +71,15 @@ def encode(model, texts, prompt_name, dim):
     """Vectors and billed tokens for `texts`, in input order."""
     import numpy as np
     import torch
-    prompt = model.prompts[prompt_name]
+    prompt = model.prompts[prompt_name] if prompt_name else ""
     lengths = [len(ids) for ids in model.tokenizer([prompt + t for t in texts])["input_ids"]]
     order = sorted(range(len(texts)), key=lambda i: lengths[i])
     out = [None] * len(texts)
     group = []
     for i in order + [None]:
         if group and (i is None or lengths[i] * (len(group) + 1) > TOKEN_BUDGET):
-            vectors = model.encode([texts[j] for j in group], prompt_name=prompt_name, truncate_dim=dim,
-                                   batch_size=len(group), convert_to_numpy=True)
+            vectors = model.encode([texts[j] for j in group], prompt_name=prompt_name,
+                                   truncate_dim=dim, batch_size=len(group), convert_to_numpy=True)
             for j, v in zip(group, vectors):
                 out[j] = v / np.linalg.norm(v)
             group = []
@@ -84,9 +105,10 @@ def handler(name, model):
             req = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
             if req.get("model") != name:
                 return self.reply(400, {"detail": "this server only serves %s" % name})
-            if req.get("task") not in PROMPTS:
-                return self.reply(400, {"detail": "task must be one of %s" % sorted(PROMPTS)})
-            vectors, tokens = encode(model, req["input"], PROMPTS[req["task"]], req.get("dimensions"))
+            prompts = PROMPTS[name]
+            if req.get("task") not in prompts:
+                return self.reply(400, {"detail": "task must be one of %s" % sorted(prompts)})
+            vectors, tokens = encode(model, req["input"], prompts[req["task"]], req.get("dimensions"))
             self.reply(200, {
                 "model": req["model"],
                 "data": [{"index": i, "embedding": v.tolist()} for i, v in enumerate(vectors)],
